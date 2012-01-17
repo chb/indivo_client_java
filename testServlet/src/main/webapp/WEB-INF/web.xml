@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : web.xml
+    Author     : nate
+
+        indivoUI_URL = getInitParameter("indivoUI_URL");
+
+-->
+
+<web-app  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+   xmlns='http://java.sun.com/xml/ns/j2ee'
+   xsi:schemaLocation='http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd' version="" id="">
+    <description>Used to test indivo oauth dance using indivo_client_java</description>
+    <display-name>indivo_client_java OAuth dance tester</display-name>
+    <servlet><!-- http://localhost:8080/testServlet/IndivoClientJavaOAuthTester -->
+        <servlet-name>IndivoClientJavaOAuthTester</servlet-name>
+        <servlet-class>org.indivo.client.TestClientServlet</servlet-class>
+        <init-param>
+            <param-name>consumerKey</param-name>
+            <param-value>labs@apps.indivo.org</param-value>
+        </init-param>
+        <init-param>
+            <param-name>consumerSecret</param-name>
+            <param-value>labs</param-value>
+        </init-param>
+        <init-param>
+            <param-name>indivoAPI_URL</param-name>
+            <param-value>http://localhost:8000</param-value>
+        </init-param>
+        <init-param>
+            <param-name>indivoUI_URL</param-name>
+            <param-value>http://localhost:80</param-value>
+        </init-param>
+        <init-param>
+            <param-name>authStartPath</param-name>
+            <param-value>start_auth</param-value>
+        </init-param>
+        <init-param>
+            <param-name>authAfterPath</param-name>
+            <param-value>after_auth</param-value>
+        </init-param>
+<!--        <init-param>
+            <param-name>requestTokenURL</param-name>
+            <param-value>oauth/request_token</param-value>
+        </init-param>-->
+<!--        <init-param>
+            <param-name>authorizeURL</param-name>
+            <param-value>http://sandbox.smartplatforms.org/oauth/authorize</param-value>
+        </init-param>-->
+<!--        <init-param>
+            <param-name>accessTokenURL</param-name>
+            <param-value>oauth/access_token</param-value>
+        </init-param>-->
+        <init-param>
+            <param-name>oauthCallback</param-name>
+            <param-value>oob</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>IndivoClientJavaOAuthTester</servlet-name>
+        <url-pattern>/IndivoClientJavaOAuthTester/*</url-pattern>
+    </servlet-mapping>
+</web-app>
