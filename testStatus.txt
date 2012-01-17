@@ -1,0 +1,130 @@
+'*' indicates sucess;
+"0000000" indicates not tested or did not evaluate result of test;
+"#######" indicates failure
+
+
+ADMIN (MACHINE)
+
+ *      testResultDoc = (Document) client.records_X_documents_special_demographicsGET(recordId, accessToken, accessTokenSecret, options);
+####### testResultDoc = (Document) client.carenets_X_documents_special_demographicsGET(carenetId, accessToken, accessTokenSecret, options);
+ *      testResultDoc = (Document) client.records_X_documents_special_demographicsPUT(recordId, accessToken, accessTokenSecret, body, options);
+ *      testResultDoc = (Document) client.records_X_documents_special_contactGET(recordId, accessToken, accessTokenSecret, options);
+####### testResultDoc = (Document) client.carenets_X_documents_special_contactGET(carenetId, accessToken, accessTokenSecret, options);
+ *      testResultDoc = (Document) client.records_X_documents_special_contactPUT(recordId, accessToken, accessTokenSecret, body, options);
+ *      testResultDoc = (Document) client.records_X_documents_POST(recordId, accessToken, accessTokenSecret, body, requestContentType, options);
+ *      testResultDoc = (Document) client.records_X_documents_X_replacePOST(recordId, documentId, accessToken, accessTokenSecret, body, requestContentType, options);
+ *      testResultDoc = (Document) client.records_X_documents_X_replace_external_X_XPUT(recordId, documentId, appId, externalId, accessToken, accessTokenSecret, body, requestContentType, options);
+0000000 testResultDoc = (Document) client.records_X_notifyPOST(content, app_url, document_id, recordId, accessToken, accessTokenSecret, options);
+####### testResultDoc = (Document) client.apps_X_documents_GET(pagingOrderingQuery, appId, options);
+ *      testResultDoc = (Document) client.accounts_XGET(accountId, accessToken, accessTokenSecret, options);
+ *      testResultDoc = (Document) client.accounts_searchGET(fullname, contact_email, options);
+ *      testResultDoc = (Document) client.accounts_POST(account_id, contact_email, full_name, primary_secret_p, secondary_secret_p, options);
+ *      testResultDoc = (Document) client.accounts_X_authsystems_POST(system, username, password, accountId, options);
+0000000 testResultDoc = (Document) client.accounts_X_secretResendPOST(accountId, options);
+0000000 testResultDoc = (Document) client.accounts_X_resetPOST(accountId, options);
+ *      testResultDoc = (Document) client.accounts_X_setStatePOST(state, accountId, options);
+####### testResultDoc = (Document) client.accounts_X_authsystems_password_setPOST(password, accountId, options);
+####### testResultDoc = (Document) client.accounts_X_primarySecretGET(accountId, options);
+ *      testResultDoc = (Document) client.records_POST(body, requestContentType, options);
+ *      testResultDoc = (Document) client.records_external_X_XPUT(appId, externalId, body, requestContentType, options);
+ *      testResultDoc = (Document) client.records_X_ownerPUT(recordId, body, requestContentType, options);
+ *      testResultForm = (Map<String,String>) client.records_X_apps_X_setupPOST(recordId, appId, body, requestContentType, options);
+ *      testResultDoc = (Document) client.records_X_apps_XDELETE(recordId, appId, accessToken, accessTokenSecret, options);
+ *      testResultDoc = (Document) client.records_X_carenets_GET(pagingOrderingQuery, recordId, accessToken, accessTokenSecret, options);
+ *      testResultDoc = (Document) client.records_X_shares_GET(pagingOrderingQuery, recordId, accessToken, accessTokenSecret, options);
+ *      testResultDoc = (Document) client.records_X_shares_POST(account_id, role_label, recordId, accessToken, accessTokenSecret, options);
+ *      testResultDoc = (Document) client.records_X_shares_X_deletePOST(recordId, accountId, accessToken, accessTokenSecret, options);
+ *      testResultDoc = (Document) client.records_X_autoshare_carenets_X_bytype_setPOST(type, recordId, carenetId, accessToken, accessTokenSecret, options);
+
+==========================================
+
+CHROME
+
+ *      testResultDoc = (Document) chrome.accounts_X_records_GET(pagingOrderingQuery, accountId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_XGET(recordId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_apps_GET(pagingOrderingQuery, recordId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_GET(pagingOrderingQuery, recordId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.carenets_X_documents_GET(pagingOrderingQuery, carenetId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_GET(type, pagingOrderingQuery, recordId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.carenets_X_documents_GET(type, pagingOrderingQuery, carenetId, sessionToken, sessionTokenSecret, options);
+ *      testResultObj = chrome.records_X_documents_XGET(recordId, documentId, sessionToken, sessionTokenSecret, responseContentType, options);
+ *      testResultObj = chrome.carenets_X_documents_XGET(carenetId, documentId, sessionToken, sessionTokenSecret, responseContentType, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_special_demographicsGET(recordId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.carenets_X_documents_special_demographicsGET(carenetId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_special_demographicsPUT(recordId, sessionToken, sessionTokenSecret, body, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_special_contactGET(recordId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.carenets_X_documents_special_contactGET(carenetId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_special_contactPUT(recordId, sessionToken, sessionTokenSecret, body, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_X_metaGET(recordId, documentId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.carenets_X_documents_X_metaGET(carenetId, documentId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_X_versions_GET(pagingOrderingQuery, recordId, documentId, sessionToken, sessionTokenSecret, options);
+########testResultDoc = (Document) chrome.records_X_documents_external_X_X_metaGET(recordId, appId, externalId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_POST(recordId, sessionToken, sessionTokenSecret, body, requestContentType, options);
+########testResultDoc = (Document) chrome.records_X_documents_external_X_XPUT(recordId, appId, externalId, sessionToken, sessionTokenSecret, body, requestContentType, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_X_labelPUT(recordId, documentId, sessionToken, sessionTokenSecret, body, options);
+########testResultDoc = (Document) chrome.records_X_documents_external_X_X_labelPUT(recordId, appId, externalId, sessionToken, sessionTokenSecret, body, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_X_replacePOST(recordId, documentId, sessionToken, sessionTokenSecret, body, requestContentType, options);
+########testResultDoc = (Document) chrome.records_X_documents_X_replace_external_X_XPUT(recordId, documentId, appId, externalId, sessionToken, sessionTokenSecret, body, requestContentType, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_XDELETE(recordId, documentId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_X_setStatusPOST(reason, status, recordId, documentId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_X_statusHistoryGET(recordId, documentId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_X_rels_X_XPUT(recordId, documentId, relType, otherDocumentId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_X_rels_X_POST(recordId, documentId, relType, sessionToken, sessionTokenSecret, body, requestContentType, options);
+########testResultDoc = (Document) chrome.records_X_documents_X_rels_X_external_X_XPUT(recordId, documentId, relType, appId, externalId, sessionToken, sessionTokenSecret, body, requestContentType, options);
+
+
+
+########testResultDoc = (Document) chrome.accounts_X_inbox_GET(pagingOrderingQuery, accountId, sessionToken, sessionTokenSecret, options);
+########testResultDoc = (Document) chrome.accounts_X_inbox_XGET(accountId, messageId, sessionToken, sessionTokenSecret, options);
+########testResultDoc = (Document) chrome.accounts_X_inbox_X_attachments_X_acceptPOST(accountId, messageId, attachmentNum, sessionToken, sessionTokenSecret, options);
+########testResultDoc = (Document) chrome.apps_X_documents_GET(pagingOrderingQuery, appId, options);
+########testResultObj = chrome.apps_X_documents_XGET(appId, documentId, responseContentType, options);
+########testResultDoc = (Document) chrome.apps_X_documents_X_metaGET(appId, documentId, options);
+########testResultDoc = (Document) chrome.apps_X_documents_external_X_metaGET(appId, externalId, options);
+########testResultDoc = (Document) chrome.apps_X_documents_POST(appId, body, requestContentType, options);
+########testResultDoc = (Document) chrome.apps_X_documents_external_XPUT(appId, externalId, body, requestContentType, options);
+########testResultDoc = (Document) chrome.apps_X_documents_X_labelPUT(appId, documentId, body, options);
+########testResultDoc = (Document) chrome.records_X_apps_X_documents_GET(pagingOrderingQuery, recordId, appId, sessionToken, sessionTokenSecret, options);
+########testResultObj = chrome.records_X_apps_X_documents_XGET(recordId, appId, documentId, sessionToken, sessionTokenSecret, responseContentType, options);
+########testResultDoc = (Document) chrome.records_X_apps_X_documents_X_metaGET(recordId, appId, documentId, sessionToken, sessionTokenSecret, options);
+########testResultDoc = (Document) chrome.records_X_apps_X_documents_external_X_metaGET(recordId, appId, externalId, sessionToken, sessionTokenSecret, options);
+########testResultDoc = (Document) chrome.records_X_apps_X_documents_POST(recordId, appId, sessionToken, sessionTokenSecret, body, requestContentType, options);
+########testResultDoc = (Document) chrome.records_X_apps_X_documents_external_XPUT(recordId, appId, externalId, sessionToken, sessionTokenSecret, body, requestContentType, options);
+########testResultDoc = (Document) chrome.records_X_apps_X_documents_X_labelPUT(recordId, appId, documentId, sessionToken, sessionTokenSecret, body, options);
+00000000testResultDoc = (Document) chrome.records_X_reports_minimal_measurements_X_GET(pagingOrderingQuery, recordId, labCode, sessionToken, sessionTokenSecret, options);
+########testResultDoc = (Document) chrome.carenets_X_reports_minimal_measurements_X_GET(pagingOrderingQuery, carenetId, labCode, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_reports_minimal_X_GET(pagingOrderingQuery, recordId, typeOfMinimalEgMedications, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.carenets_X_reports_minimal_X_GET(pagingOrderingQuery, carenetId, typeOfMinimalEgMedications, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.accounts_XGET(accountId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.accounts_X_authsystems_password_changePOST(old, newnew, accountId, sessionToken, sessionTokenSecret, options);
+########testResultDoc = (Document) chrome.records_X_apps_XDELETE(recordId, appId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.oauth_internal_request_tokens_X_claimPOST(requestToken, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.oauth_internal_request_tokens_X_infoGET(requestToken, sessionToken, sessionTokenSecret, options);
+ *      testResultForm = (Map<String,String>) chrome.oauth_internal_request_tokens_X_approvePOST(record_id, requestToken, sessionToken, sessionTokenSecret, options);
+########testResultDoc = (Document) chrome.oauth_internal_surlVerifyGET(url, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_carenets_GET(pagingOrderingQuery, recordId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.carenets_X_recordGET(carenetId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_shares_GET(pagingOrderingQuery, recordId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_shares_POST(account_id, role_label, recordId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_shares_X_deletePOST(recordId, accountId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_X_carenets_XPUT(recordId, documentId, carenetId, sessionToken, sessionTokenSecret, options);
+00000000testResultDoc = (Document) chrome.records_X_documents_X_carenets_XDELETE(recordId, documentId, carenetId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_documents_X_carenets_GET(pagingOrderingQuery, recordId, documentId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_autoshare_bytype_GET(type, pagingOrderingQuery, recordId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_autoshare_carenets_X_bytype_setPOST(type, recordId, carenetId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.records_X_autoshare_carenets_X_bytype_unsetPOST(type, recordId, carenetId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.carenets_X_apps_GET(pagingOrderingQuery, carenetId, sessionToken, sessionTokenSecret, options);
+########testResultDoc = (Document) chrome.carenets_X_apps_XPUT(carenetId, phaEmail, sessionToken, sessionTokenSecret, options);
+00000000testResultDoc = (Document) chrome.carenets_X_apps_XDELETE(carenetId, phaEmail, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.carenets_X_accounts_GET(pagingOrderingQuery, carenetId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.carenets_X_accounts_POST(account_id, write, carenetId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.carenets_X_accounts_XDELETE(carenetId, accountId, sessionToken, sessionTokenSecret, options);
+ *      testResultDoc = (Document) chrome.carenets_X_accounts_X_permissionsGET(carenetId, accountId, sessionToken, sessionTokenSecret, options);
+
+==========================================
+
+PHA
+
+All tests succeeded except:
+
+########GET /carenets/{carenet_id}/reports/minimal/measurements/{lab_code}/

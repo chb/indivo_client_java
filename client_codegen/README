@@ -1,0 +1,5 @@
+mkdir build
+mvn dependency:copy-dependencies
+mvn install
+cd src/main/sh
+./clientFromWadl.sh <full_path_name_of_indivo_wadl.xml>  1> temp1 2> temp2
