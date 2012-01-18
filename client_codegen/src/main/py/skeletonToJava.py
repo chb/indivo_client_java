@@ -854,8 +854,11 @@ def dashToCamel(frag):
 
 
 
-rest0 =   open("/home/nate/java/eclipse/workspace/JavaClientForIndivo_and_test/src/org/indivo/client/REST.java", "w")
-prefix = open("/home/nate/java/eclipse/workspace/JavaClientForIndivo_and_test/src/org/indivo/client/Rest_SHELL.java","r")
+#rest0 =   open("/home/nate/java/eclipse/workspace/JavaClientForIndivo_and_test/src/org/indivo/client/REST.java", "w")
+rest0 =   open("../../../../src/main/java/org/indivo/client/Rest.java", "w")
+#prefix = open("/home/nate/java/eclipse/workspace/JavaClientForIndivo_and_test/src/org/indivo/client/Rest_SHELL.java","r")
+prefix = open("../forCodeGen/Rest_SHELL.java","r")
+
 prefixSuffix = prefix.readlines()
 writeprefix(prefixSuffix, rest0)
 repflv, repqflds = get_report_flavors()

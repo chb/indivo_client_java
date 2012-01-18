@@ -1,5 +1,4 @@
 
-
 CALLS=[{
     "method":"POST",
     "path":"/accounts/",
@@ -5704,66 +5703,3 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
     "changed": None,
 
 }]
-
-
-qfs = """
-Labs
-lab_type: The category of the lab. String
-date_measured: The date on which the lab was measured. Date
-lab_test_name: The name of the test conducted. String
-created_at: The date on which the lab was added to indivo. Date
-
-Allergies
-date_diagnosed: The date on which the allergy was diagnosed. Date
-allergen_type: The category of allergen causing a reaction (i.e. ‘Drugs’). String
-allergen_name: The name of the allergen causing a reaction (i.e. ‘Penicillin’). String
-created_at: The date on which the allergy was added to indivo. Date
-
-Equipment
-date_started: The date on which the patient started using the equipment. Date
-date_stopped: The date on which the patient stopped using the equipment. Date
-equipment_name: The name of the equipment being used. String
-equipment_vendor: The vendor of the equipment being used. String
-created_at: The date on which the equipment was added to indivo. Date
-
-Immunizations
-vaccine_type: The type of Vaccination administered. String
-date_administered: The date on which the patient received the vaccination. Date
-created_at: The date on which the immunization was added to indivo. Date
-
-Measurements
-lab_code: The identifier for the measurement taken. String
-value: The value measured. Number
-date_measured: The date on which the measurement was taken. Date
-created_at: The date on which the measurement was added to indivo. Date
-
-Medications
-date_started: The date on which the patient started taking the medication. Date
-date_stopped: The date on which the patient stopped taking the medication. Date
-medication_name: The name of the medication being taken. String
-medication_brand_name: The brand name of the medication being taken. String
-created_at: The date on which the medication was added to indivo. Date
-
-Problems
-date_onset: The date on which the patient started experiencing the problem. Date
-date_resolution: The date on which the problem was resolved. Date
-problem_name: The problem name. String
-created_at: The date on which the problem was added to indivo. Date
-
-Procedures
-date_performed: The date on which the procedure was performed. Date
-procedure_name: The name of the procedure. String
-created_at: The date on which the procedure was added to indivo. Date
-
-Simple Clinical Notes
-date_of_visit: The date on which the clinical note was taken. Date
-specialty: The clinical specialty relevant to the visit. String
-provider_name: The care provider at the visit. String
-created_at: The date on which the clinical note was added to indivo. Date
-
-Vitals
-date_measured: The date on which the vital sign was measured. Date
-category: The category of vital sign taken. String
-value: The value measured. Number
-created_at: The date on which the vital sign was added to indivo. Date
-"""

@@ -7,7 +7,7 @@ import java.io.UnsupportedEncodingException;
 
 import java.net.URLEncoder;
 
-
+import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -98,6 +98,17 @@ public class Rest_SHELL {
     	PROCEDURES = "procedures",
     	PROBLEMS = "problems",
     	VITALS = "vitals";
+    
+    public static List<String> auditQueryField = null;
+    {
+    	Arrays.asList("document_id","external_id","request_date","function_name","principal_email","proxied_by_email");
+//    #document_id: The document modified by the request. String
+//    #external_id: The external id used to reference a resource in the request. String
+//    #request_date: The date on which the request was made. Date
+//    #function_name: The internal Indivo X view function called by the request. String
+//    #principal_email: The email of the principal making the request. String
+//    #proxied_by_email: The email of the principal proxied by the principal making the request (i.e., the email of the 
+    }
 
     private String[] plainOrEncodedTemp = null;
     {
@@ -444,6 +455,34 @@ public class Rest_SHELL {
 /*_SHELL_DROP*/    Object o1, Object o2, Object o3, Object o4, Object o5, Object o6)
 /*_SHELL_DROP*/ throws org.indivo.client.IndivoClientExceptionHttp404 { return null; }
 /*_SHELL_DROP*/ private Object records_X_apps_X_documents_XGET(Object o1, Object o2, Object o3, Object o4, Object o5, Object o6, Object o7) { return null; }
+
+
+	private void checkQueryOptions(String present, List<String> allowed, Map<String, Class> vqf) throws IndivoClientException {
+		String[] presentA = present.split("&");
+		List<String> prsntL = new ArrayList<String>();
+		for (String prsnt : presentA) {
+			if (allowed.contains(prsnt)) {
+				if (prsntL.contains(prsnt)) {
+					throw new IndivoClientException("multiple occurances of query option \"" + prsnt + "\" in " + present);
+				}
+				else {
+					prsntL.add(prsnt);
+				}
+			}
+			else if (vqf != null && vqf.get(prsnt) != null) {
+				Class expectedClass = vqf.get(prsnt);
+				if (expectedClass == Number.class) {
+					try { new Float(prsnt); } catch(NumberFormatException nfe) { throw new IndivoClientException(nfe); }
+				}
+				else if (expectedClass == java.util.Date.class) {
+					
+				}
+			}
+			else {
+				throw new IndivoClientException("unexpected qurey option: " + prsnt);
+			}
+		}
+	}
 
 
     /** convenience method for where no request body is sent
