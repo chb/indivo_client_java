@@ -1,6 +1,7 @@
 import api_skeleton
 import api_skel_auxiliary
 import use_ast
+import sys
 
 """
 Each implementation of the query-api passes in a list of valid fields. See
@@ -120,7 +121,7 @@ def write_common_opts(rest0, report_query_fields):
         rest0.write("    validQueryFields.put(\"" + qfk + "\", vqfs);\n")
     rest0.write("\n")
     for aqfvk in queryFieldTypes.keys():
-        rest0.write("    queryFieldType.put(\"" + aqfvk + "\", \"" + queryFieldTypes[aqfvk] + "\");\n")
+        rest0.write("    queryFieldType.put(\"" + aqfvk + "\", " + queryFieldTypes[aqfvk] + ");\n")
     rest0.write("}\n\n")
 
 
@@ -602,7 +603,7 @@ def process_calls(rest, report_flavors):
         mthprms += "Map<String, Object> options"
         rest.write(mthprms)
                 
-        rest.write(') {\n')
+        rest.write(') throws IndivoClientException {\n')
         
         if qopts_o:
             options_str1, options_str2 = process_query_opts(qopts_o, qopts_field, first_report_minimal, audit_query)
@@ -639,7 +640,7 @@ def process_calls(rest, report_flavors):
                 
         # "URL_ENCODED", "PLAIN_TEXT"
         if response_form == "unknown":
-            rest.write(", reponseContentType")
+            rest.write(", responseContentType")
         elif response_form == "XML":
             rest.write(", \"application/xml\"")
         elif response_form == "JSON":
@@ -651,7 +652,7 @@ def process_calls(rest, report_flavors):
         else:
             raise Exception
         
-        rest.write(");\n        return fromRequest;\n")            
+        rest.write(", options);\n        return fromRequest;\n")            
         rest.write("    }\n\n")
     print(qo_counts[0], common_qo[0])
     print(qo_counts[1], common_qo[1])
@@ -724,13 +725,13 @@ def process_query_opts(query_opts0, qopts_field, report_minimal, audit_query):
                 optional_str_1 += ('"' + qok + '"')
             optional_str_1 += ");\n"
             optional_str_2a = "optional"
-            #validQueryFields.get(reportFlavor)
+            
         if report_minimal:
-            optional_str_2b = "validQueryFields.get(reportFlavor)"
+            optional_str_2b = "validQueryFields.get(reportFlavor), queryFieldType"
         elif audit_query:
-            optional_str_2b = "auditQueryFields"
+            optional_str_2b = "allowedAuditQuery, null"
         else:
-            optional_str_2b = "null"
+            optional_str_2b = "null, null"
             
         optional_str_2 = "        checkQueryOptions(queryOptions, " + optional_str_2a + ", " + optional_str_2b + ");\n"
     else:
@@ -767,10 +768,10 @@ def dashToCamel(frag):
 
 
 
-#rest0 =   open("/home/nate/java/eclipse/workspace/JavaClientForIndivo_and_test/src/org/indivo/client/REST.java", "w")
-rest0 =   open("../../../../src/main/java/org/indivo/client/Rest.java", "w")
-#prefix = open("/home/nate/java/eclipse/workspace/JavaClientForIndivo_and_test/src/org/indivo/client/Rest_SHELL.java","r")
-prefix = open("../forCodeGen/Rest_SHELL.java","r")
+restpath = sys.argv[1]
+shellpath = sys.argv[2]
+rest0 =   open(restpath + "org/indivo/client/Rest.java", "w")
+prefix = open(shellpath + "Rest_SHELL.java","r")
 
 prefixSuffix = prefix.readlines()
 writeprefix(prefixSuffix, rest0)

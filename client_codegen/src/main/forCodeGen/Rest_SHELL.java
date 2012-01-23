@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 
 import java.net.URLEncoder;
 
+import java.util.Date;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
@@ -99,9 +100,10 @@ public class Rest_SHELL {
     	PROBLEMS = "problems",
     	VITALS = "vitals";
     
-    public static List<String> auditQueryField = null;
+    public static List<String> allowedAuditQuery = null;
     {
-    	Arrays.asList("document_id","external_id","request_date","function_name","principal_email","proxied_by_email");
+      allowedAuditQuery = Arrays.asList(
+    		  "document_id","external_id","request_date","function_name","principal_email","proxied_by_email");
 //    #document_id: The document modified by the request. String
 //    #external_id: The external id used to reference a resource in the request. String
 //    #request_date: The date on which the request was made. Date
@@ -457,7 +459,15 @@ public class Rest_SHELL {
 /*_SHELL_DROP*/ private Object records_X_apps_X_documents_XGET(Object o1, Object o2, Object o3, Object o4, Object o5, Object o6, Object o7) { return null; }
 
 
-	private void checkQueryOptions(String present, List<String> allowed, Map<String, Class> vqf) throws IndivoClientException {
+	private void checkQueryOptions(String present, List<String> allowed0, List<String> allowed1, Map<String, Class> vqf)
+			throws IndivoClientException {
+		List<String> allowed = null;
+		if (allowed1 == null) {
+			allowed = allowed0;
+		} else {
+			allowed = new ArrayList(allowed0);
+			allowed.addAll(allowed1);
+		}
 		String[] presentA = present.split("&");
 		List<String> prsntL = new ArrayList<String>();
 		for (String prsnt : presentA) {

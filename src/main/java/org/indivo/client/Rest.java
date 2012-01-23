@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 
 import java.net.URLEncoder;
 
+import java.util.Date;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
@@ -99,9 +100,10 @@ public class Rest {
     	PROBLEMS = "problems",
     	VITALS = "vitals";
     
-    public static List<String> auditQueryField = null;
+    public static List<String> allowedAuditQuery = null;
     {
-    	Arrays.asList("document_id","external_id","request_date","function_name","principal_email","proxied_by_email");
+      allowedAuditQuery = Arrays.asList(
+    		  "document_id","external_id","request_date","function_name","principal_email","proxied_by_email");
 //    #document_id: The document modified by the request. String
 //    #external_id: The external id used to reference a resource in the request. String
 //    #request_date: The date on which the request was made. Date
@@ -261,31 +263,31 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
     vqfs = Arrays.asList("procedure_name", "date_performed");
     validQueryFields.put("procedure", vqfs);
 
-    queryFieldType.put("medication_name", "String.class");
-    queryFieldType.put("lab_code", "String.class");
-    queryFieldType.put("lab_type", "String.class");
-    queryFieldType.put("date_resolution", "Date.class");
-    queryFieldType.put("allergen_type", "String.class");
-    queryFieldType.put("date_performed", "Date.class");
-    queryFieldType.put("value", "Number.class");
-    queryFieldType.put("category", "String.class");
-    queryFieldType.put("date_stopped", "Date.class");
-    queryFieldType.put("equipment_name", "String.class");
-    queryFieldType.put("provider_name", "String.class");
-    queryFieldType.put("procedure_name", "String.class");
-    queryFieldType.put("date_measured", "Date.class");
-    queryFieldType.put("specialty", "String.class");
-    queryFieldType.put("date_of_visit", "Date.class");
-    queryFieldType.put("vaccine_type", "String.class");
-    queryFieldType.put("date_started", "Date.class");
-    queryFieldType.put("date_diagnosed", "Date.class");
-    queryFieldType.put("problem_name", "String.class");
-    queryFieldType.put("date_administered", "Date.class");
-    queryFieldType.put("allergen_name", "String.class");
-    queryFieldType.put("medication_brand_name", "String.class");
-    queryFieldType.put("equipment_vendor", "String.class");
-    queryFieldType.put("date_onset", "Date.class");
-    queryFieldType.put("lab_test_name", "String.class");
+    queryFieldType.put("medication_name", String.class);
+    queryFieldType.put("lab_code", String.class);
+    queryFieldType.put("lab_type", String.class);
+    queryFieldType.put("date_resolution", Date.class);
+    queryFieldType.put("allergen_type", String.class);
+    queryFieldType.put("date_performed", Date.class);
+    queryFieldType.put("value", Number.class);
+    queryFieldType.put("category", String.class);
+    queryFieldType.put("date_stopped", Date.class);
+    queryFieldType.put("equipment_name", String.class);
+    queryFieldType.put("provider_name", String.class);
+    queryFieldType.put("procedure_name", String.class);
+    queryFieldType.put("date_measured", Date.class);
+    queryFieldType.put("specialty", String.class);
+    queryFieldType.put("date_of_visit", Date.class);
+    queryFieldType.put("vaccine_type", String.class);
+    queryFieldType.put("date_started", Date.class);
+    queryFieldType.put("date_diagnosed", Date.class);
+    queryFieldType.put("problem_name", String.class);
+    queryFieldType.put("date_administered", Date.class);
+    queryFieldType.put("allergen_name", String.class);
+    queryFieldType.put("medication_brand_name", String.class);
+    queryFieldType.put("equipment_vendor", String.class);
+    queryFieldType.put("date_onset", Date.class);
+    queryFieldType.put("lab_test_name", String.class);
 }
 
     /**
@@ -299,9 +301,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_POST(
-            Object body, Map<String, Object> options) {
+            Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "accounts/", "", null, null, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "accounts/", "", null, null, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -315,11 +317,11 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_searchGET(
-            String queryOptions, Map<String, Object> options) {
+            String queryOptions, Map<String, Object> options) throws IndivoClientException {
         List<String> optional = Arrays.asList("contact_email", "fullname");
-        checkQueryOptions(queryOptions, optional, null);
+        checkQueryOptions(queryOptions, optional, null, null);
         Object fromRequest = clientRequest(
-                "GET", "accounts/search", queryOptions, null, null, "application/xml");
+                "GET", "accounts/search", queryOptions, null, null, "application/xml", options);
         return fromRequest;
     }
 
@@ -336,9 +338,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_XGET(
-            String accountEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String accountEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "accounts/" + accountEmail, "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "accounts/" + accountEmail, "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -354,9 +356,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_authsystems_POST(
-            String accountEmail, Object body, Map<String, Object> options) {
+            String accountEmail, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "accounts/" + accountEmail + "/authsystems/", "", null, null, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "accounts/" + accountEmail + "/authsystems/", "", null, null, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -374,9 +376,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_authsystems_password_changePOST(
-            String accountEmail, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String accountEmail, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "accounts/" + accountEmail + "/authsystems/password/change", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "accounts/" + accountEmail + "/authsystems/password/change", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -392,9 +394,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_authsystems_password_setPOST(
-            String accountEmail, Object body, Map<String, Object> options) {
+            String accountEmail, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "accounts/" + accountEmail + "/authsystems/password/set", "", null, null, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "accounts/" + accountEmail + "/authsystems/password/set", "", null, null, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -412,9 +414,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_authsystems_password_setUsernamePOST(
-            String accountEmail, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String accountEmail, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "accounts/" + accountEmail + "/authsystems/password/set-username", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "accounts/" + accountEmail + "/authsystems/password/set-username", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -430,11 +432,11 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_checkSecrets_XGET(
-            String queryOptions, String accountEmail, String primarySecret, Map<String, Object> options) {
+            String queryOptions, String accountEmail, String primarySecret, Map<String, Object> options) throws IndivoClientException {
         List<String> optional = Arrays.asList("secondary_secret");
-        checkQueryOptions(queryOptions, optional, null);
+        checkQueryOptions(queryOptions, optional, null, null);
         Object fromRequest = clientRequest(
-                "GET", "accounts/" + accountEmail + "/check-secrets/" + primarySecret, queryOptions, null, null, "application/xml");
+                "GET", "accounts/" + accountEmail + "/check-secrets/" + primarySecret, queryOptions, null, null, "application/xml", options);
         return fromRequest;
     }
 
@@ -449,9 +451,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_forgotPasswordPOST(
-            String accountEmail, Map<String, Object> options) {
+            String accountEmail, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "accounts/" + accountEmail + "/forgot-password", "", null, null, "application/xml");
+                "POST", "accounts/" + accountEmail + "/forgot-password", "", null, null, "application/xml", options);
         return fromRequest;
     }
 
@@ -468,11 +470,11 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_inbox_GET(
-            String queryOptions, String accountEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String queryOptions, String accountEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         List<String> optional = Arrays.asList("include_archive", "limit", "offset", "order_by", "status");
-        checkQueryOptions(queryOptions, optional, null);
+        checkQueryOptions(queryOptions, optional, null, null);
         Object fromRequest = clientRequest(
-                "GET", "accounts/" + accountEmail + "/inbox/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "accounts/" + accountEmail + "/inbox/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -488,9 +490,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_inbox_POST(
-            String accountEmail, Object body, Map<String, Object> options) {
+            String accountEmail, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "accounts/" + accountEmail + "/inbox/", "", null, null, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "accounts/" + accountEmail + "/inbox/", "", null, null, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -508,9 +510,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_inbox_XGET(
-            String accountEmail, String messageId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String accountEmail, String messageId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "accounts/" + accountEmail + "/inbox/" + messageId, "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "accounts/" + accountEmail + "/inbox/" + messageId, "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -528,9 +530,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_inbox_X_archivePOST(
-            String accountEmail, String messageId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String accountEmail, String messageId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "accounts/" + accountEmail + "/inbox/" + messageId + "/archive", "", accessToken, accessTokenSecret, "application/xml");
+                "POST", "accounts/" + accountEmail + "/inbox/" + messageId + "/archive", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -549,9 +551,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_inbox_X_attachments_X_acceptPOST(
-            String accountEmail, String messageId, String attachmentNum, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String accountEmail, String messageId, String attachmentNum, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "accounts/" + accountEmail + "/inbox/" + messageId + "/attachments/" + attachmentNum + "/accept", "", accessToken, accessTokenSecret, "application/xml");
+                "POST", "accounts/" + accountEmail + "/inbox/" + messageId + "/attachments/" + attachmentNum + "/accept", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -569,9 +571,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_infoSetPOST(
-            String accountEmail, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String accountEmail, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "accounts/" + accountEmail + "/info-set", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "accounts/" + accountEmail + "/info-set", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -590,9 +592,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_initialize_XPOST(
-            String accountEmail, String primarySecret, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String accountEmail, String primarySecret, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "accounts/" + accountEmail + "/initialize/" + primarySecret, "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "accounts/" + accountEmail + "/initialize/" + primarySecret, "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -609,10 +611,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_notifications_GET(
-            String queryOptions, String accountEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("solo"), null);
+            String queryOptions, String accountEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("solo"), null, null);
         Object fromRequest = clientRequest(
-                "GET", "accounts/" + accountEmail + "/notifications/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "accounts/" + accountEmail + "/notifications/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -629,9 +631,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_permissions_GET(
-            String accountEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String accountEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "accounts/" + accountEmail + "/permissions/", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "accounts/" + accountEmail + "/permissions/", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -646,9 +648,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_primarySecretGET(
-            String accountEmail, Map<String, Object> options) {
+            String accountEmail, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "accounts/" + accountEmail + "/primary-secret", "", null, null, "application/xml");
+                "GET", "accounts/" + accountEmail + "/primary-secret", "", null, null, "application/xml", options);
         return fromRequest;
     }
 
@@ -665,10 +667,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_records_GET(
-            String queryOptions, String accountEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("solo"), null);
+            String queryOptions, String accountEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("solo"), null, null);
         Object fromRequest = clientRequest(
-                "GET", "accounts/" + accountEmail + "/records/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "accounts/" + accountEmail + "/records/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -683,9 +685,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_resetPOST(
-            String accountEmail, Map<String, Object> options) {
+            String accountEmail, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "accounts/" + accountEmail + "/reset", "", null, null, "application/xml");
+                "POST", "accounts/" + accountEmail + "/reset", "", null, null, "application/xml", options);
         return fromRequest;
     }
 
@@ -700,9 +702,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_secretGET(
-            String accountEmail, Map<String, Object> options) {
+            String accountEmail, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "accounts/" + accountEmail + "/secret", "", null, null, "application/xml");
+                "GET", "accounts/" + accountEmail + "/secret", "", null, null, "application/xml", options);
         return fromRequest;
     }
 
@@ -717,9 +719,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_secretResendPOST(
-            String accountEmail, Map<String, Object> options) {
+            String accountEmail, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "accounts/" + accountEmail + "/secret-resend", "", null, null, "application/xml");
+                "POST", "accounts/" + accountEmail + "/secret-resend", "", null, null, "application/xml", options);
         return fromRequest;
     }
 
@@ -735,9 +737,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object accounts_X_setStatePOST(
-            String accountEmail, Object body, Map<String, Object> options) {
+            String accountEmail, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "accounts/" + accountEmail + "/set-state", "", null, null, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "accounts/" + accountEmail + "/set-state", "", null, null, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -751,9 +753,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object apps_GET(
-            Map<String, Object> options) {
+            Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "apps/", "", null, null, "application/xml");
+                "GET", "apps/", "", null, null, "application/xml", options);
         return fromRequest;
     }
 
@@ -768,9 +770,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object apps_XDELETE(
-            String phaEmail, Map<String, Object> options) {
+            String phaEmail, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "DELETE", "apps/" + phaEmail, "", null, null, "application/xml");
+                "DELETE", "apps/" + phaEmail, "", null, null, "application/xml", options);
         return fromRequest;
     }
 
@@ -785,9 +787,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object apps_XGET(
-            String phaEmail, Map<String, Object> options) {
+            String phaEmail, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "apps/" + phaEmail, "", null, null, "application/xml");
+                "GET", "apps/" + phaEmail, "", null, null, "application/xml", options);
         return fromRequest;
     }
 
@@ -802,10 +804,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object apps_X_documents_GET(
-            String queryOptions, String phaEmail, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("stolo"), null);
+            String queryOptions, String phaEmail, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("stolo"), null, null);
         Object fromRequest = clientRequest(
-                "GET", "apps/" + phaEmail + "/documents/", queryOptions, null, null, "application/xml");
+                "GET", "apps/" + phaEmail + "/documents/", queryOptions, null, null, "application/xml", options);
         return fromRequest;
     }
 
@@ -822,9 +824,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object apps_X_documents_POST(
-            String phaEmail, Object body, String requestContentType, Map<String, Object> options) {
+            String phaEmail, Object body, String requestContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "apps/" + phaEmail + "/documents/", "", null, null, body, requestContentType, "application/xml");
+                "POST", "apps/" + phaEmail + "/documents/", "", null, null, body, requestContentType, "application/xml", options);
         return fromRequest;
     }
 
@@ -842,9 +844,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object apps_X_documents_external_XPUT(
-            String phaEmail, String externalId, Object body, String requestContentType, Map<String, Object> options) {
+            String phaEmail, String externalId, Object body, String requestContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "apps/" + phaEmail + "/documents/external/" + externalId, "", null, null, body, requestContentType, "application/xml");
+                "PUT", "apps/" + phaEmail + "/documents/external/" + externalId, "", null, null, body, requestContentType, "application/xml", options);
         return fromRequest;
     }
 
@@ -860,9 +862,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object apps_X_documents_external_X_metaGET(
-            String phaEmail, String externalId, Map<String, Object> options) {
+            String phaEmail, String externalId, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "apps/" + phaEmail + "/documents/external/" + externalId + "/meta", "", null, null, "application/xml");
+                "GET", "apps/" + phaEmail + "/documents/external/" + externalId + "/meta", "", null, null, "application/xml", options);
         return fromRequest;
     }
 
@@ -878,9 +880,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object apps_X_documents_XDELETE(
-            String phaEmail, String documentId, Map<String, Object> options) {
+            String phaEmail, String documentId, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "DELETE", "apps/" + phaEmail + "/documents/" + documentId, "", null, null, "application/xml");
+                "DELETE", "apps/" + phaEmail + "/documents/" + documentId, "", null, null, "application/xml", options);
         return fromRequest;
     }
 
@@ -898,9 +900,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object apps_X_documents_XGET(
-            String phaEmail, String documentId, Object responseContentType, Map<String, Object> options) {
+            String phaEmail, String documentId, Object responseContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "apps/" + phaEmail + "/documents/" + documentId, "", null, null, reponseContentType);
+                "GET", "apps/" + phaEmail + "/documents/" + documentId, "", null, null, responseContentType, options);
         return fromRequest;
     }
 
@@ -918,9 +920,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object apps_X_documents_XPUT(
-            String phaEmail, String documentId, Object body, String requestContentType, Map<String, Object> options) {
+            String phaEmail, String documentId, Object body, String requestContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "apps/" + phaEmail + "/documents/" + documentId, "", null, null, body, requestContentType, "application/xml");
+                "PUT", "apps/" + phaEmail + "/documents/" + documentId, "", null, null, body, requestContentType, "application/xml", options);
         return fromRequest;
     }
 
@@ -937,9 +939,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object apps_X_documents_X_labelPUT(
-            String phaEmail, String documentId, Object body, Map<String, Object> options) {
+            String phaEmail, String documentId, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "apps/" + phaEmail + "/documents/" + documentId + "/label", "", null, null, body, "text/plain", "application/xml");
+                "PUT", "apps/" + phaEmail + "/documents/" + documentId + "/label", "", null, null, body, "text/plain", "application/xml", options);
         return fromRequest;
     }
 
@@ -955,9 +957,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object apps_X_documents_X_metaGET(
-            String phaEmail, String documentId, Map<String, Object> options) {
+            String phaEmail, String documentId, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "apps/" + phaEmail + "/documents/" + documentId + "/meta", "", null, null, "application/xml");
+                "GET", "apps/" + phaEmail + "/documents/" + documentId + "/meta", "", null, null, "application/xml", options);
         return fromRequest;
     }
 
@@ -974,9 +976,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_XDELETE(
-            String carenetId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String carenetId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "DELETE", "carenets/" + carenetId, "", accessToken, accessTokenSecret, "application/xml");
+                "DELETE", "carenets/" + carenetId, "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -993,9 +995,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_accounts_GET(
-            String carenetId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String carenetId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "carenets/" + carenetId + "/accounts/", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "carenets/" + carenetId + "/accounts/", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1013,9 +1015,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_accounts_POST(
-            String carenetId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String carenetId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "carenets/" + carenetId + "/accounts/", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "carenets/" + carenetId + "/accounts/", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -1033,9 +1035,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_accounts_XDELETE(
-            String carenetId, String accountId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String carenetId, String accountId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "DELETE", "carenets/" + carenetId + "/accounts/" + accountId, "", accessToken, accessTokenSecret, "application/xml");
+                "DELETE", "carenets/" + carenetId + "/accounts/" + accountId, "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1053,9 +1055,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_accounts_X_permissionsGET(
-            String carenetId, String accountId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String carenetId, String accountId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "carenets/" + carenetId + "/accounts/" + accountId + "/permissions", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "carenets/" + carenetId + "/accounts/" + accountId + "/permissions", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1072,9 +1074,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_apps_GET(
-            String carenetId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String carenetId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "carenets/" + carenetId + "/apps/", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "carenets/" + carenetId + "/apps/", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1092,9 +1094,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_apps_XDELETE(
-            String carenetId, String phaEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String carenetId, String phaEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "DELETE", "carenets/" + carenetId + "/apps/" + phaEmail, "", accessToken, accessTokenSecret, "application/xml");
+                "DELETE", "carenets/" + carenetId + "/apps/" + phaEmail, "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1112,9 +1114,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_apps_XPUT(
-            String carenetId, String phaEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String carenetId, String phaEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "carenets/" + carenetId + "/apps/" + phaEmail, "", accessToken, accessTokenSecret, "application/xml");
+                "PUT", "carenets/" + carenetId + "/apps/" + phaEmail, "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1132,9 +1134,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_apps_X_permissionsGET(
-            String carenetId, String phaEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String carenetId, String phaEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "carenets/" + carenetId + "/apps/" + phaEmail + "/permissions", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "carenets/" + carenetId + "/apps/" + phaEmail + "/permissions", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1151,11 +1153,11 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_documents_GET(
-            String queryOptions, String carenetId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String queryOptions, String carenetId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         List<String> optional = Arrays.asList("type");
-        checkQueryOptions(queryOptions, optional, null);
+        checkQueryOptions(queryOptions, optional, null, null);
         Object fromRequest = clientRequest(
-                "GET", "carenets/" + carenetId + "/documents/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "carenets/" + carenetId + "/documents/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1173,9 +1175,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_documents_special_XGET(
-            String carenetId, String specialDocument, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String carenetId, String specialDocument, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "carenets/" + carenetId + "/documents/special/" + specialDocument, "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "carenets/" + carenetId + "/documents/special/" + specialDocument, "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1195,9 +1197,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_documents_XGET(
-            String carenetId, String documentId, String accessToken, String accessTokenSecret, Object responseContentType, Map<String, Object> options) {
+            String carenetId, String documentId, String accessToken, String accessTokenSecret, Object responseContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "carenets/" + carenetId + "/documents/" + documentId, "", accessToken, accessTokenSecret, reponseContentType);
+                "GET", "carenets/" + carenetId + "/documents/" + documentId, "", accessToken, accessTokenSecret, responseContentType, options);
         return fromRequest;
     }
 
@@ -1215,9 +1217,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_documents_X_metaGET(
-            String carenetId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String carenetId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "carenets/" + carenetId + "/documents/" + documentId + "/meta", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "carenets/" + carenetId + "/documents/" + documentId + "/meta", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1234,9 +1236,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_recordGET(
-            String carenetId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String carenetId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "carenets/" + carenetId + "/record", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "carenets/" + carenetId + "/record", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1254,9 +1256,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_renamePOST(
-            String carenetId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String carenetId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "carenets/" + carenetId + "/rename", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "carenets/" + carenetId + "/rename", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -1274,10 +1276,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_reports_minimal_X_GET(
-            String queryOptions, String carenetId, String reportFlavor, String accessToken, String accessTokenSecret, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("soaddglo"), validQueryFields.get(reportFlavor));
+            String queryOptions, String carenetId, String reportFlavor, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("soaddglo"), validQueryFields.get(reportFlavor), queryFieldType);
         Object fromRequest = clientRequest(
-                "GET", "carenets/" + carenetId + "/reports/minimal/" + reportFlavor + "/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "carenets/" + carenetId + "/reports/minimal/" + reportFlavor + "/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1295,10 +1297,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_reports_minimal_measurements_X_GET(
-            String queryOptions, String carenetId, String labCode, String accessToken, String accessTokenSecret, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("soaddglo"), null);
+            String queryOptions, String carenetId, String labCode, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("soaddglo"), null, null);
         Object fromRequest = clientRequest(
-                "GET", "carenets/" + carenetId + "/reports/minimal/measurements/" + labCode + "/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "carenets/" + carenetId + "/reports/minimal/measurements/" + labCode + "/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1316,10 +1318,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object carenets_X_reports_minimal_vitals_XGET(
-            String queryOptions, String carenetId, String category, String accessToken, String accessTokenSecret, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("soaddglo"), null);
+            String queryOptions, String carenetId, String category, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("soaddglo"), null, null);
         Object fromRequest = clientRequest(
-                "GET", "carenets/" + carenetId + "/reports/minimal/vitals/" + category, queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "carenets/" + carenetId + "/reports/minimal/vitals/" + category, queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1337,9 +1339,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object codes_systems_GET(
-            String accessToken, String accessTokenSecret, Object responseContentType, Map<String, Object> options) {
+            String accessToken, String accessTokenSecret, Object responseContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "codes/systems/", "", accessToken, accessTokenSecret, reponseContentType);
+                "GET", "codes/systems/", "", accessToken, accessTokenSecret, responseContentType, options);
         return fromRequest;
     }
 
@@ -1356,11 +1358,11 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object codes_systems_X_queryGET(
-            String queryOptions, String systemShortName, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String queryOptions, String systemShortName, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         List<String> optional = Arrays.asList("q");
-        checkQueryOptions(queryOptions, optional, null);
+        checkQueryOptions(queryOptions, optional, null, null);
         Object fromRequest = clientRequest(
-                "GET", "codes/systems/" + systemShortName + "/query", queryOptions, accessToken, accessTokenSecret, "application/json");
+                "GET", "codes/systems/" + systemShortName + "/query", queryOptions, accessToken, accessTokenSecret, "application/json", options);
         return fromRequest;
     }
 
@@ -1374,9 +1376,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object oauth_access_tokenPOST(
-            Map<String, Object> options) {
+            Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "oauth/access_token", "", null, null, "application/x-www-form-urlencoded");
+                "POST", "oauth/access_token", "", null, null, "application/x-www-form-urlencoded", options);
         return fromRequest;
     }
 
@@ -1394,9 +1396,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object oauth_internal_request_tokens_X_approvePOST(
-            String reqtokenId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String reqtokenId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "oauth/internal/request_tokens/" + reqtokenId + "/approve", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/x-www-form-urlencoded");
+                "POST", "oauth/internal/request_tokens/" + reqtokenId + "/approve", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/x-www-form-urlencoded", options);
         return fromRequest;
     }
 
@@ -1413,9 +1415,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object oauth_internal_request_tokens_X_claimPOST(
-            String reqtokenId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String reqtokenId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "oauth/internal/request_tokens/" + reqtokenId + "/claim", "", accessToken, accessTokenSecret, "text/plain");
+                "POST", "oauth/internal/request_tokens/" + reqtokenId + "/claim", "", accessToken, accessTokenSecret, "text/plain", options);
         return fromRequest;
     }
 
@@ -1432,9 +1434,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object oauth_internal_request_tokens_X_infoGET(
-            String reqtokenId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String reqtokenId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "oauth/internal/request_tokens/" + reqtokenId + "/info", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "oauth/internal/request_tokens/" + reqtokenId + "/info", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1451,9 +1453,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object oauth_internal_session_createPOST(
-            String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "oauth/internal/session_create", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/x-www-form-urlencoded");
+                "POST", "oauth/internal/session_create", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/x-www-form-urlencoded", options);
         return fromRequest;
     }
 
@@ -1469,11 +1471,11 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object oauth_internal_surlVerifyGET(
-            String queryOptions, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String queryOptions, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         List<String> optional = Arrays.asList("surl_sig", "surl_timestamp", "surl_token");
-        checkQueryOptions(queryOptions, optional, null);
+        checkQueryOptions(queryOptions, optional, null, null);
         Object fromRequest = clientRequest(
-                "GET", "oauth/internal/surl-verify", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "oauth/internal/surl-verify", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1490,9 +1492,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object oauth_request_tokenPOST(
-            String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "oauth/request_token", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/x-www-form-urlencoded");
+                "POST", "oauth/request_token", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/x-www-form-urlencoded", options);
         return fromRequest;
     }
 
@@ -1507,9 +1509,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_POST(
-            Object body, Map<String, Object> options) {
+            Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/", "", null, null, body, "application/xml", "application/xml");
+                "POST", "records/", "", null, null, body, "application/xml", "application/xml", options);
         return fromRequest;
     }
 
@@ -1526,9 +1528,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_external_X_XPUT(
-            String principalEmail, String externalId, Object body, Map<String, Object> options) {
+            String principalEmail, String externalId, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "records/external/" + principalEmail + '/' + externalId, "", null, null, body, "application/xml", "application/xml");
+                "PUT", "records/external/" + principalEmail + '/' + externalId, "", null, null, body, "application/xml", "application/xml", options);
         return fromRequest;
     }
 
@@ -1545,9 +1547,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_XGET(
-            String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId, "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId, "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1564,11 +1566,11 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_apps_GET(
-            String queryOptions, String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String queryOptions, String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         List<String> optional = Arrays.asList("type");
-        checkQueryOptions(queryOptions, optional, null);
+        checkQueryOptions(queryOptions, optional, null, null);
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/apps/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/apps/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1586,9 +1588,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_apps_XDELETE(
-            String recordId, String phaEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String phaEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "DELETE", "records/" + recordId + "/apps/" + phaEmail, "", accessToken, accessTokenSecret, "application/xml");
+                "DELETE", "records/" + recordId + "/apps/" + phaEmail, "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1606,9 +1608,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_apps_XGET(
-            String recordId, String phaEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String phaEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/apps/" + phaEmail, "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/apps/" + phaEmail, "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1626,10 +1628,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_apps_X_documents_GET(
-            String queryOptions, String recordId, String phaEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("stolo"), null);
+            String queryOptions, String recordId, String phaEmail, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("stolo"), null, null);
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/apps/" + phaEmail + "/documents/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/apps/" + phaEmail + "/documents/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1649,9 +1651,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_apps_X_documents_POST(
-            String recordId, String phaEmail, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) {
+            String recordId, String phaEmail, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/apps/" + phaEmail + "/documents/", "", accessToken, accessTokenSecret, body, requestContentType, "application/xml");
+                "POST", "records/" + recordId + "/apps/" + phaEmail + "/documents/", "", accessToken, accessTokenSecret, body, requestContentType, "application/xml", options);
         return fromRequest;
     }
 
@@ -1672,9 +1674,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_apps_X_documents_external_XPOST(
-            String recordId, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) {
+            String recordId, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/apps/" + phaEmail + "/documents/external/" + externalId, "", accessToken, accessTokenSecret, body, requestContentType, "application/xml");
+                "POST", "records/" + recordId + "/apps/" + phaEmail + "/documents/external/" + externalId, "", accessToken, accessTokenSecret, body, requestContentType, "application/xml", options);
         return fromRequest;
     }
 
@@ -1695,9 +1697,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_apps_X_documents_external_XPUT(
-            String recordId, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) {
+            String recordId, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "records/" + recordId + "/apps/" + phaEmail + "/documents/external/" + externalId, "", accessToken, accessTokenSecret, body, requestContentType, "application/xml");
+                "PUT", "records/" + recordId + "/apps/" + phaEmail + "/documents/external/" + externalId, "", accessToken, accessTokenSecret, body, requestContentType, "application/xml", options);
         return fromRequest;
     }
 
@@ -1716,9 +1718,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_apps_X_documents_external_X_metaGET(
-            String recordId, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/apps/" + phaEmail + "/documents/external/" + externalId + "/meta", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/apps/" + phaEmail + "/documents/external/" + externalId + "/meta", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1737,9 +1739,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_apps_X_documents_XDELETE(
-            String recordId, String phaEmail, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String phaEmail, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "DELETE", "records/" + recordId + "/apps/" + phaEmail + "/documents/" + documentId, "", accessToken, accessTokenSecret, "application/xml");
+                "DELETE", "records/" + recordId + "/apps/" + phaEmail + "/documents/" + documentId, "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1760,9 +1762,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_apps_X_documents_XGET(
-            String recordId, String phaEmail, String documentId, String accessToken, String accessTokenSecret, Object responseContentType, Map<String, Object> options) {
+            String recordId, String phaEmail, String documentId, String accessToken, String accessTokenSecret, Object responseContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/apps/" + phaEmail + "/documents/" + documentId, "", accessToken, accessTokenSecret, reponseContentType);
+                "GET", "records/" + recordId + "/apps/" + phaEmail + "/documents/" + documentId, "", accessToken, accessTokenSecret, responseContentType, options);
         return fromRequest;
     }
 
@@ -1782,9 +1784,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_apps_X_documents_X_labelPUT(
-            String recordId, String phaEmail, String documentId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String recordId, String phaEmail, String documentId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "records/" + recordId + "/apps/" + phaEmail + "/documents/" + documentId + "/label", "", accessToken, accessTokenSecret, body, "text/plain", "application/xml");
+                "PUT", "records/" + recordId + "/apps/" + phaEmail + "/documents/" + documentId + "/label", "", accessToken, accessTokenSecret, body, "text/plain", "application/xml", options);
         return fromRequest;
     }
 
@@ -1803,9 +1805,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_apps_X_documents_X_metaGET(
-            String recordId, String phaEmail, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String phaEmail, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/apps/" + phaEmail + "/documents/" + documentId + "/meta", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/apps/" + phaEmail + "/documents/" + documentId + "/meta", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1823,9 +1825,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_apps_X_setupPOST(
-            String recordId, String phaEmail, Object body, String requestContentType, Map<String, Object> options) {
+            String recordId, String phaEmail, Object body, String requestContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/apps/" + phaEmail + "/setup", "", null, null, body, requestContentType, "application/x-www-form-urlencoded");
+                "POST", "records/" + recordId + "/apps/" + phaEmail + "/setup", "", null, null, body, requestContentType, "application/x-www-form-urlencoded", options);
         return fromRequest;
     }
 
@@ -1842,10 +1844,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_audits_GET(
-            String queryOptions, String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("olo"), null);
+            String queryOptions, String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("olo"), null, null);
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/audits/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/audits/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1863,10 +1865,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_audits_documents_X_GET(
-            String queryOptions, String recordId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("olo"), null);
+            String queryOptions, String recordId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("olo"), null, null);
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/audits/documents/" + documentId + "/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/audits/documents/" + documentId + "/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1885,10 +1887,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_audits_documents_X_functions_X_GET(
-            String queryOptions, String recordId, String documentId, String functionName, String accessToken, String accessTokenSecret, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("olo"), null);
+            String queryOptions, String recordId, String documentId, String functionName, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("olo"), null, null);
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/audits/documents/" + documentId + "/functions/" + functionName + "/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/audits/documents/" + documentId + "/functions/" + functionName + "/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1905,10 +1907,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_audits_query_GET(
-            String queryOptions, String recordId, String auditQueryField, String accessToken, String accessTokenSecret, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("soaddglo"), auditQueryFields);
+            String queryOptions, String recordId, String auditQueryField, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("soaddglo"), allowedAuditQuery, null);
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/audits/query/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/audits/query/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1925,9 +1927,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_autoshare_bytype_GET(
-            String type, String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String type, String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/autoshare/bytype/", type, accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/autoshare/bytype/", type, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1944,9 +1946,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_autoshare_bytype_allGET(
-            String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/autoshare/bytype/all", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/autoshare/bytype/all", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -1965,9 +1967,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_autoshare_carenets_X_bytype_setPOST(
-            String recordId, String carenetId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String recordId, String carenetId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/autoshare/carenets/" + carenetId + "/bytype/set", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "records/" + recordId + "/autoshare/carenets/" + carenetId + "/bytype/set", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -1986,9 +1988,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_autoshare_carenets_X_bytype_unsetPOST(
-            String recordId, String carenetId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String recordId, String carenetId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/autoshare/carenets/" + carenetId + "/bytype/unset", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "records/" + recordId + "/autoshare/carenets/" + carenetId + "/bytype/unset", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -2005,9 +2007,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_carenets_GET(
-            String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/carenets/", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/carenets/", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2025,9 +2027,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_carenets_POST(
-            String recordId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String recordId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/carenets/", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "records/" + recordId + "/carenets/", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -2044,9 +2046,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_DELETE(
-            String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "DELETE", "records/" + recordId + "/documents/", "", accessToken, accessTokenSecret, "application/xml");
+                "DELETE", "records/" + recordId + "/documents/", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2063,10 +2065,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_GET(
-            String queryOptions, String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("stolo"), null);
+            String queryOptions, String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("stolo"), null, null);
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/documents/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/documents/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2085,9 +2087,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_POST(
-            String recordId, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) {
+            String recordId, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/documents/", "", accessToken, accessTokenSecret, body, requestContentType, "application/xml");
+                "POST", "records/" + recordId + "/documents/", "", accessToken, accessTokenSecret, body, requestContentType, "application/xml", options);
         return fromRequest;
     }
 
@@ -2108,9 +2110,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_external_X_XPUT(
-            String recordId, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) {
+            String recordId, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "records/" + recordId + "/documents/external/" + phaEmail + '/' + externalId, "", accessToken, accessTokenSecret, body, requestContentType, "application/xml");
+                "PUT", "records/" + recordId + "/documents/external/" + phaEmail + '/' + externalId, "", accessToken, accessTokenSecret, body, requestContentType, "application/xml", options);
         return fromRequest;
     }
 
@@ -2130,9 +2132,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_external_X_X_labelPUT(
-            String recordId, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String recordId, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "records/" + recordId + "/documents/external/" + phaEmail + '/' + externalId + "/label", "", accessToken, accessTokenSecret, body, "text/plain", "application/xml");
+                "PUT", "records/" + recordId + "/documents/external/" + phaEmail + '/' + externalId + "/label", "", accessToken, accessTokenSecret, body, "text/plain", "application/xml", options);
         return fromRequest;
     }
 
@@ -2151,9 +2153,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_external_X_X_metaGET(
-            String recordId, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/documents/external/" + phaEmail + '/' + externalId + "/meta", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/documents/external/" + phaEmail + '/' + externalId + "/meta", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2171,9 +2173,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_special_XGET(
-            String recordId, String specialDocument, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String specialDocument, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/documents/special/" + specialDocument, "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/documents/special/" + specialDocument, "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2193,9 +2195,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_special_XPOST(
-            String recordId, String specialDocument, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) {
+            String recordId, String specialDocument, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/documents/special/" + specialDocument, "", accessToken, accessTokenSecret, body, requestContentType, "application/xml");
+                "POST", "records/" + recordId + "/documents/special/" + specialDocument, "", accessToken, accessTokenSecret, body, requestContentType, "application/xml", options);
         return fromRequest;
     }
 
@@ -2215,9 +2217,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_special_XPUT(
-            String recordId, String specialDocument, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) {
+            String recordId, String specialDocument, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "records/" + recordId + "/documents/special/" + specialDocument, "", accessToken, accessTokenSecret, body, requestContentType, "application/xml");
+                "PUT", "records/" + recordId + "/documents/special/" + specialDocument, "", accessToken, accessTokenSecret, body, requestContentType, "application/xml", options);
         return fromRequest;
     }
 
@@ -2237,9 +2239,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_rels_X_XPUT(
-            String recordId, String documentId0, String rel, String documentId1, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String documentId0, String rel, String documentId1, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "records/" + recordId + "/documents/" + documentId0 + "/rels/" + rel + '/' + documentId1, "", accessToken, accessTokenSecret, "application/xml");
+                "PUT", "records/" + recordId + "/documents/" + documentId0 + "/rels/" + rel + '/' + documentId1, "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2259,9 +2261,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_XGET(
-            String recordId, String documentId, String accessToken, String accessTokenSecret, Object responseContentType, Map<String, Object> options) {
+            String recordId, String documentId, String accessToken, String accessTokenSecret, Object responseContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/documents/" + documentId, "", accessToken, accessTokenSecret, reponseContentType);
+                "GET", "records/" + recordId + "/documents/" + documentId, "", accessToken, accessTokenSecret, responseContentType, options);
         return fromRequest;
     }
 
@@ -2279,9 +2281,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_carenets_GET(
-            String recordId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/documents/" + documentId + "/carenets/", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/documents/" + documentId + "/carenets/", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2300,9 +2302,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_carenets_XDELETE(
-            String recordId, String documentId, String carenetId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String documentId, String carenetId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "DELETE", "records/" + recordId + "/documents/" + documentId + "/carenets/" + carenetId, "", accessToken, accessTokenSecret, "application/xml");
+                "DELETE", "records/" + recordId + "/documents/" + documentId + "/carenets/" + carenetId, "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2321,9 +2323,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_carenets_XPUT(
-            String recordId, String documentId, String carenetId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String documentId, String carenetId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "records/" + recordId + "/documents/" + documentId + "/carenets/" + carenetId, "", accessToken, accessTokenSecret, "application/xml");
+                "PUT", "records/" + recordId + "/documents/" + documentId + "/carenets/" + carenetId, "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2342,9 +2344,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_carenets_X_autoshareRevertPOST(
-            String recordId, String documentId, String carenetId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String documentId, String carenetId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/documents/" + documentId + "/carenets/" + carenetId + "/autoshare-revert", "", accessToken, accessTokenSecret, "application/xml");
+                "POST", "records/" + recordId + "/documents/" + documentId + "/carenets/" + carenetId + "/autoshare-revert", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2363,9 +2365,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_labelPUT(
-            String recordId, String documentId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String recordId, String documentId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "records/" + recordId + "/documents/" + documentId + "/label", "", accessToken, accessTokenSecret, body, "text/plain", "application/xml");
+                "PUT", "records/" + recordId + "/documents/" + documentId + "/label", "", accessToken, accessTokenSecret, body, "text/plain", "application/xml", options);
         return fromRequest;
     }
 
@@ -2383,9 +2385,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_metaGET(
-            String recordId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/documents/" + documentId + "/meta", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/documents/" + documentId + "/meta", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2403,9 +2405,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_metaPUT(
-            String recordId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "records/" + recordId + "/documents/" + documentId + "/meta", "", accessToken, accessTokenSecret, "application/xml");
+                "PUT", "records/" + recordId + "/documents/" + documentId + "/meta", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2423,9 +2425,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_nevershareDELETE(
-            String recordId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "DELETE", "records/" + recordId + "/documents/" + documentId + "/nevershare", "", accessToken, accessTokenSecret, "application/xml");
+                "DELETE", "records/" + recordId + "/documents/" + documentId + "/nevershare", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2443,9 +2445,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_neversharePUT(
-            String recordId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "records/" + recordId + "/documents/" + documentId + "/nevershare", "", accessToken, accessTokenSecret, "application/xml");
+                "PUT", "records/" + recordId + "/documents/" + documentId + "/nevershare", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2464,10 +2466,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_rels_X_GET(
-            String queryOptions, String recordId, String documentId, String rel, String accessToken, String accessTokenSecret, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("solo"), null);
+            String queryOptions, String recordId, String documentId, String rel, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("solo"), null, null);
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/documents/" + documentId + "/rels/" + rel + "/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/documents/" + documentId + "/rels/" + rel + "/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2488,9 +2490,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_rels_X_POST(
-            String recordId, String documentId, String rel, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) {
+            String recordId, String documentId, String rel, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/documents/" + documentId + "/rels/" + rel + "/", "", accessToken, accessTokenSecret, body, requestContentType, "application/xml");
+                "POST", "records/" + recordId + "/documents/" + documentId + "/rels/" + rel + "/", "", accessToken, accessTokenSecret, body, requestContentType, "application/xml", options);
         return fromRequest;
     }
 
@@ -2513,9 +2515,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_rels_X_external_X_XPOST(
-            String recordId, String documentId, String rel, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) {
+            String recordId, String documentId, String rel, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/documents/" + documentId + "/rels/" + rel + "/external/" + phaEmail + '/' + externalId, "", accessToken, accessTokenSecret, body, requestContentType, "application/xml");
+                "POST", "records/" + recordId + "/documents/" + documentId + "/rels/" + rel + "/external/" + phaEmail + '/' + externalId, "", accessToken, accessTokenSecret, body, requestContentType, "application/xml", options);
         return fromRequest;
     }
 
@@ -2538,9 +2540,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_rels_X_external_X_XPUT(
-            String recordId, String documentId, String rel, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) {
+            String recordId, String documentId, String rel, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "records/" + recordId + "/documents/" + documentId + "/rels/" + rel + "/external/" + phaEmail + '/' + externalId, "", accessToken, accessTokenSecret, body, requestContentType, "application/xml");
+                "PUT", "records/" + recordId + "/documents/" + documentId + "/rels/" + rel + "/external/" + phaEmail + '/' + externalId, "", accessToken, accessTokenSecret, body, requestContentType, "application/xml", options);
         return fromRequest;
     }
 
@@ -2560,9 +2562,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_replacePOST(
-            String recordId, String documentId, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) {
+            String recordId, String documentId, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/documents/" + documentId + "/replace", "", accessToken, accessTokenSecret, body, requestContentType, "application/xml");
+                "POST", "records/" + recordId + "/documents/" + documentId + "/replace", "", accessToken, accessTokenSecret, body, requestContentType, "application/xml", options);
         return fromRequest;
     }
 
@@ -2584,9 +2586,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_replace_external_X_XPUT(
-            String recordId, String documentId, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) {
+            String recordId, String documentId, String phaEmail, String externalId, String accessToken, String accessTokenSecret, Object body, String requestContentType, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "records/" + recordId + "/documents/" + documentId + "/replace/external/" + phaEmail + '/' + externalId, "", accessToken, accessTokenSecret, body, requestContentType, "application/xml");
+                "PUT", "records/" + recordId + "/documents/" + documentId + "/replace/external/" + phaEmail + '/' + externalId, "", accessToken, accessTokenSecret, body, requestContentType, "application/xml", options);
         return fromRequest;
     }
 
@@ -2605,9 +2607,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_setStatusPOST(
-            String recordId, String documentId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String recordId, String documentId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/documents/" + documentId + "/set-status", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "records/" + recordId + "/documents/" + documentId + "/set-status", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -2625,9 +2627,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_statusHistoryGET(
-            String recordId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/documents/" + documentId + "/status-history", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/documents/" + documentId + "/status-history", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2645,10 +2647,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_documents_X_versions_GET(
-            String queryOptions, String recordId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("solo"), null);
+            String queryOptions, String recordId, String documentId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("solo"), null, null);
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/documents/" + documentId + "/versions/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/documents/" + documentId + "/versions/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2667,9 +2669,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_inbox_XPOST(
-            String recordId, String messageId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String recordId, String messageId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/inbox/" + messageId, "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "records/" + recordId + "/inbox/" + messageId, "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -2689,9 +2691,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_inbox_X_attachments_XPOST(
-            String recordId, String messageId, String attachmentNum, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String recordId, String messageId, String attachmentNum, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/inbox/" + messageId + "/attachments/" + attachmentNum, "", accessToken, accessTokenSecret, body, "text/plain", "application/xml");
+                "POST", "records/" + recordId + "/inbox/" + messageId + "/attachments/" + attachmentNum, "", accessToken, accessTokenSecret, body, "text/plain", "application/xml", options);
         return fromRequest;
     }
 
@@ -2709,9 +2711,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_notifications_POST(
-            String recordId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String recordId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/notifications/", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "records/" + recordId + "/notifications/", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -2729,9 +2731,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_notifyPOST(
-            String recordId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String recordId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/notify", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "records/" + recordId + "/notify", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -2748,9 +2750,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_ownerGET(
-            String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/owner", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/owner", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2766,9 +2768,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_ownerPOST(
-            String recordId, Object body, Map<String, Object> options) {
+            String recordId, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/owner", "", null, null, body, "text/plain", "application/xml");
+                "POST", "records/" + recordId + "/owner", "", null, null, body, "text/plain", "application/xml", options);
         return fromRequest;
     }
 
@@ -2784,9 +2786,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_ownerPUT(
-            String recordId, Object body, Map<String, Object> options) {
+            String recordId, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "PUT", "records/" + recordId + "/owner", "", null, null, body, "text/plain", "application/xml");
+                "PUT", "records/" + recordId + "/owner", "", null, null, body, "text/plain", "application/xml", options);
         return fromRequest;
     }
 
@@ -2803,9 +2805,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_reports_experimental_ccrGET(
-            String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/reports/experimental/ccr", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/reports/experimental/ccr", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2823,10 +2825,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_reports_minimal_X_GET(
-            String queryOptions, String recordId, String reportFlavor, String accessToken, String accessTokenSecret, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("soaddglo"), validQueryFields.get(reportFlavor));
+            String queryOptions, String recordId, String reportFlavor, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("soaddglo"), validQueryFields.get(reportFlavor), queryFieldType);
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/reports/minimal/" + reportFlavor + "/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/reports/minimal/" + reportFlavor + "/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2844,10 +2846,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_reports_minimal_measurements_X_GET(
-            String queryOptions, String recordId, String labCode, String accessToken, String accessTokenSecret, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("soaddglo"), null);
+            String queryOptions, String recordId, String labCode, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("soaddglo"), null, null);
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/reports/minimal/measurements/" + labCode + "/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/reports/minimal/measurements/" + labCode + "/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2865,10 +2867,10 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_reports_minimal_vitals_X_GET(
-            String queryOptions, String recordId, String category, String accessToken, String accessTokenSecret, Map<String, Object> options) {
-        checkQueryOptions(queryOptions, commonOptionsMap.get("soaddglo"), null);
+            String queryOptions, String recordId, String category, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
+        checkQueryOptions(queryOptions, commonOptionsMap.get("soaddglo"), null, null);
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/reports/minimal/vitals/" + category + "/", queryOptions, accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/reports/minimal/vitals/" + category + "/", queryOptions, accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2885,9 +2887,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_shares_GET(
-            String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "records/" + recordId + "/shares/", "", accessToken, accessTokenSecret, "application/xml");
+                "GET", "records/" + recordId + "/shares/", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2905,9 +2907,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_shares_POST(
-            String recordId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) {
+            String recordId, String accessToken, String accessTokenSecret, Object body, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/shares/", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml");
+                "POST", "records/" + recordId + "/shares/", "", accessToken, accessTokenSecret, body, "application/x-www-form-urlencoded", "application/xml", options);
         return fromRequest;
     }
 
@@ -2925,9 +2927,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_shares_XDELETE(
-            String recordId, String otherAccountId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String otherAccountId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "DELETE", "records/" + recordId + "/shares/" + otherAccountId, "", accessToken, accessTokenSecret, "application/xml");
+                "DELETE", "records/" + recordId + "/shares/" + otherAccountId, "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2945,9 +2947,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object records_X_shares_X_deletePOST(
-            String recordId, String otherAccountId, String accessToken, String accessTokenSecret, Map<String, Object> options) {
+            String recordId, String otherAccountId, String accessToken, String accessTokenSecret, Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "POST", "records/" + recordId + "/shares/" + otherAccountId + "/delete", "", accessToken, accessTokenSecret, "application/xml");
+                "POST", "records/" + recordId + "/shares/" + otherAccountId + "/delete", "", accessToken, accessTokenSecret, "application/xml", options);
         return fromRequest;
     }
 
@@ -2961,9 +2963,9 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
      *            "socketTimeout": integer
     */
     public Object versionGET(
-            Map<String, Object> options) {
+            Map<String, Object> options) throws IndivoClientException {
         Object fromRequest = clientRequest(
-                "GET", "version", "", null, null, "application/xml");
+                "GET", "version", "", null, null, "application/xml", options);
         return fromRequest;
     }
 
@@ -3184,7 +3186,15 @@ private Map<String, Class> queryFieldType = new HashMap<String, Class>();
     }
 
 
-	private void checkQueryOptions(String present, List<String> allowed, Map<String, Class> vqf) throws IndivoClientException {
+	private void checkQueryOptions(String present, List<String> allowed0, List<String> allowed1, Map<String, Class> vqf)
+			throws IndivoClientException {
+		List<String> allowed = null;
+		if (allowed1 == null) {
+			allowed = allowed0;
+		} else {
+			allowed = new ArrayList(allowed0);
+			allowed.addAll(allowed1);
+		}
 		String[] presentA = present.split("&");
 		List<String> prsntL = new ArrayList<String>();
 		for (String prsnt : presentA) {
