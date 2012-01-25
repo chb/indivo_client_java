@@ -69,7 +69,7 @@ common_qo_keys_l = common_qo_map.keys()
 common_qo = []
 for cqk in common_qo_keys_l:
     common_qo.append(set(cqk))
-qo_counts = [0,0,0,0]
+#qo_counts = [0,0,0,0]
 
 
 def write_common_opts(rest0, report_query_fields):
@@ -125,7 +125,7 @@ def write_common_opts(rest0, report_query_fields):
     rest0.write("}\n\n")
 
 
-def get_report_flavors():
+def get_report_flavors(indivo_server_path):
     report_flavors = []        
     for acall in api_skeleton.CALLS:
         path = str(acall["path"])
@@ -139,7 +139,7 @@ def get_report_flavors():
                 report_flavors.index(pathparts[pplen -2])
             except ValueError:
                 report_flavors.append(pathparts[pplen -2])
-    report_fields = use_ast.all_reports("/home/nate/indivo/github")
+    report_fields = use_ast.all_reports(indivo_server_path) #"/home/nate/indivo/github"
     report_fields_sn = {}
     for rfkey in report_fields.keys():
         usix = rfkey.find('_')
@@ -150,9 +150,7 @@ def get_report_flavors():
         report_fields_sn[rfkeyt] = report_fields[rfkey]
     report_flavors_sn = []
     for rfws in report_flavors:
-        print "rfws: " + rfws
-#rfws: allergies
-#rfws: simple-clinical-notes
+        #print "rfws: " + rfws
         if rfws == "allergies":
             report_flavors_sn.append("allergy")
         elif rfws == "simple-clinical-notes":
@@ -161,8 +159,8 @@ def get_report_flavors():
             report_flavors_sn.append(rfws[0:len(rfws) -1])
         else:
             report_flavors_sn.append(rfws)
-    print "missing from skeleton: " + str((set(report_fields_sn.keys())) - set(report_flavors_sn))
-    print "missing from reports/*.py: " + str((set(report_flavors_sn) - set(report_fields_sn.keys())))
+    #print "missing from skeleton: " + str((set(report_fields_sn.keys())) - set(report_flavors_sn))
+    #print "missing from reports/*.py: " + str((set(report_flavors_sn) - set(report_fields_sn.keys())))
     return report_flavors_sn, report_fields_sn
 
 
@@ -207,7 +205,7 @@ def make_method_name(pathparts, httpmeth):
     method_name += httpmeth
     return method_name, params
 
-def javadoc(params, url_params, report_flavors, legged, put_post_data, put_post_data_form, response_form):        
+def javadoc(params, url_params, report_flavors, legged, put_post_data, put_post_data_form, response_form, dividN):
     retVal = ''
     retVal += "    /**\n"
     for aparm in params:
@@ -235,15 +233,20 @@ def javadoc(params, url_params, report_flavors, legged, put_post_data, put_post_
                    will cause exception to be thrown if expectation does not match server response
                    may be null to allow any type"""
 
+    divid = "o" + str(dividN)
     retVal += """\
      * @param options Map<String,Object> or null.
-     *       allowed key-value pairs are:
-     *            "responseTypeConversion": object that implements ResponseTypeConversion,
-     *            "indivoInstallation": String array of length 3: foreignURL, consumerToken, consumerSecret
-     *                                  Use this to access an indivo installation other then one provided by new Rest(...)
-     *            "connectionTimeout": integer,
-     *            "socketTimeout": integer
-"""
+<a href="" onclick="document.getElementById('{0}').style.display='inline'; return false;"
+>allowed key-value pairs are:</a><div id="{0}" style="display:none">
+<ul>
+<li>"responseTypeConversion": object that implements ResponseTypeConversion,</li>
+<li>"indivoInstallation": String array of length 3: foreignURL, consumerToken, consumerSecret.
+                           Use this to access an indivo installation other then one provided by new Rest(...)</li>
+<li>"connectionTimeout": integer,</li>
+<li>"socketTimeout": integer</li>
+</ul>
+<a href="" onclick="document.getElementById('{0}').style.display='none'; return false;">hide</a><br/><br/></div>
+""".format(divid)
                    
     return retVal + '    */\n'
 
@@ -254,6 +257,7 @@ def categorize_query_options(query_opts, httpmeth):
     
     if query_opts and httpmeth != "GET":
         print("query_opts on non GET:" + str(query_opts))
+        raise Exception
     elif query_opts:
         for qok, qov in query_opts.items():
             if qok == """{FIELD}""":
@@ -443,8 +447,10 @@ def decide_data_form(datafields, dfekvm, httpmeth, path):
     
     if httpmeth in ["GET", "DELETE"] and datafields:
         print("GET/DELETE with data_fields: " + httpmeth + " " + path + " -- " + datafields)
+        raise Exception
     elif httpmeth in ["PUT", "POST"] and not datafields:
-        print("PUT/POST without data_fields: " + httpmeth + " " + path)
+        #print("PUT/POST without data_fields: " + httpmeth + " " + path)
+        pass
     elif datafields:
         if len(dfkeys) == 1 and dfkeys[0] == "":
             dfekv = datafields[""]
@@ -487,10 +493,12 @@ def process_calls(rest, report_flavors):
     reports_minimal_carenet = False
     access_doc_map = {}
     call_count = 0
+    method_count = 0
     dfekvm = {}
     retexs = {}
     retdscs = {}
     okcount = 0
+    dividN = 0
     
     for acall in api_skeleton.CALLS:
         call_count += 1
@@ -562,10 +570,9 @@ def process_calls(rest, report_flavors):
             continue
         # first of its kind, process it but not next time
         elif first_report_minimal:
-            print("first_report_minimal: " + repr(pathparts))
+            #print("first_report_minimal: " + repr(pathparts))
             pathparts[len(pathparts) -2] = "{REPORT_FLAVOR}"   ############
-            print("first_report_minimal: " + repr(pathparts))
-#        print "continuing " + ' '.join(pathparts)
+            #print("first_report_minimal: " + repr(pathparts))
 
         
         method_name, params = make_method_name(pathparts, httpmeth)
@@ -576,7 +583,18 @@ def process_calls(rest, report_flavors):
         assert isinstance(datafields, dict)
         put_post_data, put_post_data_form = decide_data_form(datafields, dfekvm, httpmeth, path)        
 
-        rest.write(javadoc(params, url_params, report_flavors, legged, put_post_data, put_post_data_form, response_form))
+        rest.write(
+            javadoc(
+                params,
+                url_params,
+                report_flavors,
+                legged,
+                put_post_data,
+                put_post_data_form,
+                response_form,
+                dividN)
+        )
+        dividN += 1
         
         query_opts = acall["query_opts"]
         qopts_r, qopts_o, qopts_field = categorize_query_options(query_opts, httpmeth)
@@ -654,28 +672,31 @@ def process_calls(rest, report_flavors):
         
         rest.write(", options);\n        return fromRequest;\n")            
         rest.write("    }\n\n")
-    print(qo_counts[0], common_qo[0])
-    print(qo_counts[1], common_qo[1])
-    print(qo_counts[2], common_qo[2])
-    print(qo_counts[3], common_qo[3])
+        method_count += 1
+        
+    return call_count, method_count
+#    print(qo_counts[0], common_qo[0])
+#    print(qo_counts[1], common_qo[1])
+#    print(qo_counts[2], common_qo[2])
+#    print(qo_counts[3], common_qo[3])
 
-    print("report flavors: " + str(report_flavors))
-    for adv in access_doc_map.keys():
-        print adv + ": " + str(access_doc_map[adv])
-    print("call count: " + str(call_count))
-    
-    dfekvmK = dfekvm.keys()
-    for mK in dfekvmK:
-        print("datafields'': " + mK + ": " + str(dfekvm[mK]))
-
-    retexK = retexs.keys()
-    for rK in retexK:
-        print("response example: " + rK + ": " + str(retexs[rK]))
-
-    print("OK count: " + str(okcount))
-    retdscK = retdscs.keys()
-    for reK in retdscK:
-        print(str(retdscs[reK]) + ": response description: " + reK)
+#    print("report flavors: " + str(report_flavors))
+#    for adv in access_doc_map.keys():
+#        print adv + ": " + str(access_doc_map[adv])
+#    print("call count: " + str(call_count))
+#    
+#    dfekvmK = dfekvm.keys()
+#    for mK in dfekvmK:
+#        print("datafields'': " + mK + ": " + str(dfekvm[mK]))
+#
+#    retexK = retexs.keys()
+#    for rK in retexK:
+#        print("response example: " + rK + ": " + str(retexs[rK]))
+#
+#    print("OK count: " + str(okcount))
+#    retdscK = retdscs.keys()
+#    for reK in retdscK:
+#        print(str(retdscs[reK]) + ": response description: " + reK)
 
 
 def writeprefix(prefixLines, rest):
@@ -712,12 +733,12 @@ def process_query_opts(query_opts0, qopts_field, report_minimal, audit_query):
     if qo_set:
         if qo_set in common_qo:
             qoix = common_qo.index(qo_set)
-            qo_counts[qoix] += 1
+            #qo_counts[qoix] += 1
             qo_set_name = common_qo_map.get(tuple(query_opts))
             optional_str_1 = ""
             optional_str_2a = "commonOptionsMap.get(\"" + qo_set_name + "\")"
         else:
-            print('unexpected query_opts0 set: ' + str(qo_set))
+            #print('unexpected query_opts0 set: ' + str(qo_set))
             optional_str_1 = "        List<String> optional = Arrays.asList("
             for qoki, qok in enumerate(query_opts):
                 if qoki:
@@ -770,14 +791,15 @@ def dashToCamel(frag):
 
 restpath = sys.argv[1]
 shellpath = sys.argv[2]
+indivo_server_path = sys.argv[3]
 rest0 =   open(restpath + "org/indivo/client/Rest.java", "w")
 prefix = open(shellpath + "Rest_SHELL.java","r")
 
 prefixSuffix = prefix.readlines()
 writeprefix(prefixSuffix, rest0)
-repflv, repqflds = get_report_flavors()
+repflv, repqflds = get_report_flavors(indivo_server_path)
 write_common_opts(rest0, repqflds)
-print("report flavors len: " + str(len(repflv)))
-process_calls(rest0, repflv)
+#print("report flavors len: " + str(len(repflv)))
+call_count, method_count = process_calls(rest0, repflv)
 writesuffix(prefixSuffix, rest0)
-print "done all"
+print("done. " + str(call_count) + " skeleton calls processed.  " + str(method_count) + " Java methods generated.")

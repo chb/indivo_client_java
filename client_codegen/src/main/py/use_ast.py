@@ -21,7 +21,7 @@ def areport(apath):
                             idofinterest = bodyelel.value.args[1].id 
     
     if (idofinterest):
-        print("idofinterest: " + idofinterest)
+        #print("idofinterest: " + idofinterest)
         for bodyel in myast.body:
             if bodyel.__class__.__name__ == "Assign":
                 if (len(bodyel.targets) == 1
@@ -30,23 +30,25 @@ def areport(apath):
                     zipped = zip(bodyel.value.keys, bodyel.value.values)
                     for azip in zipped:
                         if azip[0].__class__.__name__ == "Str":
-                            print(azip[0].s + " -- " + azip[1].elts[1].id)
+                            #print(azip[0].s + " -- " + azip[1].elts[1].id)
                             retval.append((azip[0].s, azip[1].elts[1].id))
     return idofinterest, retval
 
 def all_reports(directory):
-    reportpaths = glob.glob(directory + "/indivo_server/indivo/views/reports/*.py")
+    reportpaths = glob.glob(directory + "/indivo/views/reports/*.py")
+    if not reportpaths:
+        print("not an indivo_server root path: " + directory)
+        raise Exception
     retval = {}
     for apath in reportpaths:
-        print(apath)
         idofinterest, allowedflds = areport(apath)
         if allowedflds:
             retval[idofinterest] = allowedflds
-        for afld, acls in allowedflds:
-            print("field: " + afld + "   " + "class: " + acls)
-    print("\n\n\n")
-    print(repr(retval))
+#        for afld, acls in allowedflds:
+#            print("field: " + afld + "   " + "class: " + acls)
+#    print("\n\n\n")
+#    print(repr(retval))
     return retval
 
-if __name__ == "__main__":
-    all_reports("/home/nate/indivo/github")
+#if __name__ == "__main__":
+#    all_reports("/home/nate/indivo/github")
