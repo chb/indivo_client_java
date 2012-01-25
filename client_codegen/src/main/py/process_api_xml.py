@@ -18,26 +18,27 @@ def process_dom(apidom):
     for httmurl, mnames in mdict.items():
         if len(mnames) > 1:
             print(repr(httmurl) + " --> " + repr(mnames))
-    print("\n\n")
+
+#    print("PYTHON_CLIENT_NAMES = {")
+#    first = True
+#    for httmurl, mnames in mdict.items():
+#        if first:
+#            first = False
+#        else:
+#            print(",")
+#        print("(\"" + httmurl[0] + "\", \"" + httmurl[1] + "\") : \"" + mnames[0] + '"', end='')
+#    print('\n}')
     
-    print("PYTHON_CLIENT_NAMES = {")
-    first = True
-    for httmurl, mnames in mdict.items():
-        if first:
-            first = False
-        else:
-            print(",")
-        print("(\"" + str(httmurl[0]) + "\", \"" + str(httmurl[1]) + "\") : \"" + str(mnames[0]) + '"', end='')
-    print('\n}')
+    return mdict
     
 
 def process_method(methodNode, mdict):
     calls = methodNode.getElementsByTagName("call")
     assert calls.length == 1
     thecall = calls.item(0)
-    mname = thecall.getAttribute("name")
-    httpmeth = thecall.getAttribute("method")
-    murl  = thecall.getAttribute("url")
+    mname = str(thecall.getAttribute("name"))
+    httpmeth = str(thecall.getAttribute("method"))
+    murl  = str(thecall.getAttribute("url"))
     qix = murl.find('?')
     if qix != -1:
         assert murl[qix +1:] == "{PARAMETERS}"

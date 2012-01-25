@@ -2,6 +2,8 @@ import api_skeleton
 import api_skel_auxiliary
 import use_ast
 import sys
+import process_api_xml
+import xml.dom.minidom
 
 """
 Each implementation of the query-api passes in a list of valid fields. See
@@ -72,33 +74,33 @@ for cqk in common_qo_keys_l:
 #qo_counts = [0,0,0,0]
 
 
-def write_common_opts(rest0, report_query_fields):
-    rest0.write("private Map<String, List<String>> commonOptionsMap")
-    rest0.write(" = new HashMap<String,List<String>>();\n{\n")
+def write_common_opts(rest0, pynames, report_query_fields):
+    write_both(rest0, pynames, "private Map<String, List<String>> commonOptionsMap")
+    write_both(rest0, pynames, " = new HashMap<String,List<String>>();\n{\n")
     for cov, cok in common_qo_map.items():
-        rest0.write("    commonOptionsMap.put(\"" + cok + "\", Arrays.asList(")
+        write_both(rest0, pynames, "    commonOptionsMap.put(\"" + cok + "\", Arrays.asList(")
         nfdelim = None
         for acov in cov:
             if nfdelim:
-                rest0.write(nfdelim)
+                write_both(rest0, pynames, nfdelim)
             else:
                 nfdelim = ", "
-            rest0.write("\"" + acov + "\"")
-        rest0.write("));\n")
-    rest0.write("    }\n\n")
+            write_both(rest0, pynames, "\"" + acov + "\"")
+        write_both(rest0, pynames, "));\n")
+    write_both(rest0, pynames, "    }\n\n")
     
-    rest0.write("private Map<String, List<String>> validQueryFields")
-    rest0.write(" = new HashMap<String,List<String>>();\n")
-    rest0.write("private Map<String, Class> queryFieldType")
-    rest0.write(" = new HashMap<String, Class>();\n{\n")
-    rest0.write("    List<String> vqfs = null;\n")
+    write_both(rest0, pynames, "private Map<String, List<String>> validQueryFields")
+    write_both(rest0, pynames, " = new HashMap<String,List<String>>();\n")
+    write_both(rest0, pynames, "private Map<String, Class> queryFieldType")
+    write_both(rest0, pynames, " = new HashMap<String, Class>();\n{\n")
+    write_both(rest0, pynames, "    List<String> vqfs = null;\n")
     queryFieldTypes = {}
     for qfk, qfv in report_query_fields.items():
-        rest0.write("    vqfs = Arrays.asList(")
+        write_both(rest0, pynames, "    vqfs = Arrays.asList(")
         for aqfi, aqfv in enumerate(qfv):
             if aqfi:
-                rest0.write(", ")
-            rest0.write("\"" + aqfv[0] + "\"")
+                write_both(rest0, pynames, ", ")
+            write_both(rest0, pynames, "\"" + aqfv[0] + "\"")
              
             qfvt = None;
             if aqfv[1] == "STRING":
@@ -117,12 +119,12 @@ def write_common_opts(rest0, report_query_fields):
             else:
                 queryFieldTypes[aqfv[0]] = qfvt
                 
-        rest0.write(");\n")
-        rest0.write("    validQueryFields.put(\"" + qfk + "\", vqfs);\n")
-    rest0.write("\n")
+        write_both(rest0, pynames, ");\n")
+        write_both(rest0, pynames, "    validQueryFields.put(\"" + qfk + "\", vqfs);\n")
+    write_both(rest0, pynames, "\n")
     for aqfvk in queryFieldTypes.keys():
-        rest0.write("    queryFieldType.put(\"" + aqfvk + "\", " + queryFieldTypes[aqfvk] + ");\n")
-    rest0.write("}\n\n")
+        write_both(rest0, pynames, "    queryFieldType.put(\"" + aqfvk + "\", " + queryFieldTypes[aqfvk] + ");\n")
+    write_both(rest0, pynames, "}\n\n")
 
 
 def get_report_flavors(indivo_server_path):
@@ -488,7 +490,7 @@ def decide_data_form(datafields, dfekvm, httpmeth, path):
 #        "socketTimeout": "integer"
 #        }
 
-def process_calls(rest, report_flavors):
+def process_calls(rest, pynames, report_flavors, python_meth_names):
     reports_minimal_records = False
     reports_minimal_carenet = False
     access_doc_map = {}
@@ -532,8 +534,8 @@ def process_calls(rest, report_flavors):
         deprecated = acall["deprecated"]
         access_doc = acall["access_doc"]
         
-        path = acall["path"]  #str(acall["path"])
-        legged, response_form = api_skel_auxiliary.CALLS_AUX[(httpmeth,path)]
+        path0 = acall["path"]  #str(acall["path"])
+        legged, response_form = api_skel_auxiliary.CALLS_AUX[(httpmeth,path0)]
                 
         #legged = decide_oauth_legged(access_doc)
             
@@ -547,8 +549,8 @@ def process_calls(rest, report_flavors):
         #response_form = decide_response_form(retex, retdsc, httpmeth, path)
 
         
-        assert path.startswith("/")
-        path = path[1:]
+        assert path0.startswith("/")
+        path = path0[1:]
         pathparts = path.split('/')
 
         
@@ -576,6 +578,21 @@ def process_calls(rest, report_flavors):
 
         
         method_name, params = make_method_name(pathparts, httpmeth)
+        
+        pmnpath = path0.replace("ACCOUNT_EMAIL", "ACCOUNT_ID")
+        pmnpath = pmnpath.replace("PHA_EMAIL", "APP_ID")
+        pmnpath = pmnpath.replace("SYSTEM_SHORT_NAME", "CODING_SYSTEM")
+        pmnpath = pmnpath.replace("REQTOKEN_ID", "REQUEST_TOKEN")
+        pmnpath = pmnpath.replace("DOCUMENT_ID_0", "DOCUMENT_ID")
+        pmnpath = pmnpath.replace("DOCUMENT_ID_1", "OTHER_DOCUMENT_ID")
+        pmnpath = pmnpath.replace("REL", "REL_TYPE")
+        pmnpath = pmnpath.replace("OTHER_ACCOUNT_ID", "ACCOUNT_ID")
+        pmn = python_meth_names.get((httpmeth.lower(), pmnpath))
+        if not pmn:
+            pmn = method_name   #use rest name if python name could no be determined
+            print("python style name not found for: " + repr((httpmeth.lower(), pmnpath)) + "  " + path0)
+        else:
+            pmn = pmn[0]
             
         url_params = acall["url_params"]
         
@@ -583,7 +600,7 @@ def process_calls(rest, report_flavors):
         assert isinstance(datafields, dict)
         put_post_data, put_post_data_form = decide_data_form(datafields, dfekvm, httpmeth, path)        
 
-        rest.write(
+        write_both(rest, pynames,
             javadoc(
                 params,
                 url_params,
@@ -599,7 +616,10 @@ def process_calls(rest, report_flavors):
         query_opts = acall["query_opts"]
         qopts_r, qopts_o, qopts_field = categorize_query_options(query_opts, httpmeth)
             
-        rest.write("    public Object " + method_name + "(\n            ") #)
+        write_both(rest, pynames, "    public Object ")
+        rest.write(method_name)
+        pynames.write(pmn) 
+        write_both(rest, pynames, "(\n            ") #)
         
         mthprms = method_params(qopts_r, qopts_o, params, url_params, qopts_field, legged, first_report_minimal, audit_query)
         #rest.write(mthprms)
@@ -619,59 +639,59 @@ def process_calls(rest, report_flavors):
         if mthprms:
             mthprms += ", "
         mthprms += "Map<String, Object> options"
-        rest.write(mthprms)
-                
-        rest.write(') throws IndivoClientException {\n')
+        write_both(rest, pynames, mthprms)
+                #==============
+        write_both(rest, pynames, ') throws IndivoClientException {\n')
         
         if qopts_o:
             options_str1, options_str2 = process_query_opts(qopts_o, qopts_field, first_report_minimal, audit_query)
-            rest.write(options_str1)
-            rest.write(options_str2)
+            write_both(rest, pynames, options_str1)
+            write_both(rest, pynames, options_str2)
                 
-        rest.write("        Object fromRequest = clientRequest(\n                ")
-        rest.write("\"" + httpmeth + "\", ")
+        write_both(rest, pynames, "        Object fromRequest = clientRequest(\n                ")
+        write_both(rest, pynames, "\"" + httpmeth + "\", ")
 
         madeurl = make_url(pathparts)
-        rest.write(madeurl)
+        write_both(rest, pynames, madeurl)
         
         reqquer = request_query(qopts_r, qopts_o)
-        rest.write(", " + reqquer)
+        write_both(rest, pynames, ", " + reqquer)
         
         if legged > 2:
-            rest.write(", accessToken, accessTokenSecret")
+            write_both(rest, pynames, ", accessToken, accessTokenSecret")
         else:
-            rest.write(", null, null")
+            write_both(rest, pynames, ", null, null")
 
         if put_post_data:
-            rest.write(", body")
+            write_both(rest, pynames, ", body")
             if put_post_data_form:
                 if put_post_data_form == "url_encoded":
-                    rest.write(", \"application/x-www-form-urlencoded\"")
+                    write_both(rest, pynames, ", \"application/x-www-form-urlencoded\"")
                 elif put_post_data_form == "application/xml":
-                    rest.write(", \"application/xml\"")
+                    write_both(rest, pynames, ", \"application/xml\"")
                 elif put_post_data_form == "text/plain":
-                    rest.write(", \"text/plain\"")
+                    write_both(rest, pynames, ", \"text/plain\"")
                 else:
                     raise Exception
             else:
-                rest.write(", requestContentType")
+                write_both(rest, pynames, ", requestContentType")
                 
         # "URL_ENCODED", "PLAIN_TEXT"
         if response_form == "unknown":
-            rest.write(", responseContentType")
+            write_both(rest, pynames, ", responseContentType")
         elif response_form == "XML":
-            rest.write(", \"application/xml\"")
+            write_both(rest, pynames, ", \"application/xml\"")
         elif response_form == "JSON":
-            rest.write(", \"application/json\"")
+            write_both(rest, pynames, ", \"application/json\"")
         elif response_form == "URL_ENCODED":
-            rest.write(", \"application/x-www-form-urlencoded\"")
+            write_both(rest, pynames, ", \"application/x-www-form-urlencoded\"")
         elif response_form == "PLAIN_TEXT":
-            rest.write(", \"text/plain\"")
+            write_both(rest, pynames, ", \"text/plain\"")
         else:
             raise Exception
         
-        rest.write(", options);\n        return fromRequest;\n")            
-        rest.write("    }\n\n")
+        write_both(rest, pynames, ", options);\n        return fromRequest;\n")            
+        write_both(rest, pynames, "    }\n\n")
         method_count += 1
         
     return call_count, method_count
@@ -699,7 +719,11 @@ def process_calls(rest, report_flavors):
 #        print(str(retdscs[reK]) + ": response description: " + reK)
 
 
-def writeprefix(prefixLines, rest):
+def write_both(file1, file2, content):
+    file1.write(content)
+    file2.write(content)
+
+def writeprefix(prefixLines, rest, pynames):
     for pline in prefixLines:
         plinestr = str(pline)
         if plinestr.strip().startswith("/***START AUTO GENERATED FROM WIKI*/"):
@@ -709,10 +733,10 @@ def writeprefix(prefixLines, rest):
             plinestr = plinestr[:shix] + plinestr[shix +6:]
         drix = plinestr.find("/*_DROP*/")
         if drix == -1:
-            rest.write(plinestr)
+            write_both(rest, pynames, plinestr)
 
     
-def writesuffix(prefixLines, rest):
+def writesuffix(rest, pynames, prefixLines):
     dowrite = False
     for pline in prefixLines:
         plinestr = str(pline)
@@ -724,7 +748,7 @@ def writesuffix(prefixLines, rest):
                 plinestr = plinestr[:shix] + plinestr[shix +6:]
             drix = plinestr.find("/*_DROP*/")
             if drix == -1:
-                rest.write(plinestr)
+                write_both(rest, pynames, plinestr)
 
 def process_query_opts(query_opts0, qopts_field, report_minimal, audit_query):
     query_opts = list(query_opts0)
@@ -788,18 +812,26 @@ def dashToCamel(frag):
     return retVal
 
 
-
 restpath = sys.argv[1]
 shellpath = sys.argv[2]
 indivo_server_path = sys.argv[3]
 rest0 =   open(restpath + "org/indivo/client/Rest.java", "w")
+pynames =   open(restpath + "org/indivo/client/Rest_py_client_style.java", "w")
 prefix = open(shellpath + "Rest_SHELL.java","r")
 
 prefixSuffix = prefix.readlines()
-writeprefix(prefixSuffix, rest0)
+writeprefix(prefixSuffix, rest0, pynames)
 repflv, repqflds = get_report_flavors(indivo_server_path)
-write_common_opts(rest0, repqflds)
+
+apidom = xml.dom.minidom.parse("../src/main/xml/api.xml")
+python_meth_names = process_api_xml.process_dom(apidom)
+apidom.unlink()
+print("python meth names: " + str(len(python_meth_names.items())))
+
+write_common_opts(rest0, pynames, repqflds)
 #print("report flavors len: " + str(len(repflv)))
-call_count, method_count = process_calls(rest0, repflv)
-writesuffix(prefixSuffix, rest0)
+call_count, method_count = process_calls(rest0, pynames, repflv, python_meth_names)
+writesuffix(rest0, pynames, prefixSuffix)
+rest0.close()
+pynames.close()
 print("done. " + str(call_count) + " skeleton calls processed.  " + str(method_count) + " Java methods generated.")
