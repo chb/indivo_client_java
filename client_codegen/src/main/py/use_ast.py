@@ -12,7 +12,10 @@ def areport(apath):
     for bodyel in myast.body:
         if bodyel.__class__.__name__ == "FunctionDef":
             for decl in bodyel.decorator_list:
-                if decl.func.id == "marsloader":
+                if hasattr(decl, "func"):
+                    print(decl.func.id)
+                if hasattr(decl, "func") and  decl.func.id == "marsloader":
+                    print(decl.func.id)
                     for bodyelel in bodyel.body:
                         if (bodyelel.__class__.__name__ == "Assign"
                              and hasattr(bodyelel.value.func, "id")
@@ -41,6 +44,7 @@ def all_reports(directory):
         raise Exception
     retval = {}
     for apath in reportpaths:
+        print(apath)
         idofinterest, allowedflds = areport(apath)
         if allowedflds:
             retval[idofinterest] = allowedflds

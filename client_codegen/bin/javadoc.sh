@@ -7,6 +7,7 @@ javadoc -d ../../javadoc -classpath \
 ../../lib/commons-lang-2.5.jar:\
 ../../lib/gson-1.6.jar \
 ../../src/main/java/org/indivo/client/Rest.java \
+../../src/main/java/org/indivo/client/Rest_py_client_style.java \
 ../../src/main/java/org/indivo/client/Utils.java \
 ../../src/main/java/org/indivo/client/IndivoClientException.java \
 ../../src/main/java/org/indivo/client/ResponseTypeConversion.java \

@@ -8,6 +8,15 @@ the classes in indivo_client_java-1.x.jar is more convenient.
 
 point your browser to file:///..../javadoc/index.xml in the javadoc directory
 
-the class org.indivo.client.Rest has the public methods a client application will typically use.
+org.indivo.client.Rest has the public methods a client application will typically use.
+method names in org.indivo.client.Rest are based on the equivalent REST URL-s.
+org.indivo.client.Rest_py_client_style is identical with org.indivo.client.Rest except
+that method names are the same as in the Python client.
+
 
 indivo_client_java depends on some 3rd party .jar files, all included in this distribution, in the lib directory.
+see NOTICES.txt for 3rd party jar license info.
+
+Source distribution for indivo_client_java: [you must have git installed]
+git clone git://github.com/chb/indivo_client_java.git
+

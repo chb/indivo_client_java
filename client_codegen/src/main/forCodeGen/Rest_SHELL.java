@@ -24,6 +24,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+/*_PYTHON_STYLE_ONLY*/
+public class Rest_py_client_style_SHELL {
+/*_END_PYTHON_STYLE_ONLY*/
+/*_JAVA_STYLE_ONLY*/
 /**
 * Convenience methods that wrap the Indivo REST api calls
 * that are documented at <code>http://wiki.chip.org/indivo</code>
@@ -79,6 +83,8 @@ import org.w3c.dom.NodeList;
 * </pre>
 */
 public class Rest_SHELL {
+/*_END_JAVA_STYLE_ONLY*/
+	
     private static final long serialVersionUID = 1L;
 
     /** medical report name constant.  medical reports names other than those represented by constants
@@ -155,7 +161,12 @@ public class Rest_SHELL {
     *   number of milli-seconds.  This becomes the default value that can be overrided
     *   per call in the options param.
     */
+/*_JAVA_STYLE_ONLY*/
     public Rest_SHELL(
+/*_END_JAVA_STYLE_ONLY*/
+/*_PYTHON_STYLE_ONLY*/
+    public Rest_py_client_style_SHELL(
+/*_END_PYTHON_STYLE_ONLY*/
             String oauthConsumerKey,
             String oauthConsumerSecret,
             String baseURL,
@@ -203,7 +214,12 @@ public class Rest_SHELL {
     * Use this constructor when there is not
     * a default http timeout
     */
+/*_JAVA_STYLE_ONLY*/
     public Rest_SHELL(
+/*_END_JAVA_STYLE_ONLY*/
+/*_PYTHON_STYLE_ONLY*/
+    public Rest_py_client_style_SHELL(
+/*_END_PYTHON_STYLE_ONLY*/
             String oauthConsumerKey,
             String oauthConsumerSecret,
             String baseURL,
@@ -215,7 +231,13 @@ public class Rest_SHELL {
     * Use this constructor when there is not to be any default installation
     * or default consumer or default http timeout
     */
+/*_JAVA_STYLE_ONLY*/
     public Rest_SHELL(
+/*_END_JAVA_STYLE_ONLY*/
+/*_PYTHON_STYLE_ONLY*/
+    public Rest_py_client_style_SHELL(
+/*_END_PYTHON_STYLE_ONLY*/
+
             ResponseTypeConversion responseTypeConversion) throws IndivoClientException {
         this(null, null, null, responseTypeConversion, null);
     }
@@ -224,7 +246,12 @@ public class Rest_SHELL {
     * Use this constructor when there is not to be any default installation
     * or default consumer
     */
+/*_JAVA_STYLE_ONLY*/
     public Rest_SHELL(
+/*_END_JAVA_STYLE_ONLY*/
+/*_PYTHON_STYLE_ONLY*/
+    public Rest_py_client_style_SHELL(
+/*_END_PYTHON_STYLE_ONLY*/
             ResponseTypeConversion responseTypeConversion, Integer httpDefaultTimeout) throws IndivoClientException {
         this(null, null, null, responseTypeConversion, httpDefaultTimeout);
     }

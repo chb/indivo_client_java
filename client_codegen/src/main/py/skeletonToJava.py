@@ -207,13 +207,24 @@ def make_method_name(pathparts, httpmeth):
     method_name += httpmeth
     return method_name, params
 
-def javadoc(params, url_params, report_flavors, legged, put_post_data, put_post_data_form, response_form, dividN):
+def javadoc(params, report_flavors, legged, put_post_data, put_post_data_form, response_form, dividN, acall):
+    url_params = acall.get("url_params") #dict
+    divid = "o" + str(dividN)
     retVal = ''
     retVal += "    /**\n"
+    description = acall.get("description").strip()
+    if description[len(description) -1:] != '.':
+        description += "."
+    retVal += "     * " + acall.get("description") + "<br/>\n"
+    retVal += """<a href="" onclick="document.getElementById('{0}').style.display='inline'; return false;"
+>details</a>
+<div id="{0}" style="display:none">\n""".format(divid)
+    retVal += "     * <code>" + acall.get("method") + " " + acall.get("path") + "<\code><br/>\n" 
+    retVal += "     *  accessibility: " + acall.get("access_doc") + "<br/>\n"
     for aparm in params:
-        retVal += ("     * @param " + var_java_style(aparm) + " ")
+        retVal += "     * @param " + var_java_style(aparm) + " "
         if aparm == "REPORT_FLAVOR":
-            retVal += ("one of: " + ", ".join(report_flavors))
+            retVal += "one of: " + ", ".join(report_flavors)
         else:
             retVal += url_params[aparm]
         retVal += '\n'
@@ -226,8 +237,16 @@ def javadoc(params, url_params, report_flavors, legged, put_post_data, put_post_
     if put_post_data:
         retVal += "     * @param body data to send"
         if put_post_data_form:
-            retVal += (", must be in " + put_post_data_form + " form.\n")
-        else:
+            retVal += ", must be in " + put_post_data_form + " form.\n"
+        data_fields = acall.get("data_fields")
+        if data_fields:
+            for dfk in data_fields.keys():
+                retVal += "     * "
+                if dfk:
+                    retVal += dfk + ": "
+                retVal += data_fields.get(dfk) + "<br/>\n"
+                
+        if not put_post_data_form:
             retVal += "\n     * @param requestContentType mime type of body.\n"
         
     if response_form == "unknown":
@@ -235,20 +254,40 @@ def javadoc(params, url_params, report_flavors, legged, put_post_data, put_post_
                    will cause exception to be thrown if expectation does not match server response
                    may be null to allow any type"""
 
-    divid = "o" + str(dividN)
     retVal += """\
      * @param options Map<String,Object> or null.
-<a href="" onclick="document.getElementById('{0}').style.display='inline'; return false;"
->allowed key-value pairs are:</a><div id="{0}" style="display:none">
-<ul>
-<li>"responseTypeConversion": object that implements ResponseTypeConversion,</li>
-<li>"indivoInstallation": String array of length 3: foreignURL, consumerToken, consumerSecret.
-                           Use this to access an indivo installation other then one provided by new Rest(...)</li>
-<li>"connectionTimeout": integer,</li>
-<li>"socketTimeout": integer</li>
-</ul>
-<a href="" onclick="document.getElementById('{0}').style.display='none'; return false;">hide</a><br/><br/></div>
-""".format(divid)
+allowed key-value pairs are<br/>:
+    "responseTypeConversion": object that implements ResponseTypeConversion,
+    "indivoInstallation": String array of length 3: foreignURL, consumerToken, consumerSecret.
+                           Use this to access an indivo installation other then one provided by new Rest(...)
+    "connectionTimeout": integer,
+    "socketTimeout": integer
+
+"""
+    return_desc = acall.get("return_desc")
+    return_ex = acall.get("return_ex")
+    if return_desc or return_ex:
+        retVal += "     * @return " + return_desc.replace("*/*", "* / *")
+        if return_ex:
+            retVal += "<br/>\n<pre>" + return_ex + "</pre>\n"
+            
+    deprecated, added, changed = (acall.get("deprecated"), acall.get("added"), acall.get("changed"))
+    if deprecated or added or changed:
+        retVal += "     * "
+        if deprecated:
+            if isinstance(deprecated, tuple):
+                deprecated = " ".join(deprecated)
+            retVal += "deprecated: " + deprecated + "&nbsp;&nbsp;&nbsp;"
+        if added:
+            if isinstance(added, tuple):
+                added = " ".join(added)
+            retVal += "added: " + added + "&nbsp;&nbsp;&nbsp;"
+        if changed:
+            if isinstance(changed, tuple):
+                changed = " ".join(changed)
+            retVal += "changed: " + changed + "&nbsp;&nbsp;&nbsp;"
+            
+    retVal += """<a href="" onclick="document.getElementById('{0}').style.display='none'; return false;"><b>hide</b></a><br/><br/></div>""".format(divid)
                    
     return retVal + '    */\n'
 
@@ -282,13 +321,13 @@ def method_params(qopts_r, qopts_o, params, url_params, qopts_field, legged, fir
     for qoptr in qopts_r:
         if qoptparams:
             qoptparams += ", "
-        qoptparams += ("String " + qoptr)
+        qoptparams += "String " + qoptr
     
     has_queryoptions = False
     if qopts_o:
         if qoptparams:
             qoptparams += ", "
-        qoptparams += ("String queryOptions")
+        qoptparams += "String queryOptions"
         has_queryoptions = True
         
     #has_report_flavor = False
@@ -299,7 +338,7 @@ def method_params(qopts_r, qopts_o, params, url_params, qopts_field, legged, fir
         else:
             if qoptparams:
                 qoptparams += ", "
-            qoptparams += ("String " + var_java_style(aparam))
+            qoptparams += "String " + var_java_style(aparam)
     
     if first_report_minimal:
         if qoptparams:
@@ -347,7 +386,7 @@ def make_url(pathparts):
                     retVal += "/\""
                 elif last_token_type == "var":
                     retVal += " + '/'"
-                retVal += (" + " + var_java_style(ppart[1:len(ppart) -1]))
+                retVal += " + " + var_java_style(ppart[1:len(ppart) -1])
                 last_token_type = "var"
             else:
                 if last_token_type == "const":
@@ -594,7 +633,6 @@ def process_calls(rest, pynames, report_flavors, python_meth_names):
         else:
             pmn = pmn[0]
             
-        url_params = acall["url_params"]
         
         datafields = acall["data_fields"]
         assert isinstance(datafields, dict)
@@ -603,13 +641,14 @@ def process_calls(rest, pynames, report_flavors, python_meth_names):
         write_both(rest, pynames,
             javadoc(
                 params,
-                url_params,
+                #url_params,
                 report_flavors,
                 legged,
                 put_post_data,
                 put_post_data_form,
                 response_form,
-                dividN)
+                dividN,
+                acall)
         )
         dividN += 1
         
@@ -621,6 +660,7 @@ def process_calls(rest, pynames, report_flavors, python_meth_names):
         pynames.write(pmn) 
         write_both(rest, pynames, "(\n            ") #)
         
+        url_params = acall["url_params"]
         mthprms = method_params(qopts_r, qopts_o, params, url_params, qopts_field, legged, first_report_minimal, audit_query)
         #rest.write(mthprms)
         
@@ -724,6 +764,8 @@ def write_both(file1, file2, content):
     file2.write(content)
 
 def writeprefix(prefixLines, rest, pynames):
+    java_style_only = False;
+    python_style_only = False;
     for pline in prefixLines:
         plinestr = str(pline)
         if plinestr.strip().startswith("/***START AUTO GENERATED FROM WIKI*/"):
@@ -732,8 +774,26 @@ def writeprefix(prefixLines, rest, pynames):
         if shix != -1:
             plinestr = plinestr[:shix] + plinestr[shix +6:]
         drix = plinestr.find("/*_DROP*/")
+        if plinestr.find("/*_PYTHON_STYLE_ONLY*/") != -1:
+            python_style_only = True;
+            continue;
+        elif plinestr.find("/*_END_PYTHON_STYLE_ONLY*/") != -1:
+            python_style_only = False;
+            continue;
+        elif plinestr.find("/*_JAVA_STYLE_ONLY*/") != -1:
+            java_style_only = True;
+            continue;
+        elif plinestr.find("/*_END_JAVA_STYLE_ONLY*/") != -1:
+            java_style_only = False;
+            continue;
+            
         if drix == -1:
-            write_both(rest, pynames, plinestr)
+            if java_style_only:
+                rest.write(plinestr)
+            elif python_style_only:
+                pynames.write(plinestr)
+            else:
+                write_both(rest, pynames, plinestr)
 
     
 def writesuffix(rest, pynames, prefixLines):
@@ -767,7 +827,7 @@ def process_query_opts(query_opts0, qopts_field, report_minimal, audit_query):
             for qoki, qok in enumerate(query_opts):
                 if qoki:
                     optional_str_1 += ", "
-                optional_str_1 += ('"' + qok + '"')
+                optional_str_1 += '"' + qok + '"'
             optional_str_1 += ");\n"
             optional_str_2a = "optional"
             

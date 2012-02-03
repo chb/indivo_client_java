@@ -1,6 +1,7 @@
 from __future__ import print_function
 import xml.dom.minidom
 import xml.dom
+import api_skeleton
 
 def process_dom(apidom):
     docel = apidom.documentElement
