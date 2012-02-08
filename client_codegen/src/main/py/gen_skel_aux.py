@@ -7,7 +7,9 @@ def decide_response_form(retex, retdsc, httpmeth, path):
     #print(path, retex, retdsc)
     
     #</ok> (sic)
-    if retex == "<ok/>" or retex == "</ok>" or (retex[0] == '<' and
+    if retex == "<ok/>" or retex == "</ok>":
+        retVal = "ok" 
+    elif (retex[0] == '<' and
          (retdsc.startswith(":http:statuscode:`200` with a list of ")
          or retdsc.startswith(":http:statuscode:`200` with A list of ")
          or retdsc.startswith(":http:statuscode:`200` with a document list") )
@@ -23,11 +25,12 @@ def decide_response_form(retex, retdsc, httpmeth, path):
         retVal = "XML"
     elif retex.startswith("<Document id") and (
             retdsc.find("`200` with the metadata of the") != -1
+            or retdsc.find("`200` with metadata on the") != -1
             or retdsc.find("`200` with metadata describing the") != -1
-            or retdsc.find("`200` with the document metadata")
-            or retdsc.find("`200` with the document's metadata")
-            or retdsc.find("`200` with the metadata on the new")
-            or retdsc.find("`200` with the metadata on the updated")
+            or retdsc.find("`200` with the document metadata") != -1
+            or retdsc.find("`200` with the document's metadata") != -1
+            or retdsc.find("`200` with the metadata on the new") != -1
+            or retdsc.find("`200` with the metadata on the updated") != -1
             ):
         retVal = "XML"
     elif retex.startswith("<Carenets ") and retdsc.find("`200` with a description of the new carenet") != -1:
@@ -53,8 +56,8 @@ def decide_response_form(retex, retdsc, httpmeth, path):
         retVal = "URL_ENCODED"
     elif retex.find('@') != -1 and retdsc.find("`200` with the email") != -1:
         retVal = "PLAIN_TEXT"
-    #else:
-        #print("undecided response format: " + httpmeth + " " + path + ": " + retex + "    --    " + retdsc)
+    else:
+        print("undecided response format: " + httpmeth + " " + path + ": " + retex + "    --    " + retdsc)
         
     return retVal
 

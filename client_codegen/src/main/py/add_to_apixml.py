@@ -13,7 +13,16 @@ def process_dom(apidom):
     #add_from_
     
     report_dict = report_query_fields("/home/nate/indivo/github/indivo_server")
+    for test_mdk in mdict.keys():
+        test_mdv = mdict.get(test_mdk)
+        if len(test_mdv) > 1:
+            print("before merge_report_query_fields: " + str(len(test_mdv)) + test_mdv[0].toxml())
     merge_report_query_fields(report_dict, mdict)
+    for test_mdk in mdict.keys():
+        test_mdv = mdict.get(test_mdk)
+        if len(test_mdv) > 1:
+            print("after merge_report_query_fields: " + str(len(test_mdv)) + test_mdv[0].toxml())
+        
     
     merge_skeleton_auxiliary(apidom, mdict)
     
@@ -63,6 +72,7 @@ def process_method(methodNode, mdict):
     #print(mname, httpmeth, murl)
     fromdict = mdict.get((httpmeth,murl))
     if fromdict:
+        print("adding second node: " + str(len(fromdict))  + "  " + fromdict[0].toxml() + "\n\n" + methodNode.toxml())
         fromdict.append(methodNode)
     else:
         mdict[(httpmeth,murl)] = [methodNode]
@@ -75,6 +85,11 @@ def merge_skeleton_auxiliary(apidom, mdict):
             print("python style name not found for: " + repr((auxhttpmeth.lower(), pmnpath)) + "  " + auxpath0)
         else:
             for xmln in xmlnodes:
+#                print(xmln.toxml())
+#                if True:
+#                    raise Exception
+                if xmln.getElementsByTagName("call")[0].getAttribute("url").find("equipment") != -1:
+                    print("xmlnodes len: " + str(len(xmlnodes)) + "  -  " + xmln.toxml())
                 legged, response_format = api_skel_auxiliary.CALLS_AUX.get((auxhttpmeth, auxpath0))
                 oleg = apidom.createElement("oauth_legged")
                 if legged <= 2.5:
@@ -86,11 +101,29 @@ def merge_skeleton_auxiliary(apidom, mdict):
                 xmln.appendChild(apidom.createTextNode("\n  "))
                 
                 if response_format != "unknown":
-                    respnode = xmln.getElementsByTagName("response")
-                    if len(respnode) == 1:
-                        respnode[0].setAttribute("response_format", response_format)
-                    else:
-                        print("no response: " + repr(xmln))
+                    response_nodes = []
+                    xmln_cs = xmln.childNodes
+                    for xmln_cn in xmln_cs:
+                        if xmln_cn.nodeType == xml.dom.Node.ELEMENT_NODE and xmln_cn.tagName == "response":
+                            response_nodes.append(xmln_cn)
+                    if len(response_nodes) == 0:
+                        print("missing response: " + xmln.toxml())
+                        newresponse = apidom.createElement("response")
+                        xmln.appendChild(apidom.createTextNode("  "))
+                        xmln.appendChild(newresponse)
+                        xmln.appendChild(apidom.createTextNode("\n  "))
+                        response_nodes.append(newresponse)
+                    if len(response_nodes) != 1:
+                        print("more than one response: " + xmln.toxml())
+                        raise Exception
+                    #respnode = xmln.getElementsByTagName("response")
+                    #if len(respnode) == 1:
+                    if response_format == "ok":
+                        response_format = "XML"
+                        if not response_nodes[0].getAttribute("element"):
+                            response_nodes[0].setAttribute("element", "ok")
+                    response_nodes[0].setAttribute("response_format", response_format)
+                    #else:
 
 def skeleton_style_to_api_style(auxpath0):
         pmnpath = auxpath0.replace("ACCOUNT_EMAIL", "ACCOUNT_ID")
@@ -141,6 +174,7 @@ def report_query_fields(indivo_server_path):
 def merge_report_query_fields(report_dict, mdict): # mutate mdict
     print(str(len(report_dict.keys())))
     for rd in report_dict.keys():
+        nodes_for_report = []
         #('get', '/records/{RECORD_ID}/reports/minimal/labs/')
         rnodes = mdict.get(("get", "/records/{RECORD_ID}/reports/minimal/" + rd + '/'))
         rnodes_care = mdict.get(("get", "/carenets/{CARENET_ID}/reports/minimal/" + rd + '/'))
@@ -156,15 +190,17 @@ def merge_report_query_fields(report_dict, mdict): # mutate mdict
                 print(amdk)
             raise Exception
         else:
-            for rnc in rnodes_care:
-                rnodes.append(rnc)
+            for nfr in rnodes:
+                nodes_for_report.append(nfr)
+            for nfr in rnodes_care:
+                nodes_for_report.append(nfr)
             if rd == "vitals":
                 rnodes_vitals = mdict.get(("get", "/records/{RECORD_ID}/reports/minimal/vitals/{CATEGORY}/"))
                 rnodes_vitals_care = mdict.get(("get", "/carenets/{CARENET_ID}/reports/minimal/vitals/{CATEGORY}")) # missing slash
                 for rnv in rnodes_vitals:
-                    rnodes.append(rnv)
+                    nodes_for_report.append(rnv)
                 for rnv in rnodes_vitals_care:
-                    rnodes.append(rnv)
+                    nodes_for_report.append(rnv)
                 
             rdv = report_dict[rd]
             #[('medication_name', 'STRING'), ('medication_brand_name', 'STRING'), ('date_started', 'DATE'), ('date_stopped', 'DATE')]
@@ -176,7 +212,7 @@ def merge_report_query_fields(report_dict, mdict): # mutate mdict
                 qfe.setAttribute("field", "field")
                 qfs.appendChild(qfe)
                 
-            for rnode in rnodes:
+            for rnode in nodes_for_report:
                 rnode.appendChild(apidom.createTextNode("  "))
                 rnode.appendChild(qfs.cloneNode(True))
                 rnode.appendChild(apidom.createTextNode("\n  "))
@@ -252,6 +288,10 @@ def decide_data_form(datafields, httpmeth, path, elems, apidom):
         if dfkeys[0]:
             #put_post_data_form = "url_encoded" # actual key/value pair expected
             ppdElem.setAttribute("format", "url_encoded")
+            for dfkey in dfkeys:
+                dfkeykey = apidom.createElement("key")
+                dfkeykey.setAttribute("name", dfkey)
+                ppdElem.appendChild(dfkeykey)
         else:
             assert len(dfkeys) == 1
             dfval = datafields[""].lower()

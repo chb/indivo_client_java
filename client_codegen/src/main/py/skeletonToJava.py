@@ -1,8 +1,7 @@
 import api_skeleton
-import api_skel_auxiliary
-import use_ast
-import sys
+import add_to_apixml
 import process_api_xml
+import sys
 import xml.dom.minidom
 
 """
@@ -74,7 +73,7 @@ for cqk in common_qo_keys_l:
 #qo_counts = [0,0,0,0]
 
 
-def write_common_opts(rest0, pynames, report_query_fields):
+def write_common_opts(rest0, pynames): #, report_query_fields:
     write_both(rest0, pynames, "private Map<String, List<String>> commonOptionsMap")
     write_both(rest0, pynames, " = new HashMap<String,List<String>>();\n{\n")
     for cov, cok in common_qo_map.items():
@@ -89,51 +88,53 @@ def write_common_opts(rest0, pynames, report_query_fields):
         write_both(rest0, pynames, "));\n")
     write_both(rest0, pynames, "    }\n\n")
     
-    write_both(rest0, pynames, "private Map<String, List<String>> validQueryFields")
-    write_both(rest0, pynames, " = new HashMap<String,List<String>>();\n")
-    write_both(rest0, pynames, "private Map<String, Class> queryFieldType")
-    write_both(rest0, pynames, " = new HashMap<String, Class>();\n{\n")
-    write_both(rest0, pynames, "    List<String> vqfs = null;\n")
-    queryFieldTypes = {}
-    for qfk, qfv in report_query_fields.items():
-        write_both(rest0, pynames, "    vqfs = Arrays.asList(")
-        for aqfi, aqfv in enumerate(qfv):
-            if aqfi:
-                write_both(rest0, pynames, ", ")
-            write_both(rest0, pynames, "\"" + aqfv[0] + "\"")
-             
-            qfvt = None;
-            if aqfv[1] == "STRING":
-                qfvt = "String.class"
-            elif aqfv[1] == "DATE":
-                qfvt = "Date.class"
-            elif aqfv[1] == "NUMBER":
-                qfvt = "Number.class"
-            else:
-                print("unexpected query field type: " + aqfv[0] + ": " + aqfv[1])
-                raise Exception
-            if queryFieldTypes.has_key(aqfv[0]):
-                if queryFieldTypes[aqfv[0]] != qfvt:
-                    print("inconsistent type for query field " + aqfv[0] + ": " + queryFieldTypes[aqfv[0]] + " and " + qfvt)
-                    raise Exception
-            else:
-                queryFieldTypes[aqfv[0]] = qfvt
+#    write_both(rest0, pynames, "private Map<String, List<String>> validQueryFields")
+#    write_both(rest0, pynames, " = new HashMap<String,List<String>>();\n")
+#    write_both(rest0, pynames, "private Map<String, Class> queryFieldType")
+#    write_both(rest0, pynames, " = new HashMap<String, Class>();\n{\n")
+#    write_both(rest0, pynames, "    List<String> vqfs = null;\n")
+#    queryFieldTypes = {}
+#    for qfk, qfv in report_query_fields.items():
+#        write_both(rest0, pynames, "    vqfs = Arrays.asList(")
+#        for aqfi, aqfv in enumerate(qfv):
+#            if aqfi:
+#                write_both(rest0, pynames, ", ")
+#            write_both(rest0, pynames, "\"" + aqfv[0] + "\"")
+#             
+#            qfvt = None;
+#            if aqfv[1] == "STRING":
+#                qfvt = "String.class"
+#            elif aqfv[1] == "DATE":
+#                qfvt = "Date.class"
+#            elif aqfv[1] == "NUMBER":
+#                qfvt = "Number.class"
+#            else:
+#                print("unexpected query field type: " + aqfv[0] + ": " + aqfv[1])
+#                raise Exception
+#            if queryFieldTypes.has_key(aqfv[0]):
+#                if queryFieldTypes[aqfv[0]] != qfvt:
+#                    print("inconsistent type for query field " + aqfv[0] + ": " + queryFieldTypes[aqfv[0]] + " and " + qfvt)
+#                    raise Exception
+#            else:
+#                queryFieldTypes[aqfv[0]] = qfvt
                 
-        write_both(rest0, pynames, ");\n")
-        write_both(rest0, pynames, "    validQueryFields.put(\"" + qfk + "\", vqfs);\n")
+    #    write_both(rest0, pynames, ");\n")
+    #    write_both(rest0, pynames, "    validQueryFields.put(\"" + qfk + "\", vqfs);\n")
     write_both(rest0, pynames, "\n")
-    for aqfvk in queryFieldTypes.keys():
-        write_both(rest0, pynames, "    queryFieldType.put(\"" + aqfvk + "\", " + queryFieldTypes[aqfvk] + ");\n")
+    #for aqfvk in queryFieldTypes.keys():
+    #    write_both(rest0, pynames, "    queryFieldType.put(\"" + aqfvk + "\", " + queryFieldTypes[aqfvk] + ");\n")
     write_both(rest0, pynames, "}\n\n")
 
 
-def get_report_flavors(indivo_server_path):
-    report_flavors = []        
+def pre_process_skeleton():
+    report_flavors = []
+    calls_in_order = []
+    javadoc_map = {}
     for acall in api_skeleton.CALLS:
         path = str(acall["path"])
         assert path.startswith("/")
-        path = path[1:]
-        pathparts = path.split('/')
+        #path = path[1:]
+        pathparts = path[1:].split('/')
         pplen = len(pathparts)
         if (pplen == 6 and pathparts[pplen -1] == '' and pathparts[pplen -4] == "reports"
              and pathparts[pplen -3] == "minimal" and pathparts[pplen -2][0] != '{'):
@@ -141,15 +142,11 @@ def get_report_flavors(indivo_server_path):
                 report_flavors.index(pathparts[pplen -2])
             except ValueError:
                 report_flavors.append(pathparts[pplen -2])
-    report_fields = use_ast.all_reports(indivo_server_path) #"/home/nate/indivo/github"
-    report_fields_sn = {}
-    for rfkey in report_fields.keys():
-        usix = rfkey.find('_')
-        rfkeyt = rfkey[0:usix] # drop "_FILTERS"
-        if rfkeyt[len(rfkeyt) -1] == 'S':
-            rfkeyt = rfkeyt[0:len(rfkeyt) -1]
-        rfkeyt = rfkeyt.lower()
-        report_fields_sn[rfkeyt] = report_fields[rfkey]
+        
+        xml_style_url = add_to_apixml.skeleton_style_to_api_style(path)
+        calls_in_order.append((acall.get("method").lower(), xml_style_url))
+        javadoc_map[(acall.get("method").lower(), xml_style_url)] = acall
+                
     report_flavors_sn = []
     for rfws in report_flavors:
         #print "rfws: " + rfws
@@ -163,7 +160,7 @@ def get_report_flavors(indivo_server_path):
             report_flavors_sn.append(rfws)
     #print "missing from skeleton: " + str((set(report_fields_sn.keys())) - set(report_flavors_sn))
     #print "missing from reports/*.py: " + str((set(report_flavors_sn) - set(report_fields_sn.keys())))
-    return report_flavors_sn, report_fields_sn
+    return report_flavors_sn, calls_in_order, javadoc_map
 
 
 def combine_reports_minimal(reports_minimal_records, reports_minimal_carenet, pathparts):
@@ -207,8 +204,13 @@ def make_method_name(pathparts, httpmeth):
     method_name += httpmeth
     return method_name, params
 
-def javadoc(params, report_flavors, legged, put_post_data, put_post_data_form, response_form, dividN, acall):
-    url_params = acall.get("url_params") #dict
+def javadoc(report_minimal, audit_query, params_from_pathparts, skel_url_params0, response_form, legged, apinode, acall, dividN): #params, report_flavors, legged, put_post_data, put_post_data_form, response_form, dividN, acall:
+    #params_from_url = acall.get("params_from_url") #dict
+    params_from_url = get_params_from_url(acall)   # skeleton style param names
+#    skel_url_params0 = acall.get("url_params")
+#    skel_url_params0 = {}
+#    for skurpa in skel_url_params0:
+#        skel_url_params0[add_to_apixml.skeleton_style_to_api_style(skurpa)] = skel_url_params0[skurpa]
     divid = "o" + str(dividN)
     retVal = ''
     retVal += "    /**\n"
@@ -221,35 +223,64 @@ def javadoc(params, report_flavors, legged, put_post_data, put_post_data_form, r
 <div id="{0}" style="display:none">\n""".format(divid)
     retVal += "     * <code>" + acall.get("method") + " " + acall.get("path") + "<\code><br/>\n" 
     retVal += "     *  accessibility: " + acall.get("access_doc") + "<br/>\n"
-    for aparm in params:
+    
+    for aparm in params_from_url:
         retVal += "     * @param " + var_java_style(aparm) + " "
-        if aparm == "REPORT_FLAVOR":
-            retVal += "one of: " + ", ".join(report_flavors)
-        else:
-            retVal += url_params[aparm]
+#        if aparm == "REPORT_FLAVOR":
+#            retVal += "one of: " + ", ".join(["report_flavors"])
+#        else:
+            #print(repr(skel_url_params0))
+            #api_style_aparam = add_to_apixml.skeleton_style_to_api_style(aparm)
+        retVal += skel_url_params0[aparm]
         retVal += '\n'
-    if legged == 3:
-        retVal += "     * @param accessToken OAuth token.\n     * @param accessTokenSecret OAuth secret.\n"
-    elif legged > 2:
+        
+    if len(params_from_pathparts) > len(params_from_url):
+        assert params_from_pathparts[len(params_from_pathparts) -1] == "REPORT_FLAVOR"
+        retVal += "     * @param reportFlavor "
+        retVal += "one of: " + ", ".join(["report_flavors"])
+        retVal += '\n'
+    
+#    oal = apinode.getElementsByTagName("oauth_legged")
+#    if len(oal) != 1:
+#        print(apinode.toxml())
+#        print(acall.get("path"))
+#        raise Exception
+#    three_legged = oal[0].getAttribute("three_legged")
+#    two_legged = oal[0].getAttribute("two_legged")
+    if 3 in legged and 2 in legged: #three_legged and two_legged:
         retVal += """     * @param accessToken OAuth token. null if from admin app.
      * @param accessTokenSecret OAuth secret. null if from admin app.\n"""
-    
-    if put_post_data:
+    elif 3 in legged: # three_legged:
+        retVal += "     * @param accessToken OAuth token.\n     * @param accessTokenSecret OAuth secret.\n"
+
+    put_post_data = apinode.getElementsByTagName("put_post_data")
+    assert len(put_post_data) <= 1
+    if len(put_post_data) == 1:
+        put_post_data = put_post_data[0]    
         retVal += "     * @param body data to send"
+        put_post_data_form = put_post_data.getAttribute("format")
         if put_post_data_form:
             retVal += ", must be in " + put_post_data_form + " form.\n"
-        data_fields = acall.get("data_fields")
+        data_fields_fromskel = acall.get("data_fields")
+        keyless_data = data_fields_fromskel.get('')
+        if len(data_fields_fromskel) == 1 and keyless_data:
+            retVal += ("     * " + keyless_data + "<br/>\n")
+
+        data_fields0 = put_post_data.getElementsByTagName("key")
+        data_fields = []
+        for datafield in data_fields0:
+            data_fields.append(datafield.getAttribute("name"))
         if data_fields:
-            for dfk in data_fields.keys():
+            for dfk in data_fields:
                 retVal += "     * "
                 if dfk:
                     retVal += dfk + ": "
-                retVal += data_fields.get(dfk) + "<br/>\n"
+                retVal += data_fields_fromskel.get(dfk) + "<br/>\n"
                 
         if not put_post_data_form:
             retVal += "\n     * @param requestContentType mime type of body.\n"
         
-    if response_form == "unknown":
+    if not response_form:
         retVal += """     * @param responseContentType expected mime type, for example "application/xml" or "text/plain"
                    will cause exception to be thrown if expectation does not match server response
                    may be null to allow any type"""
@@ -290,6 +321,27 @@ allowed key-value pairs are<br/>:
     retVal += """<a href="" onclick="document.getElementById('{0}').style.display='none'; return false;"><b>hide</b></a><br/><br/></div>""".format(divid)
                    
     return retVal + '    */\n'
+
+
+def get_params_from_url(acall):
+#    calls = apinode.getElementsByTagName("call")
+#    if len(calls) != 1:
+#        raise Exception
+#    call = calls[0]
+#    url = call.getAttribute("url")
+    url = acall["path"]
+    assert url[0] == '/'
+    url0 = url[1:]
+#    qix = url.find('?')
+#    if qix != -1:
+#        url0 = url[0:qix]
+    pparts = url0.split('/')
+    retVal = []
+    for pp in pparts:
+        if pp and pp[0] == '{' and pp[len(pp) -1] == '}':
+            retVal.append(pp[1:len(pp) -1])
+    return retVal
+
 
 def categorize_query_options(query_opts, httpmeth):
     qopts_r = []
@@ -332,7 +384,9 @@ def method_params(qopts_r, qopts_o, params, url_params, qopts_field, legged, fir
         
     #has_report_flavor = False
     for aparam in params:
-        assert aparam in url_params or aparam == "REPORT_FLAVOR"
+        if not (aparam in url_params or aparam == "REPORT_FLAVOR"):
+            print(aparam + "  --  " + repr(url_params))
+            raise Exception
         if aparam == "REPORT_FLAVOR":
             assert qopts_field
         else:
@@ -360,7 +414,7 @@ def method_params(qopts_r, qopts_o, params, url_params, qopts_field, legged, fir
             
     #(
     #rest.write(qoptparams)
-    if legged > 2:
+    if 3 in legged:
         if qoptparams:
             qoptparams += ", "
         qoptparams += "String accessToken, String accessTokenSecret"
@@ -529,7 +583,8 @@ def decide_data_form(datafields, dfekvm, httpmeth, path):
 #        "socketTimeout": "integer"
 #        }
 
-def process_calls(rest, pynames, report_flavors, python_meth_names):
+#rest0, pynames, repflv, resturls, rest_to_apinode, javadoc_map
+def process_calls(rest, pynames, report_flavors, resturls, rest_to_apinode, javadoc_map):
     reports_minimal_records = False
     reports_minimal_carenet = False
     access_doc_map = {}
@@ -541,20 +596,33 @@ def process_calls(rest, pynames, report_flavors, python_meth_names):
     okcount = 0
     dividN = 0
     
-    for acall in api_skeleton.CALLS:
+    #for acall in api_skeleton.CALLS:
+    for resturl in resturls:
+        apinode = rest_to_apinode.get(resturl)
+        if not apinode:
+            print("missing from api.xml: " + repr(resturl))
+            continue
+        if len(apinode) < 1 or len(apinode) > 2:
+            print(repr(resturl))
+            raise Exception
+        apinode = apinode[0]
         call_count += 1
-        httpmeth = acall["method"]
+        httpmeth = resturl[0].upper()
         assert httpmeth in ["GET", "PUT", "POST", "DELETE"]
+        forjavadoc = javadoc_map.get(resturl)
+        if not forjavadoc:
+            print(resturl)
+            raise Exception
         
-        retex = acall["return_ex"]
+        retex = forjavadoc["return_ex"]
         assert isinstance(retex, str)
-        retex = retex.strip()[:50]
+        #retex = retex.strip()[:50]
         if retexs.has_key(retex):
             retexs[retex] = retexs[retex] +1
         else:
             retexs[retex] = 1
 
-        retdsc = acall["return_desc"]
+        retdsc = forjavadoc["return_desc"]
         assert isinstance(retdsc, str)
         
 #        if retdsc.find("http:statuscode:`200` with a list of ") != -1:
@@ -570,27 +638,29 @@ def process_calls(rest, pynames, report_flavors, python_meth_names):
             else:
                 retdscs[retdsc] = 1
                         
-        deprecated = acall["deprecated"]
-        access_doc = acall["access_doc"]
+        deprecated = forjavadoc["deprecated"]
+        access_doc = forjavadoc["access_doc"]
         
-        path0 = acall["path"]  #str(acall["path"])
-        legged, response_form = api_skel_auxiliary.CALLS_AUX[(httpmeth,path0)]
+        #path0 = acall["path"]  #str(acall["path"])
+        #legged, response_form = api_skel_auxiliary.CALLS_AUX[(httpmeth,path0)]
                 
         #legged = decide_oauth_legged(access_doc)
             
         # not used, just count occurrences in case the statistic is ever needed
-        adcount = access_doc_map.get(access_doc)
-        if adcount:
-            access_doc_map[access_doc] = adcount +1
-        else:
-            access_doc_map[access_doc] = 1
+        #adcount = access_doc_map.get(access_doc)
+        #if adcount:
+        #    access_doc_map[access_doc] = adcount +1
+        #else:
+        #    access_doc_map[access_doc] = 1
 
         #response_form = decide_response_form(retex, retdsc, httpmeth, path)
 
         
-        assert path0.startswith("/")
-        path = path0[1:]
-        pathparts = path.split('/')
+        #assert path0.startswith("/")
+        #path = path0[1:]
+        pathparts = forjavadoc.get("path")[1:].split('/')
+        #pathparts = resturl[1][1:].split('/')   # xml style
+        print(repr(resturl) + " -- " + repr(pathparts))
 
         
 #Unfortunately, this is actually the way the call is written into Indivo
@@ -604,7 +674,7 @@ def process_calls(rest, pynames, report_flavors, python_meth_names):
          redundant_report_minimal,
          first_report_minimal,
          audit_query) = combine_reports_minimal(
-                            reports_minimal_records, reports_minimal_carenet, pathparts)
+                            reports_minimal_records, reports_minimal_carenet, pathparts) #api or skel
         
         # if redundant_report_minimal and not first of its kind
         if redundant_report_minimal:
@@ -617,53 +687,87 @@ def process_calls(rest, pynames, report_flavors, python_meth_names):
 
         
         method_name, params = make_method_name(pathparts, httpmeth)
+        #print("after mmn: " + repr(params))
         
-        pmnpath = path0.replace("ACCOUNT_EMAIL", "ACCOUNT_ID")
-        pmnpath = pmnpath.replace("PHA_EMAIL", "APP_ID")
-        pmnpath = pmnpath.replace("SYSTEM_SHORT_NAME", "CODING_SYSTEM")
-        pmnpath = pmnpath.replace("REQTOKEN_ID", "REQUEST_TOKEN")
-        pmnpath = pmnpath.replace("DOCUMENT_ID_0", "DOCUMENT_ID")
-        pmnpath = pmnpath.replace("DOCUMENT_ID_1", "OTHER_DOCUMENT_ID")
-        pmnpath = pmnpath.replace("REL", "REL_TYPE")
-        pmnpath = pmnpath.replace("OTHER_ACCOUNT_ID", "ACCOUNT_ID")
-        pmn = python_meth_names.get((httpmeth.lower(), pmnpath))
-        if not pmn:
-            pmn = method_name   #use rest name if python name could no be determined
-            print("python style name not found for: " + repr((httpmeth.lower(), pmnpath)) + "  " + path0)
-        else:
-            pmn = pmn[0]
+        response_form = ""
+        for child in apinode.childNodes:
+            if child.nodeType == xml.dom.Node.ELEMENT_NODE and child.tagName == "response":
+                response_form = child.getAttribute("response_format")
+                break
+        
+        oauth_legged = apinode.getElementsByTagName("oauth_legged")
+        if len(oauth_legged) != 1:
+            print(apinode.toxml())
+            raise Exception
+        oauth_legged = oauth_legged[0]
+        legged = []
+        if oauth_legged.getAttribute("two_legged"):
+            legged.append(2)
+        if oauth_legged.getAttribute("three_legged"):
+            legged.append(3)
             
-        
-        datafields = acall["data_fields"]
-        assert isinstance(datafields, dict)
-        put_post_data, put_post_data_form = decide_data_form(datafields, dfekvm, httpmeth, path)        
+        skel_url_params0 = forjavadoc.get("url_params")
+        skel_url_params_api = {}
+        for skurpa in skel_url_params0:
+            skel_url_params_api[add_to_apixml.skeleton_style_to_api_style(skurpa)] = skel_url_params0[skurpa]
+
 
         write_both(rest, pynames,
             javadoc(
-                params,
-                #url_params,
-                report_flavors,
-                legged,
-                put_post_data,
-                put_post_data_form,
+                first_report_minimal,
+                audit_query,
+                params,      # from pathparts, may be modified with REPORT_FLAVOR
+                skel_url_params0,   # skeleton style
                 response_form,
-                dividN,
-                acall)
+                legged,
+                apinode,
+                #params,
+                #url_params,
+                forjavadoc,
+                dividN)
         )
         dividN += 1
         
-        query_opts = acall["query_opts"]
-        qopts_r, qopts_o, qopts_field = categorize_query_options(query_opts, httpmeth)
+#        query_opts = acall["query_opts"]
+#        qopts_r, qopts_o, qopts_field = categorize_query_options(query_opts, httpmeth)
             
         write_both(rest, pynames, "    public Object ")
         rest.write(method_name)
-        pynames.write(pmn) 
+        apicall = apinode.getElementsByTagName("call")
+        assert len(apicall) == 1
+        apicall = apicall[0]
+        pynames.write(apicall.getAttribute("name"))
         write_both(rest, pynames, "(\n            ") #)
         
-        url_params = acall["url_params"]
-        mthprms = method_params(qopts_r, qopts_o, params, url_params, qopts_field, legged, first_report_minimal, audit_query)
+        url_params = forjavadoc["url_params"]
+        
+        qopts_o = []
+        qopts_r = []
+        qopts = apinode.getElementsByTagName("query_opts")
+        qopts_field = False
+        if len(qopts):
+            assert len(qopts) == 1
+            qopts = qopts[0].getElementsByTagName("qopt")
+            for qopt in qopts:
+                if qopt.getAttribute("field") == "field":
+                    qopts_field = True
+                elif qopt.getAttribute("required") == "required":
+                    qopts_r.append(qopt.getAttribute("name"))
+                else:
+                    qopts_o.append(qopt.getAttribute("name"))
+                    
+        params_from_url = get_params_from_url(forjavadoc)   # skeleton style param names
+        mthprms = method_params(qopts_r, qopts_o, params_from_url, skel_url_params0, qopts_field, legged, first_report_minimal, audit_query)
         #rest.write(mthprms)
         
+        put_post_data = apinode.getElementsByTagName("put_post_data")
+        assert len(put_post_data) <= 1
+        if len(put_post_data) == 1:
+            put_post_data = put_post_data[0]
+            put_post_data_form = put_post_data.getAttribute("format")
+        else:
+            put_post_data = None
+            
         if put_post_data:
             if mthprms:
                 mthprms += ", "
@@ -671,7 +775,7 @@ def process_calls(rest, pynames, report_flavors, python_meth_names):
             if not put_post_data_form:  # not known, caller must specify
                 mthprms += ", String requestContentType"
         
-        if response_form == "unknown":
+        if not response_form:
             if mthprms:
                 mthprms += ", "
             mthprms += "Object responseContentType"
@@ -682,7 +786,7 @@ def process_calls(rest, pynames, report_flavors, python_meth_names):
         write_both(rest, pynames, mthprms)
                 #==============
         write_both(rest, pynames, ') throws IndivoClientException {\n')
-        
+                            
         if qopts_o:
             options_str1, options_str2 = process_query_opts(qopts_o, qopts_field, first_report_minimal, audit_query)
             write_both(rest, pynames, options_str1)
@@ -697,7 +801,7 @@ def process_calls(rest, pynames, report_flavors, python_meth_names):
         reqquer = request_query(qopts_r, qopts_o)
         write_both(rest, pynames, ", " + reqquer)
         
-        if legged > 2:
+        if 3 in legged:
             write_both(rest, pynames, ", accessToken, accessTokenSecret")
         else:
             write_both(rest, pynames, ", null, null")
@@ -717,7 +821,7 @@ def process_calls(rest, pynames, report_flavors, python_meth_names):
                 write_both(rest, pynames, ", requestContentType")
                 
         # "URL_ENCODED", "PLAIN_TEXT"
-        if response_form == "unknown":
+        if response_form == "":
             write_both(rest, pynames, ", responseContentType")
         elif response_form == "XML":
             write_both(rest, pynames, ", \"application/xml\"")
@@ -728,6 +832,7 @@ def process_calls(rest, pynames, report_flavors, python_meth_names):
         elif response_form == "PLAIN_TEXT":
             write_both(rest, pynames, ", \"text/plain\"")
         else:
+            print("response form: " + response_form)
             raise Exception
         
         write_both(rest, pynames, ", options);\n        return fromRequest;\n")            
@@ -874,23 +979,22 @@ def dashToCamel(frag):
 
 restpath = sys.argv[1]
 shellpath = sys.argv[2]
-indivo_server_path = sys.argv[3]
+#indivo_server_path = sys.argv[3]
 rest0 =   open(restpath + "org/indivo/client/Rest.java", "w")
 pynames =   open(restpath + "org/indivo/client/Rest_py_client_style.java", "w")
 prefix = open(shellpath + "Rest_SHELL.java","r")
 
 prefixSuffix = prefix.readlines()
 writeprefix(prefixSuffix, rest0, pynames)
-repflv, repqflds = get_report_flavors(indivo_server_path)
+repflv, resturls, javadoc_map = pre_process_skeleton()  # resturls and javadoc_map use xml style urls as items/keys
 
-apidom = xml.dom.minidom.parse("../src/main/xml/api.xml")
-python_meth_names = process_api_xml.process_dom(apidom)
+apidom = xml.dom.minidom.parse("../src/main/py/testout.xml")
+rest_to_apinode = process_api_xml.process_dom(apidom)  # map xml style url to pythonic method name
+
+print("python meth names: " + str(len(rest_to_apinode.items())))
+write_common_opts(rest0, pynames) #, repqflds
+call_count, method_count = process_calls(rest0, pynames, repflv, resturls, rest_to_apinode, javadoc_map)
 apidom.unlink()
-print("python meth names: " + str(len(python_meth_names.items())))
-
-write_common_opts(rest0, pynames, repqflds)
-#print("report flavors len: " + str(len(repflv)))
-call_count, method_count = process_calls(rest0, pynames, repflv, python_meth_names)
 writesuffix(rest0, pynames, prefixSuffix)
 rest0.close()
 pynames.close()

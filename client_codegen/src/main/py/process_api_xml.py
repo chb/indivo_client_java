@@ -14,7 +14,7 @@ def process_dom(apidom):
                 print("nodetype: " + str(child.nodeType))
                 raise Exception
             assert child.tagName == "method"
-            process_method(child, mdict)
+            process_method(child, mdict)   # xml style url to pythonic method name
     
     for httmurl, mnames in mdict.items():
         if len(mnames) > 1:
@@ -48,9 +48,11 @@ def process_method(methodNode, mdict):
     #print(mname, httpmeth, murl)
     fromdict = mdict.get((httpmeth,murl))
     if fromdict:
-        fromdict.append(mname)
+        #fromdict.append(mname)
+        fromdict.append(methodNode)
     else:
-        mdict[(httpmeth,murl)] = [mname]
+        #mdict[(httpmeth,murl)] = [mname]
+        mdict[(httpmeth,murl)] = [methodNode]
 
 if __name__ == "__main__":
     apidom = xml.dom.minidom.parse("../xml/api.xml")
