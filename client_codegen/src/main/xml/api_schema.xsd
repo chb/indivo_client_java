@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+ targetNamespace="http://www.indivo.org/api_schema"
+  xmlns:tns="http://www.indivo.org/api_schema"
+  >
+
+	<xs:element name="api">
+    <xs:complexType>
+    	<xs:sequence>
+    		<xs:element name="method" type="tns:Method" maxOccurs="unbounded" minOccurs="1"></xs:element>
+    	</xs:sequence>
+    </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="Method">
+    	<xs:sequence>
+    		<xs:element name="call" type="tns:callType"></xs:element>
+    		<xs:element name="oauth_legged" type="tns:oauth_leggedType"></xs:element>
+    		<xs:element name="response" type="tns:responseType"></xs:element>
+    		<xs:element name="put_post_data" type="tns:put_post_dataType" minOccurs="0"></xs:element>
+    		<xs:element name="query_opts" type="tns:query_optsType" minOccurs="0"></xs:element>
+    	</xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="callType">
+    	<xs:attribute name="method" type="xs:string"></xs:attribute>
+    	<xs:attribute name="name" type="xs:string"></xs:attribute>
+    	<xs:attribute name="url" type="xs:string"></xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="responseType">
+    	<xs:sequence maxOccurs="unbounded" minOccurs="0">
+    		<xs:element name="response" type="tns:responseType"></xs:element>
+    	</xs:sequence>
+    	<xs:attribute name="response_format" type="xs:string"></xs:attribute>
+    	<xs:attribute name="element" type="xs:string"></xs:attribute>
+    	<xs:attribute name="attribute" type="xs:string"></xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="oauth_leggedType">
+    	<xs:attribute name="two_legged" type="xs:string"></xs:attribute>
+    	<xs:attribute name="three_legged" type="xs:string"></xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="put_post_dataType">
+    	<xs:sequence maxOccurs="unbounded" minOccurs="0">
+    		<xs:element name="key">
+    			<xs:complexType>
+    				<xs:attribute name="name" type="xs:string"></xs:attribute>
+    			</xs:complexType></xs:element>
+    	</xs:sequence>
+    	<xs:attribute name="format" type="xs:string"></xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="query_optsType">
+    	<xs:sequence maxOccurs="unbounded" minOccurs="1">
+    		<xs:element name="qopt">
+    			<xs:complexType>
+    				<xs:attribute name="name" type="xs:string"></xs:attribute>
+    			</xs:complexType>
+    		</xs:element>
+    	</xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

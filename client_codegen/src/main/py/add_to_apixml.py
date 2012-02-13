@@ -9,6 +9,13 @@ import use_ast
 def process_dom(apidom):
     docel = apidom.documentElement
     assert docel.tagName == "api"
+    
+#    <api xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+# xsi:noNamespaceSchemaLocation="api_schema.xsd">
+
+    docel.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+    docel.setAttribute("xsi:noNamespaceSchemaLocation", "api_schema.xsd")
+
     mdict = get_method_to_node_dict(docel)
     #add_from_
     
@@ -45,17 +52,10 @@ def get_method_to_node_dict(docel):
             
             process_method(child, mdict)
             
-    
-    #for httmurl, mnames in mdict.items():
-    #    if len(mnames) > 1:
-    #        print(repr(httmurl) + " --> " + repr(mnames))
-
     return mdict
     
 
 
-#yadah = apidom.createElement("yadah")
-#child.appendChild(yadah)
 
 def process_method(methodNode, mdict):
     calls = methodNode.getElementsByTagName("call")
@@ -85,20 +85,31 @@ def merge_skeleton_auxiliary(apidom, mdict):
             print("python style name not found for: " + repr((auxhttpmeth.lower(), pmnpath)) + "  " + auxpath0)
         else:
             for xmln in xmlnodes:
-#                print(xmln.toxml())
-#                if True:
-#                    raise Exception
-                if xmln.getElementsByTagName("call")[0].getAttribute("url").find("equipment") != -1:
-                    print("xmlnodes len: " + str(len(xmlnodes)) + "  -  " + xmln.toxml())
+#                if xmln.getElementsByTagName("call")[0].getAttribute("url").find("equipment") != -1:
+#                    print("xmlnodes len: " + str(len(xmlnodes)) + "  -  " + xmln.toxml())
                 legged, response_format = api_skel_auxiliary.CALLS_AUX.get((auxhttpmeth, auxpath0))
                 oleg = apidom.createElement("oauth_legged")
                 if legged <= 2.5:
                     oleg.setAttribute("two_legged", "two_legged")
                 if legged >= 2.5:
                     oleg.setAttribute("three_legged", "three_legged")
-                xmln.appendChild(apidom.createTextNode("  "))
-                xmln.appendChild(oleg)
-                xmln.appendChild(apidom.createTextNode("\n  "))
+                    
+                elaftcall = None
+                havecall = False
+                for cnde in xmln.childNodes:
+                    if (not havecall) and cnde.nodeType == xml.dom.Node.ELEMENT_NODE and cnde.tagName == "call":
+                        havecall = True
+                    elif havecall and  cnde.nodeType == xml.dom.Node.ELEMENT_NODE:
+                        elaftcall = cnde
+                        break
+                    
+                if elaftcall:
+                    xmln.insertBefore(oleg, elaftcall)
+                    xmln.insertBefore(apidom.createTextNode("\n    "), elaftcall)
+                else:
+                    xmln.appendChild(apidom.createTextNode("  "))
+                    xmln.appendChild(oleg)
+                    xmln.appendChild(apidom.createTextNode("\n  "))
                 
                 if response_format != "unknown":
                     response_nodes = []

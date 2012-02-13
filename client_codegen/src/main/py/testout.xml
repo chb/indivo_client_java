@@ -1,60 +1,60 @@
-<?xml version="1.0" ?><api>
+<?xml version="1.0" ?><api xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="api_schema.xsd">
   <method>
     <call method="post" name="post_access_token" url="/oauth/access_token"/>
-    <response response_format="URL_ENCODED"/>
     <oauth_legged two_legged="two_legged"/>
+    <response response_format="URL_ENCODED"/>
   </method>
   <method>
     <call method="post" name="post_document" url="/records/{RECORD_ID}/documents/"/>
-    <response attribute="id" element="Document" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response attribute="id" element="Document" response_format="XML"/>
     <put_post_data/>
   </method>
   <method>
     <call method="put" name="post_document_ext" url="/records/{RECORD_ID}/documents/external/{APP_ID}/{EXTERNAL_ID}"/>
-    <response attribute="id" element="Document" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response attribute="id" element="Document" response_format="XML"/>
     <put_post_data/>
   </method>
   <method>
     <call method="get" name="account_inbox" url="/accounts/{ACCOUNT_ID}/inbox/"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
     <query_opts><qopt name="status"/><qopt name="order_by"/><qopt name="limit"/><qopt name="include_archive"/><qopt name="offset"/></query_opts>
   </method>
   <method>
     <call method="get" name="account_inbox_message" url="/accounts/{ACCOUNT_ID}/inbox/{MESSAGE_ID}"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="post" name="account_message_archive" url="/accounts/{ACCOUNT_ID}/inbox/{MESSAGE_ID}/archive"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response element="ok" response_format="XML"/>
   </method>
   <method>
     <call method="post" name="account_inbox_message_attachment_accept" url="/accounts/{ACCOUNT_ID}/inbox/{MESSAGE_ID}/attachments/{ATTACHMENT_NUM}/accept"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response element="ok" response_format="XML"/>
   </method>
   <method>
     <call method="get" name="account_notifications" url="/accounts/{ACCOUNT_ID}/notifications/"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
     <query_opts><qopt name="status"/><qopt name="limit"/><qopt name="order_by"/><qopt name="offset"/></query_opts>
   </method>
   <method>
     <call method="post" name="message_account" url="/accounts/{ACCOUNT_ID}/inbox/"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged two_legged="two_legged"/>
+    <response element="ok" response_format="XML"/>
     <put_post_data format="url_encoded"><key name="body"/><key name="severity"/><key name="message_id"/><key name="subject"/></put_post_data>
   </method>
   <method>
     <call method="get" name="get_recapp_documents" url="/records/{RECORD_ID}/apps/{APP_ID}/documents/"/>
+    <oauth_legged three_legged="three_legged"/>
     <response attribute="record_id" element="Documents" response_format="XML">
       <response attribute="id" element="Document"/>
     </response>
-    <oauth_legged three_legged="three_legged"/>
     <query_opts><qopt name="status"/><qopt name="order_by"/><qopt name="type"/><qopt name="limit"/><qopt name="offset"/></query_opts>
   </method>
   <method>
@@ -144,74 +144,74 @@
   </method>
   <method>
     <call method="get" name="read_record" url="/records/{RECORD_ID}"/>
-    <response attribute="id" element="Record" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response attribute="id" element="Record" response_format="XML"/>
   </method>
   <method>
     <call method="post" name="replace_document" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/replace"/>
-    <response attribute="id" element="Document" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response attribute="id" element="Document" response_format="XML"/>
     <put_post_data/>
   </method>
   <method>
     <call method="get" name="read_document_versions" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/versions/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response attribute="record_id" element="Documents" response_format="XML">
       <response attribute="id" element="Document"/>
     </response>
-    <oauth_legged three_legged="three_legged"/>
     <query_opts><qopt name="status"/><qopt name="limit"/><qopt name="order_by"/><qopt name="offset"/></query_opts>
   </method>
   <method>
     <call method="put" name="put_document_relate_existing" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/rels/{REL_TYPE}/{OTHER_DOCUMENT_ID}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response attribute="record_id" element="Documents" response_format="XML">
       <response attribute="id" element="Document"/>
     </response>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="post" name="post_request_token" url="/oauth/request_token"/>
-    <response response_format="URL_ENCODED"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="URL_ENCODED"/>
     <put_post_data format="url_encoded"><key name="indivo_record_id"/><key name="indivo_carenet_id"/></put_post_data>
   </method>
   <method>
     <call method="post" name="claim_request_token" url="/oauth/internal/request_tokens/{REQUEST_TOKEN}/claim"/>
-    <response response_format="PLAIN_TEXT"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="PLAIN_TEXT"/>
   </method>
   <method>
     <call method="get" name="get_request_token_info" url="/oauth/internal/request_tokens/{REQUEST_TOKEN}/info"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="post" name="approve_request_token" url="/oauth/internal/request_tokens/{REQUEST_TOKEN}/approve"/>
-    <response response_format="URL_ENCODED"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="URL_ENCODED"/>
     <put_post_data format="url_encoded"><key name="record_id"/><key name="carenet_id"/></put_post_data>
   </method>
   <method>
     <call method="get" name="verify_surl" url="/oauth/internal/surl-verify"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
     <query_opts><qopt name="surl_sig"/><qopt name="surl_timestamp"/><qopt name="surl_token"/></query_opts>
   </method>
   <method>
     <call method="post" name="post_recapp_setup" url="/records/{RECORD_ID}/apps/{APP_ID}/setup"/>
-    <response response_format="URL_ENCODED"/>
     <oauth_legged two_legged="two_legged"/>
+    <response response_format="URL_ENCODED"/>
     <put_post_data/>
   </method>
   <method>
     <call method="post" name="post_recapp_document" url="/records/{RECORD_ID}/apps/{APP_ID}/documents/"/>
-    <response attribute="id" element="Document" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response attribute="id" element="Document" response_format="XML"/>
     <put_post_data/>
   </method>
   <method>
     <call method="get" name="read_document_meta" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/meta?{PARAMETERS}"/>
-    <response attribute="id" element="Document" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response attribute="id" element="Document" response_format="XML"/>
   </method>
   <method>
     <!-- this is principal_email because it's not necessarily a PHA 
@@ -219,8 +219,8 @@
 	 whoever is authenticated at the time.
       -->
     <call method="put" name="put_record_ext" url="/records/external/{PRINCIPAL_EMAIL}/{EXTERNAL_ID}"/>
-    <response response_format="XML"/>
     <oauth_legged two_legged="two_legged"/>
+    <response response_format="XML"/>
     <put_post_data format="application/xml"/>
   </method>
   <!-- deprecated call
@@ -233,99 +233,99 @@
   -->
   <method>
     <call method="post" name="create_record" url="/records/"/>
+    <oauth_legged two_legged="two_legged"/>
     <response attribute="id" element="Record" response_format="XML">
       <response attribute="document_id" element="demographics"/>
     </response>
-    <oauth_legged two_legged="two_legged"/>
     <put_post_data format="application/xml"/>
   </method>
   <method>
     <call method="put" name="put_recapp_document_ext" url="/records/{RECORD_ID}/apps/{APP_ID}/documents/external/{EXTERNAL_ID}"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
     <put_post_data/>
   </method>
   <method>
     <call method="post" name="create_account" url="/accounts/"/>
-    <response attribute="id" element="Account" response_format="XML"/>
     <oauth_legged two_legged="two_legged"/>
+    <response attribute="id" element="Account" response_format="XML"/>
     <put_post_data format="url_encoded"><key name="primary_secret_p"/><key name="secondary_secret_p"/><key name="contact_email"/><key name="account_id"/><key name="full_name"/></put_post_data>
   </method>
   <method>
     <call method="get" name="get_document_relate" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/rels/{REL_TYPE}/"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
     <query_opts><qopt name="status"/><qopt name="limit"/><qopt name="order_by"/><qopt name="offset"/></query_opts>
   </method>
   <method>
     <call method="get" name="read_records" url="/accounts/{ACCOUNT_ID}/records/"/>
-    <response attribute="id" element="Record" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response attribute="id" element="Record" response_format="XML"/>
     <query_opts><qopt name="status"/><qopt name="order_by"/><qopt name="limit"/><qopt name="offset"/></query_opts>
   </method>
   <method>
     <call method="put" name="put_document_relate_ext" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/rels/{REL_TYPE}/external/{APP_ID}/{EXTERNAL_ID}"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response element="ok" response_format="XML"/>
     <put_post_data/>
   </method>
   <method>
     <call method="post" name="setup_app" url="/records/{RECORD_ID}/apps/{APP_ID}/setup"/>
-    <response response_format="URL_ENCODED"/>
     <oauth_legged two_legged="two_legged"/>
+    <response response_format="URL_ENCODED"/>
     <put_post_data/>
   </method>
   <method>
     <call method="post" name="create_share" url="/records/{RECORD_ID}/shares/"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response element="ok" response_format="XML"/>
     <put_post_data format="url_encoded"><key name="account_id"/><key name="role_label"/></put_post_data>
   </method>
   <method>
     <call method="get" name="get_shares" url="/records/{RECORD_ID}/shares/"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="delete" name="delete_share" url="/records/{RECORD_ID}/shares/{ACCOUNT_ID}"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response element="ok" response_format="XML"/>
   </method>
   <method>
     <call method="get" name="get_account_permissions" url="/accounts/{ACCOUNT_ID}/permissions/"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="get" name="get_carenet_account_permissions" url="/carenets/{CARENET_ID}/accounts/{ACCOUNT_ID}/permissions"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="get" name="get_carenet_app_permissions" url="/carenets/{CARENET_ID}/apps/{APP_ID}/permissions"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response element="ok" response_format="XML"/>
   </method>
   <method>
     <call method="get" name="read_document" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}"/>
-    <response attribute="id" element="Document"/>
     <oauth_legged three_legged="three_legged"/>
+    <response attribute="id" element="Document"/>
   </method>
   <method>
     <call method="post" name="set_document_status" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/set-status"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response element="ok" response_format="XML"/>
     <put_post_data format="url_encoded"><key name="status"/><key name="reason"/></put_post_data>
   </method>
   <method>
     <call method="get" name="read_document_status_history" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/status-history"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="get" name="read_carenet_document_meta" url="/carenets/{CARENET_ID}/documents/{DOCUMENT_ID}/meta?{PARAMETERS}"/>
-    <response attribute="id" element="Document" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response attribute="id" element="Document" response_format="XML"/>
   </method>
   <method>
     <call method="get" name="read_carenet_special_document" url="/carenets/{CARENET_ID}/documents/special/{SPECIAL_DOCUMENT}"/>
@@ -334,67 +334,67 @@
   </method>
   <method>
     <call method="put" name="post_document_label" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/label"/>
+    <oauth_legged three_legged="three_legged"/>
     <response attribute="id" element="Document" response_format="XML">
       <reponse attribute="value" element="label"/>
     </response>
-    <oauth_legged three_legged="three_legged"/>
     <put_post_data format="text/plain"/>
   </method>
   <method>
     <call method="get" name="read_recapp_document_meta" url="/records/{RECORD_ID}/apps/{APP_ID}/documents/{DOCUMENT_ID}/meta"/>
-    <response attribute="id" element="Document" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response attribute="id" element="Document" response_format="XML"/>
   </method>
   <method>
     <call method="put" name="put_document_ext_replace" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/replace/external/{APP_ID}/{EXTERNAL_ID}"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
     <put_post_data/>
   </method>
   <method>
     <call method="get" name="get_record_owner" url="/records/{RECORD_ID}/owner"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="put" name="set_record_owner" url="/records/{RECORD_ID}/owner"/>
-    <response attribute="email" element="Account" response_format="XML"/>
     <oauth_legged two_legged="two_legged"/>
+    <response attribute="email" element="Account" response_format="XML"/>
     <put_post_data format="text/plain"/>
   </method>
   <method>
     <call method="put" name="put_document_ext_label" url="/records/{RECORD_ID}/documents/external/{APP_ID}/{EXTERNAL_ID}/label"/>
+    <oauth_legged three_legged="three_legged"/>
     <response attribute="id" element="Document" response_format="XML">
       <response attribute="value" element="label"/>
     </response>
-    <oauth_legged three_legged="three_legged"/>
     <put_post_data format="text/plain"/>
   </method>
   <method>
     <call method="get" name="get_record_apps" url="/records/{RECORD_ID}/apps/"/>
-    <response attribute="id" element="App" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response attribute="id" element="App" response_format="XML"/>
     <query_opts><qopt name="type"/></query_opts>
   </method>
   <method>
     <call method="get" name="read_document_ext_meta" url="/records/{RECORD_ID}/documents/external/{APP_ID}/{EXTERNAL_ID}/meta"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="get" name="read_recapp_document_ext_meta" url="/records/{RECORD_ID}/apps/{APP_ID}/documents/external/{EXTERNAL_ID}/meta"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="get" name="get_recapp_document" url="/records/{RECORD_ID}/apps/{APP_ID}/documents/{DOCUMENT_ID}?{PARAMETERS}"/>
-    <response attribute="id" element="Document"/>
     <oauth_legged three_legged="three_legged"/>
+    <response attribute="id" element="Document"/>
   </method>
   <method>
     <call method="post" name="get_request_token" url="/oauth/request_token"/>
-    <response response_format="URL_ENCODED"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="URL_ENCODED"/>
     <put_post_data format="url_encoded"><key name="indivo_record_id"/><key name="indivo_carenet_id"/></put_post_data>
   </method>
   <method>
@@ -403,110 +403,110 @@
   </method>
   <method>
     <call method="post" name="record_notify" url="/records/{RECORD_ID}/notifications/"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response element="ok" response_format="XML"/>
     <put_post_data format="url_encoded"><key name="content"/><key name="app_url"/><key name="document_id"/></put_post_data>
   </method>
   <method>
     <call method="post" name="post_document_relate_given" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/rels/{REL_TYPE}/"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response element="ok" response_format="XML"/>
     <put_post_data/>
   </method>
   <method>
     <call method="put" name="put_recapp_document_label" url="/records/{RECORD_ID}/apps/{APP_ID}/documents/{DOCUMENT_ID}/label"/>
+    <oauth_legged three_legged="three_legged"/>
     <response attribute="id" element="Document" response_format="XML">
       <response attribute="value" element="label"/>
     </response>
-    <oauth_legged three_legged="three_legged"/>
     <put_post_data format="text/plain"/>
   </method>
   <method>
     <call method="get" name="read_documents" url="/records/{RECORD_ID}/documents/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response attribute="" element="Documents" response_format="XML">
       <response attribute="id" element="Document"/>
     </response>
-    <oauth_legged three_legged="three_legged"/>
     <query_opts><qopt name="status"/><qopt name="order_by"/><qopt name="type"/><qopt name="limit"/><qopt name="offset"/></query_opts>
   </method>
   <method>
     <call method="delete" name="delete_recapp_document" url="/records/{RECORD_ID}/apps/{APP_ID}/documents/{DOCUMENT_ID}"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response element="ok" response_format="XML"/>
   </method>
   <method>
     <call method="get" name="read_special_document" url="/records/{RECORD_ID}/documents/special/{SPECIAL_DOCUMENT}"/>
-    <response attribute="id" element="Document" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response attribute="id" element="Document" response_format="XML"/>
   </method>
   <method>
     <call method="post" name="message_record" url="/records/{RECORD_ID}/inbox/{MESSAGE_ID}"/>
-    <response attribute="" element="Result" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response attribute="" element="Result" response_format="XML"/>
     <put_post_data format="url_encoded"><key name="body"/><key name="body_type"/><key name="num_attachments"/><key name="severity"/><key name="subject"/></put_post_data>
   </method>
   <method>
     <call method="post" name="message_record_attachment" url="/records/{RECORD_ID}/inbox/{MESSAGE_ID}/attachments/{ATTACHMENT_NUM}"/>
-    <response attribute="" element="Result" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response attribute="" element="Result" response_format="XML"/>
     <put_post_data format="text/plain"/>
   </method>
   <method>
     <call method="put" name="put_special_document" url="/records/{RECORD_ID}/documents/special/{SPECIAL_DOCUMENT}"/>
-    <response attribute="id" element="Document" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response attribute="id" element="Document" response_format="XML"/>
     <put_post_data/>
   </method>
   <method>
     <call method="get" name="read_record_audit" url="/records/{RECORD_ID}/audits/?{PARAMETERS}"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
     <query_opts><qopt name="limit"/><qopt name="order_by"/><qopt name="offset"/></query_opts>
   </method>
   <method>
     <call method="get" name="read_document_audit" url="/records/{RECORD_ID}/audits/documents/{DOCUMENT_ID}/?{PARAMETERS}"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
     <query_opts><qopt name="limit"/><qopt name="order_by"/><qopt name="offset"/></query_opts>
   </method>
   <method>
     <call method="get" name="read_function_audit" url="/records/{RECORD_ID}/audits/documents/{DOCUMENT_ID}/functions/{FUNCTION_NAME}/?{PARAMETERS}"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
     <query_opts><qopt name="limit"/><qopt name="order_by"/><qopt name="offset"/></query_opts>
   </method>
   <method>
     <call method="get" name="query_audit" url="/records/{RECORD_ID}/audits/query/?{PARAMETERS}"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
     <query_opts><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/><qopt field="field"/></query_opts>
   </method>
 
   <method>
     <call method="get" name="list_apps" url="/apps/"/>
-    <response response_format="XML"/>
     <oauth_legged two_legged="two_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="get" name="get_app_info" url="/apps/{APP_ID}"/>
-    <response response_format="XML"/>
     <oauth_legged two_legged="two_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="delete" name="delete_app" url="/apps/{APP_ID}"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged two_legged="two_legged"/>
+    <response element="ok" response_format="XML"/>
   </method>
 
   <method>
     <call method="get" name="get_record_app" url="/records/{RECORD_ID}/apps/{APP_ID}"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="delete" name="delete_record_app" url="/records/{RECORD_ID}/apps/{APP_ID}"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response element="ok" response_format="XML"/>
   </method>
   <method>
     <call method="put" name="enable_record_app" url="/records/{RECORD_ID}/apps/{APP_ID}"/>
@@ -524,229 +524,229 @@
   <!-- App-specific Documents -->
   <method>
     <call method="get" name="read_app_documents" url="/apps/{APP_ID}/documents/?{PARAMETERS}"/>
+    <oauth_legged two_legged="two_legged"/>
     <response attribute="record_id" element="Documents" response_format="XML">
       <response attribute="id" element="Document"/>
     </response>
-    <oauth_legged two_legged="two_legged"/>
     <query_opts><qopt name="status"/><qopt name="order_by"/><qopt name="type"/><qopt name="limit"/><qopt name="offset"/></query_opts>
   </method>
   <method>
     <call method="post" name="post_app_document" url="/apps/{APP_ID}/documents/"/>
-    <response attribute="id" element="Document" response_format="XML"/>
     <oauth_legged two_legged="two_legged"/>
+    <response attribute="id" element="Document" response_format="XML"/>
     <put_post_data/>
   </method>
   <method>
     <call method="put" name="post_app_document_ext" url="/apps/{APP_ID}/documents/external/{EXTERNAL_ID}"/>
-    <response attribute="id" element="Document" response_format="XML"/>
     <oauth_legged two_legged="two_legged"/>
+    <response attribute="id" element="Document" response_format="XML"/>
     <put_post_data/>
   </method>
   <method>
     <call method="get" name="read_app_document_meta" url="/apps/{APP_ID}/documents/{DOCUMENT_ID}/meta"/>
-    <response attribute="id" element="Document" response_format="XML"/>
     <oauth_legged two_legged="two_legged"/>
+    <response attribute="id" element="Document" response_format="XML"/>
   </method>
   <method>
     <call method="put" name="create_or_replace_app_document" url="/apps/{APP_ID}/documents/{DOCUMENT_ID}"/>
-    <response attribute="id" element="Document" response_format="XML"/>
     <oauth_legged two_legged="two_legged"/>
+    <response attribute="id" element="Document" response_format="XML"/>
     <put_post_data/>
   </method>
   <method>
     <call method="get" name="read_app_document_ext_meta" url="/apps/{APP_ID}/documents/external/{EXTERNAL_ID}/meta"/>
-    <response response_format="XML"/>
     <oauth_legged two_legged="two_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="get" name="read_app_document" url="/apps/{APP_ID}/documents/{DOCUMENT_ID}?{PARAMETERS}"/>
-    <response attribute="id" element="Document"/>
     <oauth_legged two_legged="two_legged"/>
+    <response attribute="id" element="Document"/>
   </method>
   <method>
     <call method="put" name="post_app_document_label" url="/apps/{APP_ID}/documents/{DOCUMENT_ID}/label"/>
+    <oauth_legged two_legged="two_legged"/>
     <response attribute="id" element="Document" response_format="XML">
       <response attribute="value" element="label"/>
     </response>
-    <oauth_legged two_legged="two_legged"/>
     <put_post_data format="text/plain"/>
   </method>
   <method>
     <call method="delete" name="remove_app_document" url="/apps/{APP_ID}/documents/{DOCUMENT_ID}"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged two_legged="two_legged"/>
+    <response element="ok" response_format="XML"/>
   </method>
   <method>
     <call method="delete" name="delete_documents" url="/records/{RECORD_ID}/documents/"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response element="ok" response_format="XML"/>
   </method>
 
   <!-- Reports -->
   <method>
     <call method="get" name="read_measurements" url="/records/{RECORD_ID}/reports/minimal/measurements/{LAB_CODE}/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response attribute="record" element="Measurements" response_format="XML">
       <response attribute="id" element="Measurement"/>
     </response>
     <query_opts><qopt data_type="STRING" field="field" name="lab_code"/><qopt data_type="NUMBER" field="field" name="value"/><qopt data_type="DATE" field="field" name="date_measured"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_immunizations" url="/records/{RECORD_ID}/reports/minimal/immunizations/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="STRING" field="field" name="vaccine_type"/><qopt data_type="DATE" field="field" name="date_administered"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_allergies" url="/records/{RECORD_ID}/reports/minimal/allergies/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="DATE" field="field" name="date_diagnosed"/><qopt data_type="STRING" field="field" name="allergen_type"/><qopt data_type="STRING" field="field" name="allergen_name"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_labs" url="/records/{RECORD_ID}/reports/minimal/labs/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="STRING" field="field" name="lab_type"/><qopt data_type="DATE" field="field" name="date_measured"/><qopt data_type="STRING" field="field" name="lab_test_name"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_procedures" url="/records/{RECORD_ID}/reports/minimal/procedures/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="STRING" field="field" name="procedure_name"/><qopt data_type="DATE" field="field" name="date_performed"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_problems" url="/records/{RECORD_ID}/reports/minimal/problems/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="STRING" field="field" name="problem_name"/><qopt data_type="DATE" field="field" name="date_onset"/><qopt data_type="DATE" field="field" name="date_resolution"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_ccr_experimental" url="/records/{RECORD_ID}/reports/experimental/ccr?{PARAMETERS}"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="get" name="read_medications" url="/records/{RECORD_ID}/reports/minimal/medications/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="STRING" field="field" name="medication_name"/><qopt data_type="STRING" field="field" name="medication_brand_name"/><qopt data_type="DATE" field="field" name="date_started"/><qopt data_type="DATE" field="field" name="date_stopped"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_equipment" url="/records/{RECORD_ID}/reports/minimal/equipment/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="DATE" field="field" name="date_started"/><qopt data_type="DATE" field="field" name="date_stopped"/><qopt data_type="STRING" field="field" name="equipment_name"/><qopt data_type="STRING" field="field" name="equipment_vendor"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_simple_clinical_notes" url="/records/{RECORD_ID}/reports/minimal/simple-clinical-notes/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="STRING" field="field" name="specialty"/><qopt data_type="STRING" field="field" name="provider_name"/><qopt data_type="DATE" field="field" name="date_of_visit"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_vitals_category" url="/records/{RECORD_ID}/reports/minimal/vitals/{CATEGORY}/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="STRING" field="field" name="category"/><qopt data_type="NUMBER" field="field" name="value"/><qopt data_type="DATE" field="field" name="date_measured"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_vitals" url="/records/{RECORD_ID}/reports/minimal/vitals/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="STRING" field="field" name="category"/><qopt data_type="NUMBER" field="field" name="value"/><qopt data_type="DATE" field="field" name="date_measured"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
 
   <!-- Carenet Reports -->
   <method>
     <call method="get" name="read_carenet_measurements" url="/carenets/{CARENET_ID}/reports/minimal/measurements/{LAB_CODE}/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response attribute="record" element="Measurements" response_format="XML">
       <response attribute="id" element="Measurement"/>
     </response>
     <query_opts><qopt data_type="STRING" field="field" name="lab_code"/><qopt data_type="NUMBER" field="field" name="value"/><qopt data_type="DATE" field="field" name="date_measured"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_carenet_immunizations" url="/carenets/{CARENET_ID}/reports/minimal/immunizations/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="STRING" field="field" name="vaccine_type"/><qopt data_type="DATE" field="field" name="date_administered"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_carenet_allergies" url="/carenets/{CARENET_ID}/reports/minimal/allergies/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="DATE" field="field" name="date_diagnosed"/><qopt data_type="STRING" field="field" name="allergen_type"/><qopt data_type="STRING" field="field" name="allergen_name"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_carenet_procedures" url="/carenets/{CARENET_ID}/reports/minimal/procedures/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="STRING" field="field" name="procedure_name"/><qopt data_type="DATE" field="field" name="date_performed"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_carenet_problems" url="/carenets/{CARENET_ID}/reports/minimal/problems/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="STRING" field="field" name="problem_name"/><qopt data_type="DATE" field="field" name="date_onset"/><qopt data_type="DATE" field="field" name="date_resolution"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_carenet_medications" url="/carenets/{CARENET_ID}/reports/minimal/medications/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="STRING" field="field" name="medication_name"/><qopt data_type="STRING" field="field" name="medication_brand_name"/><qopt data_type="DATE" field="field" name="date_started"/><qopt data_type="DATE" field="field" name="date_stopped"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_carenet_equipment" url="/carenets/{CARENET_ID}/reports/minimal/equipment/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="DATE" field="field" name="date_started"/><qopt data_type="DATE" field="field" name="date_stopped"/><qopt data_type="STRING" field="field" name="equipment_name"/><qopt data_type="STRING" field="field" name="equipment_vendor"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_carenet_vitals_category" url="/carenets/{CARENET_ID}/reports/minimal/vitals/{CATEGORY}?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="STRING" field="field" name="category"/><qopt data_type="NUMBER" field="field" name="value"/><qopt data_type="DATE" field="field" name="date_measured"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_carenet_vitals" url="/carenets/{CARENET_ID}/reports/minimal/vitals/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="STRING" field="field" name="category"/><qopt data_type="NUMBER" field="field" name="value"/><qopt data_type="DATE" field="field" name="date_measured"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_carenet_labs" url="/carenets/{CARENET_ID}/reports/minimal/labs/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="STRING" field="field" name="lab_type"/><qopt data_type="DATE" field="field" name="date_measured"/><qopt data_type="STRING" field="field" name="lab_test_name"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="read_carenet_simple_clinical_notes" url="/carenets/{CARENET_ID}/reports/minimal/simple-clinical-notes/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response response_format="XML"/>
     <query_opts><qopt data_type="STRING" field="field" name="specialty"/><qopt data_type="STRING" field="field" name="provider_name"/><qopt data_type="DATE" field="field" name="date_of_visit"/><qopt name="status"/><qopt name="date_group"/><qopt name="group_by"/><qopt name="order_by"/><qopt name="aggregate_by"/><qopt name="date_range"/><qopt name="limit"/><qopt name="offset"/></query_opts>
-    <oauth_legged three_legged="three_legged"/>
   </method>
   <method>
     <call method="get" name="get_autoshare" url="/records/{RECORD_ID}/autoshare/bytype/?{PARAMETERS}"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
     <query_opts><qopt name="type" required="required"/></query_opts>
   </method>
   <method>
     <call method="get" name="get_autoshare_bytype_all" url="/records/{RECORD_ID}/autoshare/bytype/all"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="post" name="post_autoshare" url="/records/{RECORD_ID}/autoshare/carenets/{CARENET_ID}/bytype/set"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response element="ok" response_format="XML"/>
     <put_post_data format="url_encoded"><key name="type"/></put_post_data>
   </method>
   <method>
     <call method="post" name="delete_autoshare" url="/records/{RECORD_ID}/autoshare/carenets/{CARENET_ID}/bytype/unset"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response element="ok" response_format="XML"/>
     <put_post_data format="url_encoded"><key name="type"/></put_post_data>
   </method>
 
@@ -765,109 +765,109 @@
   <!-- coding systems -->
   <method>
     <call method="get" name="lookup_code" url="/codes/systems/{CODING_SYSTEM}/query?{PARAMETERS}"/>
-    <response response_format="JSON"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response response_format="JSON"/>
     <query_opts><qopt name="q"/></query_opts>
   </method>
 
   <!-- Sharing -->
   <method>
     <call method="get" name="get_account_records" url="/accounts/{ACCOUNT_ID}/records/"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
     <query_opts><qopt name="status"/><qopt name="order_by"/><qopt name="limit"/><qopt name="offset"/></query_opts>
   </method>
   <method>
     <call method="get" name="get_carenet_apps" url="/carenets/{CARENET_ID}/apps/?{PARAMETERS}"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="get" name="get_carenet_accounts" url="/carenets/{CARENET_ID}/accounts/?{PARAMETERS}"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="post" name="post_carenet_account" url="/carenets/{CARENET_ID}/accounts/"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response element="ok" response_format="XML"/>
     <put_post_data format="url_encoded"><key name="write"/><key name="account_id"/></put_post_data>
   </method>
   <method>
     <call method="delete" name="delete_carenet_account" url="/carenets/{CARENET_ID}/accounts/{ACCOUNT_ID}"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response element="ok" response_format="XML"/>
   </method>
   <method>
     <call method="delete" name="delete_carenet_document" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/carenets/{CARENET_ID}"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response element="ok" response_format="XML"/>
   </method>
   <method>
     <call method="post" name="create_carenet" url="/records/{RECORD_ID}/carenets/"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response response_format="XML"/>
     <put_post_data format="url_encoded"><key name="name"/></put_post_data>
   </method>
   <method>
     <call method="delete" name="delete_carenet" url="/carenets/{CARENET_ID}"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response element="ok" response_format="XML"/>
   </method>
   <method>
     <call method="post" name="rename_carenet" url="/carenets/{CARENET_ID}/rename"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response response_format="XML"/>
     <put_post_data format="url_encoded"><key name="name"/></put_post_data>
   </method>
   <method>
     <call method="get" name="get_record_carenets" url="/records/{RECORD_ID}/carenets/"/>
+    <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
     <response attribute="record_id" element="Carenets" response_format="XML">
       <response attribute="id" element="Carenet"/>
     </response>
-    <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
   </method>
   <method>
     <call method="get" name="get_document_carenets" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/carenets/"/>
-    <response response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="get" name="get_carenet_record" url="/carenets/{CARENET_ID}/record"/>
-    <response attribute="id" element="Record" response_format="XML"/>
     <oauth_legged three_legged="three_legged"/>
+    <response attribute="id" element="Record" response_format="XML"/>
   </method>
   <method>
     <call method="get" name="get_carenet_documents" url="/carenets/{CARENET_ID}/documents/?{PARAMETERS}"/>
+    <oauth_legged three_legged="three_legged"/>
     <response attribute="record_id" element="Documents" response_format="XML">
       <response attribute="id" element="Document"/>
     </response>
-    <oauth_legged three_legged="three_legged"/>
     <query_opts><qopt name="type"/></query_opts>
   </method>
   <method>
     <call method="get" name="get_carenet_document" url="/carenets/{CARENET_ID}/documents/{DOCUMENT_ID}"/>
-    <response/>
     <oauth_legged three_legged="three_legged"/>
+    <response/>
   </method>
   <method>
     <call method="put" name="post_carenet_document" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/carenets/{CARENET_ID}"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response element="ok" response_format="XML"/>
   </method>
   <method>
     <call method="get" name="get_version" url="/version"/>
-    <response response_format="XML"/>
     <oauth_legged two_legged="two_legged"/>
+    <response response_format="XML"/>
   </method>
   <method>
     <call method="put" name="post_carenet_app" url="/carenets/{CARENET_ID}/apps/{APP_ID}"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response element="ok" response_format="XML"/>
   </method>
   <method>
     <call method="delete" name="delete_carenet_app" url="/carenets/{CARENET_ID}/apps/{APP_ID}"/>
-    <response element="ok" response_format="XML"/>
     <oauth_legged three_legged="three_legged" two_legged="two_legged"/>
+    <response element="ok" response_format="XML"/>
   </method>
 </api>

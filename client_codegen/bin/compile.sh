@@ -6,7 +6,7 @@ fi
 
 mkdir ../classes
 
-javac -d ../classes -classpath \
+javac -Xlint:unchecked -d ../classes -classpath \
 ../../lib/commons-codec-1.3.jar:\
 ../../lib/commons-lang-2.5.jar:\
 ../../lib/httpclient-4.0.1.jar:\

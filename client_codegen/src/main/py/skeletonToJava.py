@@ -86,44 +86,82 @@ def write_common_opts(rest0, pynames): #, report_query_fields:
                 nfdelim = ", "
             write_both(rest0, pynames, "\"" + acov + "\"")
         write_both(rest0, pynames, "));\n")
-    write_both(rest0, pynames, "    }\n\n")
+    write_both(rest0, pynames, "}\n\n")
+        
+        
+        
+def write_report_query_options(rest0, pynames, apidom):
+    write_both(rest0, pynames, "private Map<String, List<String>> validQueryFields")
+    write_both(rest0, pynames, " = new HashMap<String,List<String>>();\n")
+    write_both(rest0, pynames, "private Map<String, Class> queryFieldType")
+    write_both(rest0, pynames, " = new HashMap<String, Class>();\n{\n")
+    write_both(rest0, pynames, "    List<String> vqfs = null;\n")
     
-#    write_both(rest0, pynames, "private Map<String, List<String>> validQueryFields")
-#    write_both(rest0, pynames, " = new HashMap<String,List<String>>();\n")
-#    write_both(rest0, pynames, "private Map<String, Class> queryFieldType")
-#    write_both(rest0, pynames, " = new HashMap<String, Class>();\n{\n")
-#    write_both(rest0, pynames, "    List<String> vqfs = null;\n")
-#    queryFieldTypes = {}
-#    for qfk, qfv in report_query_fields.items():
-#        write_both(rest0, pynames, "    vqfs = Arrays.asList(")
-#        for aqfi, aqfv in enumerate(qfv):
+    queryFieldTypes = {}
+    docel = apidom.documentElement
+    methods = docel.getElementsByTagName("method")
+    for method in methods:
+        calls = method.getElementsByTagName("call")
+        assert len(calls) == 1
+        call = calls[0]
+        if call.getAttribute("method") == "get" and call.getAttribute("url").find("/reports/minimal/") != -1:
+            curl = call.getAttribute("url")
+            rmix = curl.find("/reports/minimal/")
+            flavor = curl[rmix +1]
+            flavor = flavor[0: flavor.find('/')]
+            qopts = method.getElementsByTagName("query_opts")
+            assert len(qopts) == 1
+            qopts = qopts[0].getElementsByTagName("qopt")
+            write_both(rest0, pynames, "    vqfs = Arrays.asList(")
+            fieldnames = ""
+            for qopt in qopts:
+                if qopt.getAttribute("field") == "field":
+                    name = qopt.getAttribute("name")
+                    data_type = qopt.getAttribute("data_type")
+                    assert name and data_type
+                    if fieldnames:
+                        fieldnames += ", "
+                    fieldnames += '"' + name + '"'
+                    
+                    classname = ""
+                    if data_type == "STRING":
+                        classname = "String.class"
+                    elif data_type == "DATE":
+                        classname = "Date.class"
+                    elif data_type == "NUMBER":
+                        classname = "Number.class"
+                    else:
+                        print("unexpected query field type: " + name + ": " + data_type)
+                        raise Exception
+
+                    qft = queryFieldTypes.get(name)
+                    if qft:
+                        if qft != classname:
+                            print("disagreement on query field type: " + name + " -- " + qft + " or " + classname)
+                    else:
+                        queryFieldTypes[name] = classname
+            
+            write_both(rest0, pynames, fieldnames + ");\n    validQueryFields.put(\"" + flavor + "\", vqfs);\n\n")
+    for qftk in queryFieldTypes.keys():
+        write_both(rest0, pynames, "    queryFieldType.put(\"" + qftk + "\", " + queryFieldTypes[qftk] + ");\n")
+    write_both(rest0, pynames, "}\n\n")    
 #            if aqfi:
 #                write_both(rest0, pynames, ", ")
 #            write_both(rest0, pynames, "\"" + aqfv[0] + "\"")
 #             
 #            qfvt = None;
-#            if aqfv[1] == "STRING":
-#                qfvt = "String.class"
-#            elif aqfv[1] == "DATE":
-#                qfvt = "Date.class"
-#            elif aqfv[1] == "NUMBER":
-#                qfvt = "Number.class"
-#            else:
-#                print("unexpected query field type: " + aqfv[0] + ": " + aqfv[1])
-#                raise Exception
 #            if queryFieldTypes.has_key(aqfv[0]):
 #                if queryFieldTypes[aqfv[0]] != qfvt:
 #                    print("inconsistent type for query field " + aqfv[0] + ": " + queryFieldTypes[aqfv[0]] + " and " + qfvt)
 #                    raise Exception
 #            else:
 #                queryFieldTypes[aqfv[0]] = qfvt
-                
-    #    write_both(rest0, pynames, ");\n")
-    #    write_both(rest0, pynames, "    validQueryFields.put(\"" + qfk + "\", vqfs);\n")
-    write_both(rest0, pynames, "\n")
-    #for aqfvk in queryFieldTypes.keys():
-    #    write_both(rest0, pynames, "    queryFieldType.put(\"" + aqfvk + "\", " + queryFieldTypes[aqfvk] + ");\n")
-    write_both(rest0, pynames, "}\n\n")
+#                
+#        write_both(rest0, pynames, ");\n")
+#        write_both(rest0, pynames, "    validQueryFields.put(\"" + qfk + "\", vqfs);\n")
+#    write_both(rest0, pynames, "\n")
+#    for aqfvk in queryFieldTypes.keys():
+#        write_both(rest0, pynames, "    queryFieldType.put(\"" + aqfvk + "\", " + queryFieldTypes[aqfvk] + ");\n")
 
 
 def pre_process_skeleton():
@@ -212,16 +250,18 @@ def javadoc(report_minimal, audit_query, params_from_pathparts, skel_url_params0
 #    for skurpa in skel_url_params0:
 #        skel_url_params0[add_to_apixml.skeleton_style_to_api_style(skurpa)] = skel_url_params0[skurpa]
     divid = "o" + str(dividN)
+    dividO = "O" + str(dividN)
     retVal = ''
     retVal += "    /**\n"
+
     description = acall.get("description").strip()
     if description[len(description) -1:] != '.':
         description += "."
-    retVal += "     * " + acall.get("description") + "<br/>\n"
-    retVal += """<a href="" onclick="document.getElementById('{0}').style.display='inline'; return false;"
->details</a>
-<div id="{0}" style="display:none">\n""".format(divid)
-    retVal += "     * <code>" + acall.get("method") + " " + acall.get("path") + "<\code><br/>\n" 
+    retVal += "     * " + acall.get("description") + "\n<br/>"
+    retVal += """<a href="" onclick="document.getElementById('{0}').style.display='inline'; document.getElementById('{1}').style.display='inline'; return false;"
+>show details</a>&nbsp;&nbsp;&nbsp;""".format(divid, dividO)
+    retVal += """<a href="" onclick="document.getElementById('{0}').style.display='none'; document.getElementById('{1}').style.display='none'; return false;"><b>hide details</b></a><br/><br/>\n""".format(divid, dividO)
+    retVal += "     * <code>" + acall.get("method") + " " + acall.get("path") + "</code><br/>\n" 
     retVal += "     *  accessibility: " + acall.get("access_doc") + "<br/>\n"
     
     for aparm in params_from_url:
@@ -285,22 +325,29 @@ def javadoc(report_minimal, audit_query, params_from_pathparts, skel_url_params0
                    will cause exception to be thrown if expectation does not match server response
                    may be null to allow any type"""
 
-    retVal += """\
-     * @param options Map<String,Object> or null.
-allowed key-value pairs are<br/>:
-    "responseTypeConversion": object that implements ResponseTypeConversion,
-    "indivoInstallation": String array of length 3: foreignURL, consumerToken, consumerSecret.
-                           Use this to access an indivo installation other then one provided by new Rest(...)
-    "connectionTimeout": integer,
-    "socketTimeout": integer
-
+    retVal += "     * @param options Map<String,Object> or null.<br/>"
+    
+    retVal += """<div id="{0}" style="display:none">\n""".format(divid, dividO)
+    retVal += """
+     * &nbsp;&nbsp;&nbsp;&nbsp;allowed options Map key-value pairs are:<ul>
+     * <li>"responseTypeConversion": object that implements ResponseTypeConversion;</li>
+     * <li>"indivoInstallation": String array of length 3: foreignURL, consumerToken, consumerSecret.
+     * Use this to access an indivo installation other then one provided by new Rest(...);</li>
+     * <li>"connectionTimeout": integer;</li>
+     * <li>"socketTimeout": integer.</li></ul>
+</div>
 """
     return_desc = acall.get("return_desc")
     return_ex = acall.get("return_ex")
+    return_ex = return_ex.replace('<', "&lt;").replace('>', "&gt;")
     if return_desc or return_ex:
         retVal += "     * @return " + return_desc.replace("*/*", "* / *")
         if return_ex:
-            retVal += "<br/>\n<pre>" + return_ex + "</pre>\n"
+            retVal += """<div id="{1}" style="display:none">\n""".format(divid, dividO)
+            retVal += "\n<pre><b>return example:</b>" + return_ex + "</pre></div>\n"
+    if not return_ex:
+            retVal += """<div id="{1}" style="display:none"></div>\n""".format(divid, dividO)
+        
             
     deprecated, added, changed = (acall.get("deprecated"), acall.get("added"), acall.get("changed"))
     if deprecated or added or changed:
@@ -317,9 +364,7 @@ allowed key-value pairs are<br/>:
             if isinstance(changed, tuple):
                 changed = " ".join(changed)
             retVal += "changed: " + changed + "&nbsp;&nbsp;&nbsp;"
-            
-    retVal += """<a href="" onclick="document.getElementById('{0}').style.display='none'; return false;"><b>hide</b></a><br/><br/></div>""".format(divid)
-                   
+                               
     return retVal + '    */\n'
 
 
@@ -530,47 +575,47 @@ def request_query(qopts_r, qopts_o):
         
     return querystring
 
-def decide_data_form(datafields, dfekvm, httpmeth, path):
-#datafields'': The raw XML attachment data.: 1
-#datafields'': A valid Indivo Contact Document (see :doc:`/schemas/contact-schema`).: 2
-#datafields'': The raw content of the document to create/update.: 2
-#datafields'': The raw content of the document to create.: 13
-#datafields'': Raw content that will be used as a setup document for the record. **OPTIONAL**.: 1
-#datafields'': The email address of the new account owner.: 2
-#datafields'': The new label for the document: 4
-    dfkeys = datafields.keys()
-    
-    if httpmeth in ["GET", "DELETE"] and datafields:
-        print("GET/DELETE with data_fields: " + httpmeth + " " + path + " -- " + datafields)
-        raise Exception
-    elif httpmeth in ["PUT", "POST"] and not datafields:
-        #print("PUT/POST without data_fields: " + httpmeth + " " + path)
-        pass
-    elif datafields:
-        if len(dfkeys) == 1 and dfkeys[0] == "":
-            dfekv = datafields[""]
-            if dfekvm.has_key(dfekv):
-                dfekvm[dfekv] = dfekvm[dfekv] +1
-            else:
-                dfekvm[dfekv] = 1
-                
-    put_post_data = False
-    put_post_data_form = None
-    if dfkeys:
-        put_post_data = True
-        if dfkeys[0]:
-            put_post_data_form = "url_encoded" # actual key/value pair expected
-        else:
-            assert len(dfkeys) == 1
-            dfval = datafields[""].lower()
-            if dfval.find("raw content") != -1:
-                pass #put_post_data_form = None
-            elif dfval.find("XML") != -1 or dfval.find("schema") != -1:
-                put_post_data_form = "application/xml"
-            else:
-                put_post_data_form = "text/plain"
-                    
-    return put_post_data, put_post_data_form 
+#def decide_data_form(datafields, dfekvm, httpmeth, path):
+##datafields'': The raw XML attachment data.: 1
+##datafields'': A valid Indivo Contact Document (see :doc:`/schemas/contact-schema`).: 2
+##datafields'': The raw content of the document to create/update.: 2
+##datafields'': The raw content of the document to create.: 13
+##datafields'': Raw content that will be used as a setup document for the record. **OPTIONAL**.: 1
+##datafields'': The email address of the new account owner.: 2
+##datafields'': The new label for the document: 4
+#    dfkeys = datafields.keys()
+#    
+#    if httpmeth in ["GET", "DELETE"] and datafields:
+#        print("GET/DELETE with data_fields: " + httpmeth + " " + path + " -- " + datafields)
+#        raise Exception
+#    elif httpmeth in ["PUT", "POST"] and not datafields:
+#        #print("PUT/POST without data_fields: " + httpmeth + " " + path)
+#        pass
+#    elif datafields:
+#        if len(dfkeys) == 1 and dfkeys[0] == "":
+#            dfekv = datafields[""]
+#            if dfekvm.has_key(dfekv):
+#                dfekvm[dfekv] = dfekvm[dfekv] +1
+#            else:
+#                dfekvm[dfekv] = 1
+#                
+#    put_post_data = False
+#    put_post_data_form = None
+#    if dfkeys:
+#        put_post_data = True
+#        if dfkeys[0]:
+#            put_post_data_form = "url_encoded" # actual key/value pair expected
+#        else:
+#            assert len(dfkeys) == 1
+#            dfval = datafields[""].lower()
+#            if dfval.find("raw content") != -1:
+#                pass #put_post_data_form = None
+#            elif dfval.find("XML") != -1 or dfval.find("schema") != -1:
+#                put_post_data_form = "application/xml"
+#            else:
+#                put_post_data_form = "text/plain"
+#                    
+#    return put_post_data, put_post_data_form 
 
 
 
@@ -767,11 +812,15 @@ def process_calls(rest, pynames, report_flavors, resturls, rest_to_apinode, java
             put_post_data_form = put_post_data.getAttribute("format")
         else:
             put_post_data = None
+            put_post_data_form = None
             
         if put_post_data:
             if mthprms:
                 mthprms += ", "
-            mthprms += "Object body"
+            if put_post_data_form == "url_encoded":
+                mthprms += "String body"
+            else:
+                mthprms += "Object body"
             if not put_post_data_form:  # not known, caller must specify
                 mthprms += ", String requestContentType"
         
@@ -791,6 +840,18 @@ def process_calls(rest, pynames, report_flavors, resturls, rest_to_apinode, java
             options_str1, options_str2 = process_query_opts(qopts_o, qopts_field, first_report_minimal, audit_query)
             write_both(rest, pynames, options_str1)
             write_both(rest, pynames, options_str2)
+                
+        if put_post_data_form == "url_encoded":
+            post_data_keys = put_post_data.getElementsByTagName("key")
+            if post_data_keys:
+                allowedpdks = []
+                for pdk in post_data_keys:
+                    allowedpdks.append('"' + pdk.getAttribute("name") + '"')
+                write_both(rest, pynames,
+                       ("        checkQueryOptions(body, Arrays.asList(" +
+                         str(','.join(allowedpdks)) +
+                          "), null, null, \"url encoded param in body\");\n")
+                )
                 
         write_both(rest, pynames, "        Object fromRequest = clientRequest(\n                ")
         write_both(rest, pynames, "\"" + httpmeth + "\", ")
@@ -993,6 +1054,7 @@ rest_to_apinode = process_api_xml.process_dom(apidom)  # map xml style url to py
 
 print("python meth names: " + str(len(rest_to_apinode.items())))
 write_common_opts(rest0, pynames) #, repqflds
+write_report_query_options(rest0, pynames, apidom)
 call_count, method_count = process_calls(rest0, pynames, repflv, resturls, rest_to_apinode, javadoc_map)
 apidom.unlink()
 writesuffix(rest0, pynames, prefixSuffix)

@@ -311,7 +311,7 @@ public class Rest_SHELL {
         throws IndivoClientException {
         Map<String,Object> options0 = null;
         if (options == null) { options0 = new HashMap<String,Object>(); }
-        else { options0 = new HashMap(options); }
+        else { options0 = new HashMap<String,Object>(options); }
         // make sure DOM object returned
         options0.put("responseTypeConversion", internalResponseTypeConversion);
 
@@ -488,11 +488,15 @@ public class Rest_SHELL {
 
 	private void checkQueryOptions(String present, List<String> allowed0, List<String> allowed1, Map<String, Class> vqf)
 			throws IndivoClientException {
+		checkQueryOptions(present, allowed0, allowed1, vqf, "query option");
+	}
+	private void checkQueryOptions(String present, List<String> allowed0, List<String> allowed1, Map<String, Class> vqf, String errornote)
+			throws IndivoClientException {
 		List<String> allowed = null;
 		if (allowed1 == null) {
 			allowed = allowed0;
 		} else {
-			allowed = new ArrayList(allowed0);
+			allowed = new ArrayList<String>(allowed0);
 			allowed.addAll(allowed1);
 		}
 		String[] presentA = present.split("&");
@@ -500,7 +504,7 @@ public class Rest_SHELL {
 		for (String prsnt : presentA) {
 			if (allowed.contains(prsnt)) {
 				if (prsntL.contains(prsnt)) {
-					throw new IndivoClientException("multiple occurances of query option \"" + prsnt + "\" in " + present);
+					throw new IndivoClientException("multiple occurances of " + errornote + " \"" + prsnt + "\" in " + present);
 				}
 				else {
 					prsntL.add(prsnt);
@@ -516,7 +520,7 @@ public class Rest_SHELL {
 				}
 			}
 			else {
-				throw new IndivoClientException("unexpected qurey option: " + prsnt);
+				throw new IndivoClientException("unexpected " + errornote + ": " + prsnt);
 			}
 		}
 	}
