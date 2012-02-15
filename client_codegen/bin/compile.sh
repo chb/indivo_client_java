@@ -6,7 +6,7 @@ fi
 
 mkdir ../classes
 
-javac -Xlint:unchecked -d ../classes -classpath \
+javac -source 6 -target 6 -Xlint:unchecked -d ../classes -classpath \
 ../../lib/commons-codec-1.3.jar:\
 ../../lib/commons-lang-2.5.jar:\
 ../../lib/httpclient-4.0.1.jar:\
@@ -21,4 +21,5 @@ javac -Xlint:unchecked -d ../classes -classpath \
    ../../src/main/java/org/indivo/client/IndivoClientExceptionHttp404.java \
    ../../src/main/java/org/indivo/client/IndivoClientConnectException.java \
    ../../src/main/java/org/indivo/client/DefaultResponseTypeConversion.java \
-   ../../src/main/java/org/indivo/client/ResponseTypeConversion.java
+   ../../src/main/java/org/indivo/client/ResponseTypeConversion.java \
+   ../../src/test/java/org/indivo/client/TestAll.java

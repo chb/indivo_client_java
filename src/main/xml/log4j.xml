@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "./log4j.dtd">
+<log4j:configuration>
+  <appender name="A1" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="logs/indivo_client_java.log"/>
+    <param name="Append" value="true"/>
+    <param name="DatePattern" value="'.'yyyy-MM-dd" />
+    <!-- param name="MaxBackupIndex" value="1000" / -->  
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d %-5p %C.%M %t - %m%n"/>
+    </layout>
+  </appender>
+  <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d %-5p %C.%M - %m%n"/>
+     </layout>
+  </appender>
+  <logger name="org.info" additivity="false">
+    <level value="warn"/>
+    <appender-ref ref="A1"/>
+  </logger> 
+  <logger name="org.apache" additivity="false">
+    <level value="info"/>
+    <appender-ref ref="A1"/>
+  </logger> 
+  <logger name="oauth.signpost" additivity="false">
+    <level value="warn"/>
+    <appender-ref ref="A1"/>
+  </logger> 
+</log4j:configuration>
+
+

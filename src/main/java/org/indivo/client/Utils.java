@@ -144,11 +144,11 @@ public class Utils {
          }
          try {
              String whatDebugWas = null;
-/* un-comment to get SBS    */    whatDebugWas = System.setProperty("debug", "true");
+/* un-comment to get SBS    */    //whatDebugWas = System.setProperty("debug", "true");
         logger.info("in signWithSignpost pre sign");
              oauthConsumer.sign(spRequest);
         logger.info("in signWithSignpost post sign");
-/* un-comment this also when un-commenting the above    */  if (whatDebugWas == null) { System.clearProperty("debug"); } else { System.setProperty("debug", whatDebugWas); }
+/* un-comment this also when un-commenting the above    */  //if (whatDebugWas == null) { System.clearProperty("debug"); } else { System.setProperty("debug", whatDebugWas); }
          } catch (OAuthMessageSignerException omse) {
              throw new IndivoClientException(omse);
          } catch (OAuthExpectationFailedException oefe) {
@@ -387,7 +387,7 @@ public class Utils {
         String phaURLString = baseURL0 + reletivePath;
         if (queryString0.length() > 0) { phaURLString += "?" + queryString0; }
 
-/* FIXME temp for test*/ System.out.println(phaURLString); if (requestBody != null) { System.out.println(requestBody); }
+/* FIXME temp for test*/ //System.out.println(phaURLString); if (requestBody != null) { System.out.println(requestBody); }
 
 
         if (requestBody != null) {
@@ -437,7 +437,7 @@ public class Utils {
                         }
                     }
 
-                    System.out.println("requestBodyStr: " + requestBodyStr);
+                    //System.out.println("requestBodyStr: " + requestBodyStr);
                     requestBodyB = requestBodyStr.getBytes("UTF-8");
                 } else if (requestBody instanceof byte[]) {
                     requestBodyB = (byte[]) requestBody;
@@ -571,7 +571,7 @@ public class Utils {
     }
 
     public Document docFromString(String msg) throws IndivoClientException {
-        System.out.println("in docFromString");
+        //System.out.println("in docFromString");
         Document docForContent = null;
         /*
         String encoding = "UTF-8";
