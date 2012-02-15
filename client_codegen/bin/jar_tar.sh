@@ -7,7 +7,7 @@ then
 fi
 mkdir indivo_client_java-1.0
 mkdir indivo_client_java-1.0/classes
-cp ../../src/main/xml/log4j.xml indivo_client_java-1.0/classes
+cp ../../classes/log4j.xml indivo_client_java-1.0/classes
 cp ../../indivo_client_java-1.0.jar indivo_client_java-1.0
 cp -r ../../javadoc indivo_client_java-1.0
 cp -r ../../lib indivo_client_java-1.0
