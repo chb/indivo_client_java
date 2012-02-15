@@ -103,13 +103,18 @@ public class TestAll {
     private void testrecords_a() throws IndivoClientException {
     	
     	Document retdoc = (Document) adminRest.records_external_X_XPUT(
-    			"allergies@apps.indivo.org", "externalId__allergies_external", contactDoc, null);
+    			"sample_admin_app@apps.indivo.org", "externalId__allergies_external", contactDoc, null);
 	    System.out.println("records_external_X_XPUT");
-	    System.out.println(adminRest.getUtils().domToString(retdoc) + "\n\n\n");
+	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
     	
-	    retdoc = (Document) adminRest.records_XGET(recid, token, secret, null);
-	    System.out.println("records_XGET");
+	    // two legged flavor
+	    retdoc = (Document) adminRest.records_XGET(recid, null, null, null);
+	    System.out.println("admin records_XGET");
 	    System.out.println(adminRest.getUtils().domToString(retdoc) + "\n\n\n");
+	    
+	    retdoc = (Document) allergyRest.records_XGET(recid, token, secret, null);
+	    System.out.println("records_XGET" + " token, secret: " + token + ", " + secret);
+	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
 	    // two legged flavor
 	    retdoc = (Document) adminRest.records_X_apps_GET(
@@ -117,10 +122,10 @@ public class TestAll {
 	    System.out.println("records_X_apps_GET");
 	    System.out.println(adminRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
-	    retdoc = (Document) adminRest.records_X_apps_XGET(
+	    retdoc = (Document) allergyRest.records_X_apps_XGET(
 	    		recid, "allergies@apps.indivo.org", null, null, null);
 	    System.out.println("records_X_apps_XGET");
-	    System.out.println(adminRest.getUtils().domToString(retdoc) + "\n\n\n");
+	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
 	    
     }
@@ -136,7 +141,7 @@ public class TestAll {
 	    System.out.println("setup result: " + setupres.getClass().getName());
 	    
 	    token = setupres.get("oauth_token");
-	    token = setupres.get("oauth_token_secret");
+	    secret = setupres.get("oauth_token_secret");
 	    String surecid = setupres.get("xoauth_indivo_record_id");
 	    assert surecid.equals(recid);
 	    System.out.println("recid: " + recid + "  -- token, secret: " + token + "  " + secret);
@@ -201,18 +206,20 @@ public class TestAll {
 	    System.out.println("apps_X_documents_X_metaGET");
 	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
+/*
 	    retdoc = (Document) allergyRest.apps_X_documents_XDELETE(
 	    		"allergies@apps.indivo.org", appSpecificId, null);
 	    System.out.println("allergyApp.apps_X_documents_XDELETE");
 	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    assert retdoc.getDocumentElement().getTagName() == "ok";
+*/
 	    
 	    try {
 	    	retdoc = (Document) allergyRest.apps_X_documents_XGET(
 	    			"allergies@apps.indivo.org", appSpecificId, "application/xml", null);
 	    	throw new RuntimeException("document should have been deleted: " + allergyRest.getUtils().domToString(retdoc));
 	    } catch (IndivoClientException ice) {
-		    System.out.println("");
+		    System.out.println(ice.getMessage());
 	    }
 	    
 	    
