@@ -70,7 +70,9 @@ public class TestAll {
         try {
         	List<String> recTokSec = instance.setup();
         	instance.testopts(recTokSec);
-System.exit(0);
+        	
+        	recTokSec = instance.setup();
+        	instance.testcarenet(recTokSec);
         	
         	recTokSec = instance.setup();
         	instance.recid = recTokSec.get(0);  instance.token = recTokSec.get(1);  instance.secret = recTokSec.get(2);
@@ -89,6 +91,13 @@ System.exit(0);
     	
     	adminRest = new Rest("sampleadmin_key", "sampleadmin_secret", "http://localhost:8000", null);
     	allergyRest = new Rest("hospital-connector", "hospital-connector-secret", "http://localhost:8000", null);	
+    }
+    
+    
+    private void testcarenet(List<String> recTokSec) throws IndivoClientException, XPathExpressionException {
+    	String recid_d = recTokSec.get(0);  String token_d = recTokSec.get(1);  String secret_d = recTokSec.get(2);
+        Document retdoc = (Document) adminRest.records_X_carenets_GET(recid_d, token_d, secret_d, null);
+        logger.info("CARENETS: \n" + adminRest.getUtils().domToString(retdoc));
     }
     
     private void testopts(List<String> recTokSec) throws IndivoClientException, XPathExpressionException {
@@ -153,13 +162,9 @@ System.exit(0);
 	    System.out.println("admin records_XGET");
 	    System.out.println(adminRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
-            try {
 	    System.out.println("records_XGET" + " token, secret: " + token + ", " + secret);
 	    retdoc = (Document) allergyRest.records_XGET(recid, token, secret, null);
 	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
-            } catch (IndivoClientException ice) {
-                System.out.println("not sure why this failed, 3 legged read should work: " + ice.getMessage());
-            }
 	    
 	    // two legged flavor
 	    retdoc = (Document) adminRest.records_X_apps_GET(

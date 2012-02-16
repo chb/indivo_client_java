@@ -500,15 +500,20 @@ public class Rest_SHELL {
 			allowed.addAll(allowed1);
 		}
 
-                String[] presentA = null;
-                if (present.length() == 0) {
-                    presentA = new String[0];
-                } else {
-                    presentA = present.split("&");
-                }
+        String[] presentA = null;
+        if (present.length() == 0) {
+            presentA = new String[0];
+        } else {
+            presentA = present.split("&");
+        }
 		//String[] presentA = present.split("&");
 		List<String> prsntL = new ArrayList<String>();
-		for (String prsnt : presentA) {
+		for (String prsnt0 : presentA) {
+			eix = prsnt0.indexOf("=");
+			if (eix == -1) {
+				throw new IndivoClientException("query option without '=': \"" + prsnt0 + "\" in " + present);				
+			}
+			prsnt = prsnt0.substring(0, eix);
 			if (allowed.contains(prsnt)) {
 				if (prsntL.contains(prsnt)) {
 					throw new IndivoClientException("multiple occurances of " + errornote + " \"" + prsnt + "\" in " + present);
