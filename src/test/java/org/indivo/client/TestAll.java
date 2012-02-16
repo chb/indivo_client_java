@@ -104,12 +104,12 @@ public class TestAll {
     	String recid_b = recTokSec.get(0);  String token_b = recTokSec.get(1);  String secret_b = recTokSec.get(2);
         logger.info("\n\n\nin testopts");
 
-    	for (int ii = 0; ii < 100; ii++) {
+    	for (int ii = 0; ii < 40; ii++) {
 	    	allergyRest.records_X_documents_POST(
 	                recid_b, token_b, secret_b,
 	                "<testopts>" + (ii +1) + "</testopts>", "application/xml", null);
     	}
-        logger.info("in testopts done adding 100 docs");
+        logger.info("in testopts done adding 40 docs");
     	
     	int number = -1;
     	int numbertot = 0;
@@ -131,11 +131,13 @@ public class TestAll {
 			}
 			if ((numbertot == 90 && number != 10) || (number != 15)) {
 				System.out.println("Number docs retrived, up to 15 expected.  prior, now: " + numbertot + ", " + number);
-				numbertot += number;
+			} else {
+				System.out.println("number: " + number);
 			}
+			numbertot += number;
     	}
-    	if (numbertot != 100) {
-    		throw new RuntimeException("expected 100 total, got: " + numbertot);
+    	if (numbertot != 40) {
+    		throw new RuntimeException("expected 40 total, got: " + numbertot);
     	}
         logger.info("in testopts, total: " + numbertot);
     }
