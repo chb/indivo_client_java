@@ -119,6 +119,10 @@ public class TestAll {
                         logger.info("in testopts: " + allergyRest.getUtils().domToString(docs));
 			NodeList docsnl = (NodeList) xpath.evaluate("/Documents/Document", docs, XPathConstants.NODESET);
 			number = docsnl.getLength();
+			if (numbertot + number == 0) {
+				logger.info("DOCS: " + allergyRest.getUtils().domToString(docs));
+				System.exit(0);
+			}
 			if ((numbertot == 90 && number != 10) || (number != 15)) {
 				System.out.println("Number docs retrived, up to 15 expected.  prior, now: " + numbertot + ", " + number);
 				numbertot += number;
