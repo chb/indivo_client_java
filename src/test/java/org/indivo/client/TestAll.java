@@ -10,6 +10,9 @@ import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathException;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -52,6 +55,8 @@ public class TestAll {
 + "\n    <instantMessengerName protocol=\"aim\">scotour</instantMessengerName>"
 + "\n</Contact>";
 	
+        private Log logger = null;
+
 	private XPath xpath = null;
 	private Rest adminRest = null;
 	private Rest allergyRest = null;
@@ -78,26 +83,31 @@ System.exit(0);
     }
     
     private TestAll() throws IndivoClientException {
+        logger = LogFactory.getLog(this.getClass());
+
     	xpath = XPathFactory.newInstance().newXPath();
     	
     	adminRest = new Rest("sampleadmin_key", "sampleadmin_secret", "http://localhost:8000", null);
-    	allergyRest = new Rest("allergies@apps.indivo.org", "allergies", "http://localhost:8000", null);	
+    	allergyRest = new Rest("hospital-connector", "hospital-connector-secret", "http://localhost:8000", null);	
     }
     
     private void testopts(List<String> recTokSec) throws IndivoClientException, XPathExpressionException {
     	String recid_b = recTokSec.get(0);  String token_b = recTokSec.get(1);  String secret_b = recTokSec.get(2);
-    	
+        logger.info("\n\n\nin testopts");
+
     	for (int ii = 0; ii < 100; ii++) {
 	    	allergyRest.records_X_documents_POST(
 	                recid_b, token_b, secret_b,
 	                "<testopts>" + (ii +1) + "</testopts>", "application/xml", null);
     	}
+        logger.info("in testopts done adding 100 docs");
     	
     	int number = -1;
     	int numbertot = 0;
     	while (number != 0) {
 			Document docs = (Document) allergyRest.records_X_documents_GET(
 					"limit=15&offset=" + numbertot, recid_b, token_b, secret_b, null);
+                        logger.info("in testopts: " + allergyRest.getUtils().domToString(docs));
 			NodeList docsnl = (NodeList) xpath.evaluate("/Documents/Document", docs, XPathConstants.NODESET);
 			number = docsnl.getLength();
 			if ((numbertot == 90 && number != 10) || (number != 15)) {
@@ -108,24 +118,25 @@ System.exit(0);
     	if (numbertot != 100) {
     		throw new RuntimeException("expected 100 total, got: " + numbertot);
     	}
+        logger.info("in testopts, total: " + numbertot);
     }
     
     private void testrecordapp() throws IndivoClientException {
-    	Document retdoc = (Document) allergyRest.records_X_apps_X_documents_POST(recid, "allergies@apps.indivo.org",
+    	Document retdoc = (Document) allergyRest.records_X_apps_X_documents_POST(recid, "indivoconnector@apps.indivo.org",
     			token, secret, "<app_rec_specific>app rec specific</app_rec_specific>",
     			"application/xml", null);
 	    System.out.println("records_X_apps_X_documents_POST");
 	    System.out.println(adminRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
 	    retdoc = (Document) allergyRest.records_X_apps_X_documents_external_XPUT(
-	            recid, "allergies@apps.indivo.org", "externalId_rec_app_specific",
+	            recid, "indivoconnector@apps.indivo.org", "externalId_rec_app_specific",
 	            token, secret, "<app_rec_specific>app rec specific externalId_rec_app_specific</app_rec_specific>",
 	            "application/xml", null);
 	    System.out.println("records_X_apps_X_documents_external_XPUT");
 	    System.out.println(adminRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
 	    retdoc = (Document) allergyRest.records_X_apps_X_documents_external_X_metaGET(
-	    	     recid, "allergies@apps.indivo.org", "externalId_rec_app_specific",token, secret, null);
+	    	     recid, "indivoconnector@apps.indivo.org", "externalId_rec_app_specific",token, secret, null);
 	    System.out.println("records_X_apps_X_documents_external_X_metaGET");
 	    System.out.println(adminRest.getUtils().domToString(retdoc) + "\n\n\n");
     }
@@ -133,7 +144,7 @@ System.exit(0);
     private void testrecords_a() throws IndivoClientException {
     	
     	Document retdoc = (Document) adminRest.records_external_X_XPUT(
-    			"sample_admin_app@apps.indivo.org", "externalId__allergies_external", contactDoc, null);
+    			"sample_admin_app@apps.indivo.org", "externalId__indivoconnector_external", contactDoc, null);
 	    System.out.println("records_external_X_XPUT");
 	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
     	
@@ -157,7 +168,7 @@ System.exit(0);
 	    System.out.println(adminRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
 	    retdoc = (Document) allergyRest.records_X_apps_XGET(
-	    		recid, "allergies@apps.indivo.org", null, null, null);
+	    		recid, "indivoconnector@apps.indivo.org", null, null, null);
 	    System.out.println("records_X_apps_XGET");
 	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
@@ -171,7 +182,7 @@ System.exit(0);
 	    System.out.println("record id: " + recid_a);
 	    
 	    Map<String,String> setupres = (Map<String,String>)
-	    		adminRest.records_X_apps_X_setupPOST(recid_a, "allergies@apps.indivo.org", null, null, null);
+	    		adminRest.records_X_apps_X_setupPOST(recid_a, "indivoconnector@apps.indivo.org", null, null, null);
 	    System.out.println("setup result: " + setupres.getClass().getName());
 	    
 	    String token_a = setupres.get("oauth_token");
@@ -191,65 +202,65 @@ System.exit(0);
 
 //Object apps_XDELETE()
 	    
-	    retdoc = (Document) adminRest.apps_XGET("allergies@apps.indivo.org", null);
+	    retdoc = (Document) adminRest.apps_XGET("indivoconnector@apps.indivo.org", null);
 	    System.out.println("apps_XGET(_,_)");
 	    System.out.println(adminRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
 // Object apps_X_documents_GET()
 	    
-	    retdoc = (Document) allergyRest.apps_X_documents_POST("allergies@apps.indivo.org", "<allergyappdoc>allergyappdoc</allergyappdoc>",
+	    retdoc = (Document) allergyRest.apps_X_documents_POST("indivoconnector@apps.indivo.org", "<allergyappdoc>allergyappdoc</allergyappdoc>",
 	    		"application/xml", null);
 	    System.out.println("apps_X_documents_POST(_,_,_,_)");
 	    String appSpecificId = xpath.evaluate("/Document/@id", retdoc); //<Document id="14c81023-c84f-496d-8b8e-9438280441d3" 
 	    System.out.println("new doc id: " + appSpecificId);
 	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
-	    retdoc = (Document) allergyRest.apps_X_documents_external_XPUT("allergies@apps.indivo.org",
+	    retdoc = (Document) allergyRest.apps_X_documents_external_XPUT("indivoconnector@apps.indivo.org",
                 "externalId__apps_X_documents_external_XPUT",
                 "<allergyappdoc>externalId__apps_X_documents_external_XPUT</allergyappdoc>", "application/xml", null);
 	    System.out.println("apps_X_documents_external_XPUT()");
 	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
 	    retdoc = (Document) allergyRest.apps_X_documents_external_X_metaGET(
-	    		"allergies@apps.indivo.org","externalId__apps_X_documents_external_XPUT", null);
+	    		"indivoconnector@apps.indivo.org","externalId__apps_X_documents_external_XPUT", null);
 	    System.out.println("apps_X_documents_external_X_metaGET()");
 	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
 	    retdoc = (Document) allergyRest.apps_X_documents_XGET(
-	    		"allergies@apps.indivo.org", appSpecificId, "application/xml", null);
+	    		"indivoconnector@apps.indivo.org", appSpecificId, "application/xml", null);
 	    System.out.println("allergyRest.apps_X_documents_XGET");
 	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
 	    retdoc = (Document) allergyRest.apps_X_documents_XPUT(
-	    		"allergies@apps.indivo.org", appSpecificId,
+	    		"indivoconnector@apps.indivo.org", appSpecificId,
 	    		"<allergyappdoc>allergyappdoc_replacement</allergyappdoc>", "application/xml", null);
 	    System.out.println("apps_X_documents_XPUT");
 	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
 	    retdoc = (Document) allergyRest.apps_X_documents_XGET(
-	    		"allergies@apps.indivo.org", appSpecificId, "application/xml", null);
+	    		"indivoconnector@apps.indivo.org", appSpecificId, "application/xml", null);
 	    System.out.println("after replacement of " + appSpecificId);
 	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
 	    retdoc = (Document) allergyRest.apps_X_documents_X_labelPUT(
-	    		"allergies@apps.indivo.org", appSpecificId, "test_label", null);
+	    		"indivoconnector@apps.indivo.org", appSpecificId, "test_label", null);
 	    System.out.println("apps_X_documents_X_labelPUT");
 	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
 
 	    retdoc = (Document) allergyRest.apps_X_documents_X_metaGET(
-	            "allergies@apps.indivo.org", appSpecificId, null);
+	            "indivoconnector@apps.indivo.org", appSpecificId, null);
 	    System.out.println("apps_X_documents_X_metaGET");
 	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
 	    retdoc = (Document) allergyRest.apps_X_documents_XDELETE(
-	    		"allergies@apps.indivo.org", appSpecificId, null);
+	    		"indivoconnector@apps.indivo.org", appSpecificId, null);
 	    System.out.println("allergyApp.apps_X_documents_XDELETE");
 	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    assert retdoc.getDocumentElement().getTagName() == "ok";
 	    
 	    try {
 	    	retdoc = (Document) allergyRest.apps_X_documents_XGET(
-	    			"allergies@apps.indivo.org", appSpecificId, "application/xml", null);
+	    			"indivoconnector@apps.indivo.org", appSpecificId, "application/xml", null);
 	    	throw new RuntimeException("document should have been deleted: " + allergyRest.getUtils().domToString(retdoc));
 	    } catch (IndivoClientException ice) {
 		    System.out.println(ice.getMessage());

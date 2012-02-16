@@ -499,7 +499,14 @@ public class Rest_SHELL {
 			allowed = new ArrayList<String>(allowed0);
 			allowed.addAll(allowed1);
 		}
-		String[] presentA = present.split("&");
+
+                String[] presentA = null;
+                if (present.length() == 0) {
+                    presentA = new String[0];
+                } else {
+                    presentA = present.split("&");
+                }
+		//String[] presentA = present.split("&");
 		List<String> prsntL = new ArrayList<String>();
 		for (String prsnt : presentA) {
 			if (allowed.contains(prsnt)) {
