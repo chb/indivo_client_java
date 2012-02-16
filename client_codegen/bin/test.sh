@@ -9,6 +9,7 @@ java  -d64 -cp ../../indivo_client_java-1.0.jar:\
 ../../lib/javaee-web-api-6.0.jar:\
 ../../lib/junit-3.8.1.jar:\
 ../../lib/signpost-commonshttp4-1.2.jar:\
-../../lib/signpost-core-1.2.jar  \
+../../lib/signpost-core-1.2.jar:\
+../../lib/log4j-1.2.16.jar  \
    org.indivo.client.TestAll
 
