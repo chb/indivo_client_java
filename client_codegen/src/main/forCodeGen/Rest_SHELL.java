@@ -509,11 +509,11 @@ public class Rest_SHELL {
 		//String[] presentA = present.split("&");
 		List<String> prsntL = new ArrayList<String>();
 		for (String prsnt0 : presentA) {
-			eix = prsnt0.indexOf("=");
+			int eix = prsnt0.indexOf("=");
 			if (eix == -1) {
 				throw new IndivoClientException("query option without '=': \"" + prsnt0 + "\" in " + present);				
 			}
-			prsnt = prsnt0.substring(0, eix);
+			String prsnt = prsnt0.substring(0, eix);
 			if (allowed.contains(prsnt)) {
 				if (prsntL.contains(prsnt)) {
 					throw new IndivoClientException("multiple occurances of " + errornote + " \"" + prsnt + "\" in " + present);
