@@ -228,6 +228,7 @@ public class Utils {
             }
 
             contentTypeReceived = ctHeaders[0].getValue();
+            logger.info("contentTypeReceived: " + contentTypeReceived);
         }
 
         HttpEntity entityToConvert = response.getEntity();

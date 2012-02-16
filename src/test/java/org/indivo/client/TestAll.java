@@ -117,6 +117,12 @@ public class TestAll {
 			Document docs = (Document) allergyRest.records_X_documents_GET(
 					"limit=15&offset=" + numbertot, recid_b, token_b, secret_b, null);
                         logger.info("in testopts: " + allergyRest.getUtils().domToString(docs));
+            logger.info("documents_GET test: " + docs);
+            if (docs != null) {
+            	logger.info("documents_GET test: " + docs.getClass().getName());
+            } else {
+            	System.exit(0);
+            }
 			NodeList docsnl = (NodeList) xpath.evaluate("/Documents/Document", docs, XPathConstants.NODESET);
 			number = docsnl.getLength();
 			if (numbertot + number == 0) {
