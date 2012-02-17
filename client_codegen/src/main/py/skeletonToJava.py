@@ -98,6 +98,7 @@ def write_report_query_options(rest0, pynames, apidom):
     write_both(rest0, pynames, "    List<String> vqfs = null;\n")
     
     queryFieldTypes = {}
+    flavor_opts = {}
     docel = apidom.documentElement
     methods = docel.getElementsByTagName("method")
     for method in methods:
@@ -107,13 +108,15 @@ def write_report_query_options(rest0, pynames, apidom):
         if call.getAttribute("method") == "get" and call.getAttribute("url").find("/reports/minimal/") != -1:
             curl = call.getAttribute("url")
             rmix = curl.find("/reports/minimal/")
-            flavor = curl[rmix +1]
+            flavor = curl[rmix + len("/reports/minimal/"):]
             flavor = flavor[0: flavor.find('/')]
             qopts = method.getElementsByTagName("query_opts")
             assert len(qopts) == 1
             qopts = qopts[0].getElementsByTagName("qopt")
-            write_both(rest0, pynames, "    vqfs = Arrays.asList(")
+            if not flavor_opts.get(flavor):
+                write_both(rest0, pynames, "    vqfs = Arrays.asList(")
             fieldnames = ""
+            opts_of_flavor = []
             for qopt in qopts:
                 if qopt.getAttribute("field") == "field":
                     name = qopt.getAttribute("name")
@@ -122,6 +125,7 @@ def write_report_query_options(rest0, pynames, apidom):
                     if fieldnames:
                         fieldnames += ", "
                     fieldnames += '"' + name + '"'
+                    opts_of_flavor.append(name)
                     
                     classname = ""
                     if data_type == "STRING":
@@ -141,10 +145,30 @@ def write_report_query_options(rest0, pynames, apidom):
                     else:
                         queryFieldTypes[name] = classname
             
-            write_both(rest0, pynames, fieldnames + ");\n    validQueryFields.put(\"" + flavor + "\", vqfs);\n\n")
+            if flavor_opts.get(flavor):
+                if set(flavor_opts[flavor]) != set(opts_of_flavor):
+                    print("different opinion on what query fields are allowed for flavor: " + flavor)
+                    print(repr(flavor_opts[flavor]))
+                    print(repr(opts_of_flavor))
+                    raise Exception
+            else:
+                write_both(rest0, pynames, fieldnames + ");\n    validQueryFields.put(\"" + flavor + "\", vqfs);\n\n")
+                flavor_opts[flavor] = opts_of_flavor
+            
+
     for qftk in queryFieldTypes.keys():
         write_both(rest0, pynames, "    queryFieldType.put(\"" + qftk + "\", " + queryFieldTypes[qftk] + ");\n")
-    write_both(rest0, pynames, "}\n\n")    
+    write_both(rest0, pynames, "}\n\n")
+
+    flavor_constants = ""
+    for fok in flavor_opts.keys():    
+        if flavor_constants:
+            flavor_constants += ",\n"
+        flavor_constants += ("        " + fok.upper().replace('-','_') + " = \"" + fok + "\"") 
+    write_both(rest0, pynames, """    /** medical report name constants */
+    public static final String   // known medical reports
+""")
+    write_both(rest0, pynames, flavor_constants + ";\n\n")
 #            if aqfi:
 #                write_both(rest0, pynames, ", ")
 #            write_both(rest0, pynames, "\"" + aqfv[0] + "\"")

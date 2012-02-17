@@ -54,6 +54,21 @@ public class TestAll {
 + "\n    <phoneNumber type=\"work\">6217233734</phoneNumber>"
 + "\n    <instantMessengerName protocol=\"aim\">scotour</instantMessengerName>"
 + "\n</Contact>";
+
+	private static String allergyDoc_a = 
+"<Allergy xmlns=\"http://indivo.org/vocab/xml/documents#\">"
++ "\n  <dateDiagnosed>2009-05-16</dateDiagnosed>"
++ "\n  <diagnosedBy>Children's Hospital Boston</diagnosedBy>"
++ "\n  <allergen>"
++ "\n    <type type=\"http://codes.indivo.org/codes/allergentypes/\" value=\"drugs\">Drugs</type>"
++ "\n    <name type=\"http://codes.indivo.org/codes/allergens/\" value=\"penicillin\">Penicillin</name>"
++ "\n  </allergen>"
++ "\n  <reaction>blue rash</reaction>"
++ "\n  <specifics>";
+	private static String allergyDoc_b =
+"</specifics>"
++ "\n</Allergy>";
+	
 	
         private Log logger = null;
 
@@ -70,6 +85,9 @@ public class TestAll {
         try {
         	List<String> recTokSec = instance.setup();
         	instance.testopts(recTokSec);
+        	
+        	recTokSec = instance.setup();
+        	instance.testreport(recTokSec);
         	
         	recTokSec = instance.setup();
         	instance.testcarenet(recTokSec);
@@ -93,6 +111,19 @@ public class TestAll {
     	allergyRest = new Rest("hospital-connector", "hospital-connector-secret", "http://localhost:8000", null);	
     }
     
+    private void testreport(List<String> recTokSec) throws IndivoClientException, XPathExpressionException {
+    	String recid_r = recTokSec.get(0);  String token_r = recTokSec.get(1);  String secret_r = recTokSec.get(2);
+    	
+    	for (int ii = 0; ii < 7; ii++) {
+	    	allergyRest.records_X_documents_POST(
+	                recid_r, token_r, secret_r,
+	                allergyDoc_a + "spec_" + ii + allergyDoc_b, "application/xml", null);
+    	}
+    	
+    	Document retdoc = (Document) allergyRest.records_X_reports_minimal_X_GET(
+    	            "", recid_r, allergyRest.ALLERGIES, token_r, secret_r, null);
+    	logger.info("ALLERGY REPORT: \n" + allergyRest.getUtils().domToString(retdoc));
+    }
     
     private void testcarenet(List<String> recTokSec) throws IndivoClientException, XPathExpressionException {
     	String recid_d = recTokSec.get(0);  String token_d = recTokSec.get(1);  String secret_d = recTokSec.get(2);
@@ -104,7 +135,7 @@ public class TestAll {
     	String recid_b = recTokSec.get(0);  String token_b = recTokSec.get(1);  String secret_b = recTokSec.get(2);
         logger.info("\n\n\nin testopts");
 
-    	for (int ii = 0; ii < 40; ii++) {
+    	for (int ii = 0; ii < 17; ii++) {
 	    	allergyRest.records_X_documents_POST(
 	                recid_b, token_b, secret_b,
 	                "<testopts>" + (ii +1) + "</testopts>", "application/xml", null);
@@ -115,7 +146,7 @@ public class TestAll {
     	int numbertot = 0;
     	while (number != 0) {
 			Document docs = (Document) allergyRest.records_X_documents_GET(
-					"limit=15&offset=" + numbertot, recid_b, token_b, secret_b, null);
+					"limit=7&offset=" + numbertot, recid_b, token_b, secret_b, null);
                         logger.info("in testopts: " + allergyRest.getUtils().domToString(docs));
             logger.info("documents_GET test: " + docs);
             if (docs != null) {
@@ -129,15 +160,15 @@ public class TestAll {
 				logger.info("DOCS: " + allergyRest.getUtils().domToString(docs));
 				System.exit(0);
 			}
-			if ((numbertot == 90 && number != 10) || (number != 15)) {
-				System.out.println("Number docs retrived, up to 15 expected.  prior, now: " + numbertot + ", " + number);
+			if ((numbertot == 14 && number != 4) || (number != 7)) {
+				System.out.println("Number docs retrived, up to 7 expected.  prior, now: " + numbertot + ", " + number);
 			} else {
 				System.out.println("number: " + number);
 			}
 			numbertot += number;
     	}
-    	if (numbertot != 40) {
-    		throw new RuntimeException("expected 40 total, got: " + numbertot);
+    	if (numbertot != 18 /* +1 for contact doc */) {
+    		throw new RuntimeException("expected 18 total, got: " + numbertot);
     	}
         logger.info("in testopts, total: " + numbertot);
     }

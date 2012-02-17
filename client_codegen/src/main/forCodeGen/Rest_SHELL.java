@@ -93,18 +93,6 @@ public class Rest_SHELL {
     */
     public static final String   // known medical reports
         MEASUREMENTS = "measurements";
-
-    /** medical report name constant.  medical reports names other than those represented by constants
-    *  might be valid.  Constants are provided for these known as of January 22, 2010.
-    */
-    public static final String   // known medical reports
-    	MEDICATIONS = "medications",
-    	ALLERGIES = "allergies",
-    	EQUIPMENT = "equipment",
-    	IMMUNIZATIONS = "immunizations",
-    	PROCEDURES = "procedures",
-    	PROBLEMS = "problems",
-    	VITALS = "vitals";
     
     public static List<String> allowedAuditQuery = null;
     {
