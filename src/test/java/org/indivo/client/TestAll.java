@@ -127,7 +127,7 @@ public class TestAll {
     
     private void testcarenet(List<String> recTokSec) throws IndivoClientException, XPathExpressionException {
     	String recid_d = recTokSec.get(0);  String token_d = recTokSec.get(1);  String secret_d = recTokSec.get(2);
-        Document retdoc = (Document) adminRest.records_X_carenets_GET(recid_d, token_d, secret_d, null);
+        Document retdoc = (Document) adminRest.records_X_carenets_GET(recid_d, null, null, null);
         logger.info("CARENETS: \n" + adminRest.getUtils().domToString(retdoc));
     }
     

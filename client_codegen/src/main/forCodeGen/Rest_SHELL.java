@@ -86,13 +86,6 @@ public class Rest_SHELL {
 /*_END_JAVA_STYLE_ONLY*/
 	
     private static final long serialVersionUID = 1L;
-
-    /** medical report name constant.  medical reports names other than those represented by constants
-    *  might be valid.  Constants are provided for these known as of January 22, 2010.
-    *  Follow measurements with "/{lab-code}/".
-    */
-    public static final String   // known medical reports
-        MEASUREMENTS = "measurements";
     
     public static List<String> allowedAuditQuery = null;
     {
