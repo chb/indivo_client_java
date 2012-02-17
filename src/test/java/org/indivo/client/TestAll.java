@@ -83,7 +83,11 @@ public class TestAll {
     public static void main(String[] args) throws IndivoClientException {
     	TestAll instance = new TestAll();
         try {
+        	
         	List<String> recTokSec = instance.setup();
+        	instance.testaccounts(recTokSec);
+        	
+        	recTokSec = instance.setup();
         	instance.testopts(recTokSec);
         	
         	recTokSec = instance.setup();
@@ -109,6 +113,23 @@ public class TestAll {
     	
     	adminRest = new Rest("sampleadmin_key", "sampleadmin_secret", "http://localhost:8000", null);
     	allergyRest = new Rest("hospital-connector", "hospital-connector-secret", "http://localhost:8000", null);	
+    }
+    
+    private void testaccounts(List<String> recTokSec) throws IndivoClientException, XPathExpressionException {
+    	String recid_r = recTokSec.get(0);  String token_r = recTokSec.get(1);  String secret_r = recTokSec.get(2);
+    	/*	
+primary_secret_p – 0 or 1: Does this account require a primary secret?
+secondary_secret_p – 0 or 1: Does this account require a secondary secret?
+contact_email – A valid email at which to reach the account holder.
+account_id – An identifier for the new account. Must be a valid email address. REQUIRED
+full_name – The full name to associate with the account.
+*/
+    	Document retdoc = (Document) adminRest.accounts_POST(
+    			"primary_secret=0&secondary_secret=0&contact_email=nathan.finstein@childrens.harvard.edu&"
+    			+ "account_id=nathan.finstein@childrens.harvard.edu&full_name=NF", null);
+    	logger.info("ACCOUNT CREATE:\n" + adminRest.getUtils().domToString(retdoc));
+    	String accid = xpath.evaluate("/Account/@id", retdoc);
+    	logger.info("accountId: " + accid);
     }
     
     private void testreport(List<String> recTokSec) throws IndivoClientException, XPathExpressionException {
@@ -215,12 +236,15 @@ public class TestAll {
 	    System.out.println("records_X_apps_GET");
 	    System.out.println(adminRest.getUtils().domToString(retdoc) + "\n\n\n");
 	    
-	    retdoc = (Document) allergyRest.records_X_apps_XGET(
-	    		recid, "indivoconnector@apps.indivo.org", null, null, null);
-	    System.out.println("records_X_apps_XGET");
-	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
-	    
-	    
+	    try {
+		    retdoc = (Document) allergyRest.records_X_apps_XGET(
+		    		recid, "indivoconnector@apps.indivo.org", null, null, null);
+		    System.out.println("records_X_apps_XGET");
+		    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
+	    } catch (IndivoClientException ice) {
+	    	logger.info("probably pha not in \"full control\": " + ice.getMessage());
+	    }
+	    	    
     }
 
     private List<String> setup() throws IndivoClientException, XPathExpressionException {
