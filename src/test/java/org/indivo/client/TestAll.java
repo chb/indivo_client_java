@@ -131,6 +131,19 @@ full_name – The full name to associate with the account.
     	String accid = xpath.evaluate("/Account/@id", retdoc);
     	logger.info("accountId: " + accid);
     	
+//    	GET /accounts/{ACCOUNT_EMAIL}/primary-secret
+    	retdoc = (Document) adminRest.accounts_X_primarySecretGET("johnsmith@indivo.org", null);
+    	logger.info("get secret:\n" + adminRest.getUtils().domToString(retdoc));
+    	String secret = xpath.evaluate("/secret/text()", retdoc);
+    	logger.info("primary secret: " + secret);
+    	
+    	System.exit(0);
+    	
+    	
+//    	POST /accounts/{ACCOUNT_EMAIL}/set-state
+    	retdoc = (Document) adminRest.accounts_X_initialize_XPOST("tester@accounts.indivo.org", "", "","","", null);
+    	
+    	
 	    retdoc = (Document) allergyRest.records_X_apps_XGET(
 	    		recid, "tester@accounts.indivo.org", null, null, null);
 	    System.out.println("records_X_apps_XGET");
