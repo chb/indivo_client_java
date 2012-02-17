@@ -473,6 +473,7 @@ public class Rest_SHELL {
 	}
 	private void checkQueryOptions(String present, List<String> allowed0, List<String> allowed1, Map<String, Class> vqf, String errornote)
 			throws IndivoClientException {
+		if (allowed0 == null) { allowed0 = new ArrayList<String>(); }
 		List<String> allowed = null;
 		if (allowed1 == null) {
 			allowed = allowed0;
@@ -482,6 +483,7 @@ public class Rest_SHELL {
 		}
 
         String[] presentA = null;
+        if (present == null) { present = ""; }
         if (present.length() == 0) {
             presentA = new String[0];
         } else {
