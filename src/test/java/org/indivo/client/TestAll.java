@@ -125,7 +125,7 @@ account_id – An identifier for the new account. Must be a valid email address.
 full_name – The full name to associate with the account.
 */
     	Document retdoc = (Document) adminRest.accounts_POST(
-    			"primary_secret=0&secondary_secret=0&contact_email=nathan.finstein@childrens.harvard.edu&"
+    			"primary_secret_p=0&secondary_secret_p=0&contact_email=nathan.finstein@childrens.harvard.edu&"
     			+ "account_id=nathan.finstein@childrens.harvard.edu&full_name=NF", null);
     	logger.info("ACCOUNT CREATE:\n" + adminRest.getUtils().domToString(retdoc));
     	String accid = xpath.evaluate("/Account/@id", retdoc);
