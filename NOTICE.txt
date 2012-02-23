@@ -5,6 +5,7 @@ The first license below, Apache License Version 2.0, covers:
   gson-1.6.jar
   httpclient-4.0.1.jar
   httpcore-4.0.1.jar
+  commons-logging-1.1.1.jar
   signpost-commonshttp4-1.2.jar
   signpost-core-1.2.jar
 

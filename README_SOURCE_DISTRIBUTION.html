@@ -1,0 +1,66 @@
+<html><head><title>readme</title></head><body>
+<a href='#download'>Download Source or Prebuilt</a><br/>
+<a href='#generate'>Generate Rest.java</a><br/>
+<a href='#build'>Build Distribution</a><br/>
+<a href='#use'>Use client API</a><br/>
+
+<a name='download'/><h3>Download</h3>
+<p><strong>Prebuilt</strong><br/>
+To get the pre-built distribution (recommended) ...
+When using the pre-built distribution, skip the "Generate Rest.java" and the "Build distribution" steps.
+</p><p><strong>Sources</strong><br/>
+The source distribution includes the Java source files, excepting "Rest.java", and it incudes Python code for generating "Rest.java".
+Information for generating Indivo server client software, regardless of computer language, is contained in api.xml.
+indivo_client_java source includes code for generating Rest.java from api.xml, instead of including Rest.java directly.
+To get the source distribution ...
+</p>
+
+<a name='generate'/><h3>Generate Rest.java</h3>
+<p><strong>Pre-requisite: python 2.6 or equivalent.</strong></p>
+<ul>
+<li><code>cd &lt;indivo_client_java-directory&gt;/client_codegen/bin</code></li>
+<li><code>./genCodeFromPython.sh 1> temp1</code>&nbsp;&nbsp;When complete, the last line of temp1
+should show something like: "done. 140 skeleton calls processed.  124 Java methods generated."
+This may vary depending on the version you downloaded.</li>
+<li><code>./compile.sh</code>&nbsp;&nbsp;This might produce warnings.  There should be no errors.
+This will create the file <code>&lt;indivo_client_java-directory&gt;/src/main/java/org/indivo/client/Rest.java</code>.</li>
+<li><code>./javadoc.sh 1> temp1</code>&nbsp;&nbsp;When complete, temp1 should show no errors, and <code>&lt;indivo_client_java-directory&gt;/javadoc
+will be populated.</li>
+</ul>
+
+<h4>test.sh</h4>
+
+<a name='build'/><h3>Build distribution</h3>
+<ul>
+<li><code>./jar_tar.sh</code>&nbsp;&nbsp;Generates <code>&lt;indivo_client_java-directory&gt;/indivo_client_java-1.x.jar</code>
+ and <code>&lt;indivo_client_java-directory&gt;/indivo_client_java-1.x.tar</code></li>
+</ul>
+<a name='use'/><h3>Use client API</h3>
+<p>Copy <code>&lt;indivo_client_java-directory&gt;/indivo_client_java-1.x.tar</code> to the directory in which you intend to install
+indivo_client_java, <code>cd</code> to that directory, then <code>tar -xf indivo_client_java-1.x.tar</code>.  View README.html for
+further instructions.
+<p>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+to create indivo_client_java-0.4.jar in ./target directory:
+mvn install
+
+to create javadoc in ./target/site/apidocs directory:
+mvn javadoc:javadoc
+
+before running command-line tests in src/test/sh (testAdmin.sh testChrome.sh and testPha.sh):
+mvn dependency:copy-dependencies
+
+to generate oauth dance testing servlet "indivoTestServlet.war" in testServlet/target:
+cd testServlet
+vi src/main/webapp/WEB-INF/web.xml
+      modify <param-value>-s as needed
+mvn install
+
+client_codegen contains code used to generate Rest.java from indivo_wadl.xml.
+client_codegen is not generally of interest to users, but look if you are curious.
+</p>
+</body></html>

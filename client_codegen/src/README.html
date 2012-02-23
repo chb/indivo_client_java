@@ -1,0 +1,31 @@
+<html><head><title>README for indivo_client_java binary distribution</title></head>
+
+<body>
+<p>This is the README file for the binary distribution of indivo_client_java-1.x in its .tar file.</p>
+
+<p>
+indivo_client_java-1.x.jar contains the classes a Java Indivo client application might use.
+Writing http code to access the Indivo REST interface directly is an alternative.  We think using
+the classes in indivo_client_java-1.x.jar is more convenient.
+</p>
+
+<p>
+point your browser to <code>file:///&lt;indivo_client_java-installation_directory&gt;/javadoc/index.html</code>.
+The gateway to this API is the class <code>org.indivo.client.Rest</code> or, identical except for method names,
+<code>org.indivo.client.Rest_py_client_style</code>.
+Methods that stand in for Indivo API REST calls are. in <code>Rest</code>, named with the REST URL modified for Java
+ compatability.
+In <code>Rest_py_client_style</code> the same methods are named as in the Indivo Python client.
+</p>
+<p>
+indivo_client_java depends on some 3rd party .jar files, all included in this distribution, in the lib directory.
+see NOTICES.txt for 3rd party jar license info.
+</p>
+<p>
+For the source distribution from which this binary distribution is built:<br/>
+<code>git clone git://github.com/chb/indivo_client_java.git</code><br/>
+[you must have git installed]
+</p>
+</body>
+
+</html>

@@ -266,7 +266,7 @@ def make_method_name(pathparts, httpmeth):
     method_name += httpmeth
     return method_name, params
 
-def javadoc(report_minimal, audit_query, params_from_pathparts, skel_url_params0, response_form, legged, apinode, acall, dividN): #params, report_flavors, legged, put_post_data, put_post_data_form, response_form, dividN, acall:
+def javadoc(report_minimal, audit_query, qopts_o, params_from_pathparts, skel_url_params0, response_form, legged, apinode, acall, dividN): #params, report_flavors, legged, put_post_data, put_post_data_form, response_form, dividN, acall:
     #params_from_url = acall.get("params_from_url") #dict
     params_from_url = get_params_from_url(acall)   # skeleton style param names
 #    skel_url_params0 = acall.get("url_params")
@@ -288,6 +288,9 @@ def javadoc(report_minimal, audit_query, params_from_pathparts, skel_url_params0
     retVal += "     * <code>" + acall.get("method") + " " + acall.get("path") + "</code><br/>\n" 
     retVal += "     *  accessibility: " + acall.get("access_doc") + "<br/>\n"
     
+    if qopts_o:
+	retVal += "    * @param queryOptions optional query parameters. url-encoded or Map&lt;String,String&gt; or Map&lt;String,String[]&gt;.\n"
+
     for aparm in params_from_url:
         retVal += "     * @param " + var_java_style(aparm) + " "
 #        if aparm == "REPORT_FLAVOR":
@@ -448,7 +451,7 @@ def method_params(qopts_r, qopts_o, params, url_params, qopts_field, legged, fir
     if qopts_o:
         if qoptparams:
             qoptparams += ", "
-        qoptparams += "String queryOptions"
+        qoptparams += "Object queryOptions"
         has_queryoptions = True
         
     #has_report_flavor = False
@@ -780,11 +783,28 @@ def process_calls(rest, pynames, report_flavors, resturls, rest_to_apinode, java
         for skurpa in skel_url_params0:
             skel_url_params_api[add_to_apixml.skeleton_style_to_api_style(skurpa)] = skel_url_params0[skurpa]
 
+        
+        qopts_o = []
+        qopts_r = []
+        qopts = apinode.getElementsByTagName("query_opts")
+        qopts_field = False
+        if len(qopts):
+            assert len(qopts) == 1
+            qopts = qopts[0].getElementsByTagName("qopt")
+            for qopt in qopts:
+                if qopt.getAttribute("field") == "field":
+                    qopts_field = True
+                elif qopt.getAttribute("required") == "required":
+                    qopts_r.append(qopt.getAttribute("name"))
+                else:
+                    qopts_o.append(qopt.getAttribute("name"))
+
 
         write_both(rest, pynames,
             javadoc(
                 first_report_minimal,
                 audit_query,
+		qopts_o,
                 params,      # from pathparts, may be modified with REPORT_FLAVOR
                 skel_url_params0,   # skeleton style
                 response_form,
@@ -809,21 +829,6 @@ def process_calls(rest, pynames, report_flavors, resturls, rest_to_apinode, java
         write_both(rest, pynames, "(\n            ") #)
         
         url_params = forjavadoc["url_params"]
-        
-        qopts_o = []
-        qopts_r = []
-        qopts = apinode.getElementsByTagName("query_opts")
-        qopts_field = False
-        if len(qopts):
-            assert len(qopts) == 1
-            qopts = qopts[0].getElementsByTagName("qopt")
-            for qopt in qopts:
-                if qopt.getAttribute("field") == "field":
-                    qopts_field = True
-                elif qopt.getAttribute("required") == "required":
-                    qopts_r.append(qopt.getAttribute("name"))
-                else:
-                    qopts_o.append(qopt.getAttribute("name"))
                     
         params_from_url = get_params_from_url(forjavadoc)   # skeleton style param names
         mthprms = method_params(qopts_r, qopts_o, params_from_url, skel_url_params0, qopts_field, legged, first_report_minimal, audit_query)

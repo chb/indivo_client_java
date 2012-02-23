@@ -1,8 +1,0 @@
-linux
-pre-requisite: python 2.6
-
-cd bin
-./genCodeFromPython.sh
-./compile.sh
-./javadoc.sh
-./jar_tar.sh
