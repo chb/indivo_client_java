@@ -74,7 +74,7 @@ def decide_oauth_legged(access_doc):
         legged=2.0
     elif access_doc in [
 "A principal in full control of the record, or any admin app.",
-"Any principal in Indivo.",
+#"Any principal in Indivo.",
 "Any admin app, or a user app with access to the record.",
 "Any admin app, or the Account owner.",
 "A principal in full control of the record, the admin app that created the record, or a user app with access to the record.",

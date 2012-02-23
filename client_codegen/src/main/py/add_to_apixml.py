@@ -16,6 +16,16 @@ def process_dom(apidom):
     docel.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
     docel.setAttribute("xsi:noNamespaceSchemaLocation", "api_schema.xsd")
 
+    alinefeed = apidom.createTextNode('\n')
+    rootcomment = apidom.createComment(
+"""A principal has full control over a record if it is the owner of the record, 
+    or if it has a full share of the record.
+Apps never fully share or own a record, only accounts do.
+Is_same_app is two-legged.
+""")
+    docel.insertBefore(rootcomment, docel.firstChild)
+    docel.insertBefore(alinefeed, docel.firstChild)
+
     mdict = get_method_to_node_dict(docel)
     #add_from_
     
@@ -35,9 +45,9 @@ def process_dom(apidom):
     
     merge_api_skeleton(apidom, mdict)
     
-    testout = open("testout.xml", 'w')
-    apidom.writexml(testout)
-    testout.close()
+    apixml = open("detailed_api.xml", 'w')
+    apidom.writexml(apixml)
+    apixml.close()
     
     
 

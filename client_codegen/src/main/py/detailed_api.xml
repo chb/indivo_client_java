@@ -1,4 +1,8 @@
 <?xml version="1.0" ?><api xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="api_schema.xsd">
+<!--A principal has full control over a record if it is the owner of the record, 
+    or if it has a full share of the record.
+Apps never fully share a record, only accounts do.
+-->
   <method>
     <call method="post" name="post_access_token" url="/oauth/access_token"/>
     <oauth_legged two_legged="two_legged"/>

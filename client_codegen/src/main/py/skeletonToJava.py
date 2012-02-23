@@ -1078,7 +1078,7 @@ prefixSuffix = prefix.readlines()
 writeprefix(prefixSuffix, rest0, pynames)
 repflv, resturls, javadoc_map = pre_process_skeleton()  # resturls and javadoc_map use xml style urls as items/keys
 
-apidom = xml.dom.minidom.parse("../src/main/py/testout.xml")
+apidom = xml.dom.minidom.parse("../src/main/py/detailed_api.xml")
 rest_to_apinode = process_api_xml.process_dom(apidom)  # map xml style url to pythonic method name
 
 print("python meth names: " + str(len(rest_to_apinode.items())))
