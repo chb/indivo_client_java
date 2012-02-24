@@ -75,6 +75,7 @@ public class TestAll {
 	private XPath xpath = null;
 	private Rest adminRest = null;
 	private Rest allergyRest = null;
+	private Rest chromeRest = null;
 	
 	private String recid = null;
 	private String token = null;
@@ -113,6 +114,7 @@ public class TestAll {
     	
     	adminRest = new Rest("sampleadmin_key", "sampleadmin_secret", "http://localhost:8000", null);
     	allergyRest = new Rest("hospital-connector", "hospital-connector-secret", "http://localhost:8000", null);	
+        chromeRest = new Rest("chrome", "chrome",  "http://localhost:8000", null);
     }
     
     private void testaccounts(List<String> recTokSec) throws IndivoClientException, XPathExpressionException {
