@@ -1,7 +1,8 @@
 <?xml version="1.0" ?><api xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="api_schema.xsd">
 <!--A principal has full control over a record if it is the owner of the record, 
     or if it has a full share of the record.
-Apps never fully share a record, only accounts do.
+Apps never fully share or own a record, only accounts do.
+Is_same_app is two-legged.
 -->
   <method>
     <call method="post" name="post_access_token" url="/oauth/access_token"/>
@@ -63,7 +64,7 @@ Apps never fully share a record, only accounts do.
   </method>
   <method>
     <call method="post" name="create_session" url="/oauth/internal/session_create"/>
-    <oauth_legged three_legged="three_legged"/>
+    <oauth_legged two_legged="two_legged"/>
     <response response_format="URL_ENCODED"/>
     <put_post_data format="url_encoded"><key name="username"/><key name="password"/><key name="system"/></put_post_data>
   </method>
@@ -108,7 +109,7 @@ Apps never fully share a record, only accounts do.
   </method>
   <method>
     <call method="post" name="account_initialize" url="/accounts/{ACCOUNT_ID}/initialize/{PRIMARY_SECRET}"/>
-    <oauth_legged three_legged="three_legged"/>
+    <oauth_legged two_legged="two_legged"/>
     <response element="ok" response_format="XML"/>
     <put_post_data format="url_encoded"><key name="secondary_secret"/></put_post_data>
   </method>

@@ -67,6 +67,7 @@ def decide_oauth_legged(access_doc):
     if access_doc in [
         "A user app with an id matching the app email in the URL.",
         "Any admin app.",
+        "Any Indivo UI app.",
         "An admin app with an id matching the principal_email in the URL.",
         "A request signed by a RequestToken.",
         "Any principal in Indivo.",

@@ -119,14 +119,14 @@ public class TestAll {
     
     private void testaccounts(List<String> recTokSec) throws IndivoClientException, XPathExpressionException {
     	String recid_r = recTokSec.get(0);  String token_r = recTokSec.get(1);  String secret_r = recTokSec.get(2);
-    	/*	
-primary_secret_p – 0 or 1: Does this account require a primary secret?
-secondary_secret_p – 0 or 1: Does this account require a secondary secret?
-contact_email – A valid email at which to reach the account holder.
-account_id – An identifier for the new account. Must be a valid email address. REQUIRED
-full_name – The full name to associate with the account.
-*/
-    	Document retdoc = (Document) adminRest.accounts_POST(
+
+	Document retdoc = (Document) adminRest.accounts_XGET("johnsmith@indivo.org", null, null, null);
+        System.out.println(adminRest.getUtils().domToString(retdoc) + "\n\n\n");
+
+
+
+
+    	/*Document retdoc = (Document) adminRest.accounts_POST(
     			"primary_secret_p=1&secondary_secret_p=0&contact_email=nathan.finstein@childrens.harvard.edu&"
     			+ "account_id=tester@accounts.indivo.org&full_name=NF", null);
     	logger.info("ACCOUNT CREATE:\n" + adminRest.getUtils().domToString(retdoc));
@@ -142,28 +142,40 @@ full_name – The full name to associate with the account.
 //      POST /accounts/{ACCOUNT_EMAIL}/authsystems/password/set
         retdoc = (Document) adminRest.accounts_X_authsystems_password_setPOST("tester@accounts.indivo.org", "password=ABC", null);
 	    assert retdoc.getDocumentElement().getTagName() == "ok";
-
+*/
     	
     	Map<String,String> retmap = (Map<String,String>) chromeRest.oauth_internal_session_createPOST(
-            null, null, "username=tester@accounts.indivo.org&password=ABC", null);
-		assert retmap.containsKey("oauth_token") and retmap.containsKey("oauth_token_secret") and retmap.containsKey("account_id");
+            "username=jsmith&password=password.example", null);
+        assert retmap.containsKey("oauth_token") && retmap.containsKey("oauth_token_secret") && retmap.containsKey("account_id");
 
 
 //oauth_token=XYZ&oauth_token_secret=ABC&account_id=joeuser%40indivo.org
-
+/*
 //    	POST /accounts/{ACCOUNT_EMAIL}/set-state
     	retdoc = (Document) chromeRest.accounts_X_initialize_XPOST("tester@accounts.indivo.org", secret,
 			 retmap.get("oauth_token"), retmap.get("oauth_token_secret"), "", null);
 	    System.out.println(chromeRest.getUtils().domToString(retdoc) + "\n\n\n");
+*/
 
-
-
-
+	retdoc = (Document) adminRest.records_X_ownerPUT(recid_r, "johnsmith@indivo.org", null); 
+        System.out.println(adminRest.getUtils().domToString(retdoc) + "\n\n\n");
+System.exit(0);
+/*
     	
-	    retdoc = (Document) allergyRest.records_X_apps_XGET(
-	    		recid, "tester@accounts.indivo.org", null, null, null);
+*/  
+
+	    Map<String,String> setupres = (Map<String,String>)
+	    		adminRest.records_X_apps_X_setupPOST(recid_r, "indivoconnector@apps.indivo.org", null, null, null);
+	    System.out.println("setup result: " + setupres.getClass().getName());
+	    
+	    String token_ar = setupres.get("oauth_token");
+	    String secret_ar = setupres.get("oauth_token_secret");
+	    String surecid = setupres.get("xoauth_indivo_record_id");
+
+	    retdoc = (Document) chromeRest.records_X_apps_XGET(
+	    		recid_r, "indivoconnector@apps.indivo.org", retmap.get("oauth_token"), retmap.get("oauth_token_secret"), null);
 	    System.out.println("records_X_apps_XGET");
-	    System.out.println(allergyRest.getUtils().domToString(retdoc) + "\n\n\n");
+	    System.out.println(chromeRest.getUtils().domToString(retdoc) + "\n\n\n");
     }
     
     private void testreport(List<String> recTokSec) throws IndivoClientException, XPathExpressionException {
