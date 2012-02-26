@@ -127,24 +127,38 @@ account_id – An identifier for the new account. Must be a valid email address.
 full_name – The full name to associate with the account.
 */
     	Document retdoc = (Document) adminRest.accounts_POST(
-    			"primary_secret_p=0&secondary_secret_p=0&contact_email=tester@accounts.indivo.org&"
+    			"primary_secret_p=1&secondary_secret_p=0&contact_email=nathan.finstein@childrens.harvard.edu&"
     			+ "account_id=tester@accounts.indivo.org&full_name=NF", null);
     	logger.info("ACCOUNT CREATE:\n" + adminRest.getUtils().domToString(retdoc));
     	String accid = xpath.evaluate("/Account/@id", retdoc);
     	logger.info("accountId: " + accid);
     	
 //    	GET /accounts/{ACCOUNT_EMAIL}/primary-secret
-    	retdoc = (Document) adminRest.accounts_X_primarySecretGET("johnsmith@indivo.org", null);
+    	retdoc = (Document) adminRest.accounts_X_primarySecretGET("tester@accounts.indivo.org", null);
     	logger.info("get secret:\n" + adminRest.getUtils().domToString(retdoc));
     	String secret = xpath.evaluate("/secret/text()", retdoc);
     	logger.info("primary secret: " + secret);
+    	    	
+//      POST /accounts/{ACCOUNT_EMAIL}/authsystems/password/set
+        retdoc = (Document) adminRest.accounts_X_authsystems_password_setPOST("tester@accounts.indivo.org", "password=ABC", null);
+	    assert retdoc.getDocumentElement().getTagName() == "ok";
+
     	
-    	System.exit(0);
-    	
-    	
+    	Map<String,String> retmap = (Map<String,String>) chromeRest.oauth_internal_session_createPOST(
+            null, null, "username=tester@accounts.indivo.org&password=ABC", null);
+		assert retmap.containsKey("oauth_token") and retmap.containsKey("oauth_token_secret") and retmap.containsKey("account_id");
+
+
+//oauth_token=XYZ&oauth_token_secret=ABC&account_id=joeuser%40indivo.org
+
 //    	POST /accounts/{ACCOUNT_EMAIL}/set-state
-    	retdoc = (Document) adminRest.accounts_X_initialize_XPOST("tester@accounts.indivo.org", "", "","","", null);
-    	
+    	retdoc = (Document) chromeRest.accounts_X_initialize_XPOST("tester@accounts.indivo.org", secret,
+			 retmap.get("oauth_token"), retmap.get("oauth_token_secret"), "", null);
+	    System.out.println(chromeRest.getUtils().domToString(retdoc) + "\n\n\n");
+
+
+
+
     	
 	    retdoc = (Document) allergyRest.records_X_apps_XGET(
 	    		recid, "tester@accounts.indivo.org", null, null, null);
