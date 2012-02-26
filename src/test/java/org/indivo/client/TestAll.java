@@ -159,7 +159,6 @@ public class TestAll {
 
 	retdoc = (Document) adminRest.records_X_ownerPUT(recid_r, "johnsmith@indivo.org", null); 
         System.out.println(adminRest.getUtils().domToString(retdoc) + "\n\n\n");
-System.exit(0);
 /*
     	
 */  
@@ -173,9 +172,28 @@ System.exit(0);
 	    String surecid = setupres.get("xoauth_indivo_record_id");
 
 	    retdoc = (Document) chromeRest.records_X_apps_XGET(
-	    		recid_r, "indivoconnector@apps.indivo.org", retmap.get("oauth_token"), retmap.get("oauth_token_secret"), null);
-	    System.out.println("records_X_apps_XGET");
+	    		recid_r, "indivoconnector@apps.indivo.org", /*retmap.get("oauth_token"), retmap.get("oauth_token_secret")*/null, null, null);
+	    System.out.println("records_X_apps_XGET   chrome-II");
 	    System.out.println(chromeRest.getUtils().domToString(retdoc) + "\n\n\n");
+
+
+		try {
+        retdoc = (Document) chromeRest.records_X_documents_GET(
+            "", recid_r, null, null, null) throws IndivoClientException {
+        } catch (IndivoClientException ice) {
+            System.out.println("Exception caught, no token: " + ice.getMessage());
+        }
+	    System.out.println(chromeRest.getUtils().domToString(retdoc) + "\n\n\n");
+
+		try {
+        retdoc = (Document) chromeRest.records_X_documents_GET(
+            "", recid_r, retmap.get("oauth_token"), retmap.get("oauth_token_secret"), null) throws IndivoClientException {
+        } catch (IndivoClientException ice) {
+            System.out.println("Exception caught, token: " + ice.getMessage());
+        }
+	    System.out.println(chromeRest.getUtils().domToString(retdoc) + "\n\n\n");
+        
+System.exit(0);
     }
     
     private void testreport(List<String> recTokSec) throws IndivoClientException, XPathExpressionException {
