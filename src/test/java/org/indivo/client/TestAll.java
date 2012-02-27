@@ -177,21 +177,20 @@ public class TestAll {
 	    System.out.println(chromeRest.getUtils().domToString(retdoc) + "\n\n\n");
 
 
-		try {
-        retdoc = (Document) chromeRest.records_X_documents_GET(
-            "", recid_r, null, null, null) throws IndivoClientException {
+	try {
+          retdoc = (Document) chromeRest.records_X_documents_GET("", recid_r, null, null, null);
+	  System.out.println(chromeRest.getUtils().domToString(retdoc) + "\n\n\n");
         } catch (IndivoClientException ice) {
             System.out.println("Exception caught, no token: " + ice.getMessage());
         }
-	    System.out.println(chromeRest.getUtils().domToString(retdoc) + "\n\n\n");
 
-		try {
-        retdoc = (Document) chromeRest.records_X_documents_GET(
-            "", recid_r, retmap.get("oauth_token"), retmap.get("oauth_token_secret"), null) throws IndivoClientException {
+	try {
+          retdoc = (Document) chromeRest.records_X_documents_GET(
+                "", recid_r, retmap.get("oauth_token"), retmap.get("oauth_token_secret"), null);
+	  System.out.println(chromeRest.getUtils().domToString(retdoc) + "\n\n\n");
         } catch (IndivoClientException ice) {
             System.out.println("Exception caught, token: " + ice.getMessage());
         }
-	    System.out.println(chromeRest.getUtils().domToString(retdoc) + "\n\n\n");
         
 System.exit(0);
     }
