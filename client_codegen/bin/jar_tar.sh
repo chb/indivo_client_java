@@ -11,7 +11,7 @@ cp ../../classes/log4j.xml indivo_client_java-1.0/classes
 cp ../../indivo_client_java-1.0.jar indivo_client_java-1.0
 cp -r ../../javadoc indivo_client_java-1.0
 cp -r ../../lib indivo_client_java-1.0
-cp ../src/README.txt indivo_client_java-1.0
+cp ../src/README.html indivo_client_java-1.0
 cp ../../NOTICE.txt indivo_client_java-1.0
 cp -r ../../src/main/java/examples indivo_client_java-1.0
 

@@ -7,14 +7,16 @@ The source distribution includes the Java source files, excepting "Rest.java" an
 Information for generating Indivo server client software, regardless of computer language, is contained in "detailed_api.xml"
 indivo_client_java source includes code for generating "Rest.java" and "Rest_py_client_style.java" from detailed_api.xml,
  instead of including Rest.java and Rest_py_client_style.java directly.<br/>
-To get the source distribution:<br/>
-<code>git clone git@github.com:chb/indivo_client_java.git</code>
-</p>
+To get the source distribution:
+<ul>
+<li><code>cd &lt;intended-installation-directory&gt;</code></li>
+<li><code>git clone git@github.com:chb/indivo_client_java.git</code></li>
+</ul>
 
 <h2>Generate Rest.java and Rest_py_client_style.java (source distribution only)</h2>
 <p><strong>Pre-requisite: python 2.6 or equivalent.</strong></p>
 <ul>
-<li><code>cd &lt;indivo_client_java&gt;/client_codegen/bin</code></li>
+<li><code>cd indivo_client_java/client_codegen/bin</code></li>
 <li><code>./genCodeFromPython.sh 1> temp1</code><br/>
 When complete, the last line of temp1 should show something like:
 "done. 140 skeleton calls processed.  124 Java methods generated."
@@ -30,7 +32,7 @@ will be populated.</li>
 
 <h2>Build Binary Distribution (source distribution only)</h2>
 <ul>
-<li><code>./jar_tar.sh</code>
+<li><code>./jar_tar.sh</code><br/>
 Generates <code>../../indivo_client_java-1.x.jar</code> and <code>../../indivo_client_java-1.x.tar</code></li>
 </ul>
 <h2>Use client API</h2>
