@@ -1,19 +1,29 @@
 <html><head><title>README for indivo_client_java binary distribution</title></head>
 
 <body>
-<p>This is the README file for the binary distribution of indivo_client_java-1.x in its .tar file.</p>
+<p>This is the README file for the binary distribution of indivo_client_java-1.x, which is distributed as its indivo_client_java-1.x.tar file.</p>
 
 <p>
-indivo_client_java-1.x.jar contains the classes a Java Indivo client application might use.
+<ul>
+<li><code>cp indivo_client_java-1.x.tar &lt;binary-installation-directory&gt;</code></li>
+<li><code>cd &lt;binary-installation-directory&gt;</code></li>
+<li><code>tar -xf indivo_client_java-1.x.tar</code><br/></li>
+<li>Add </code>&lt;binary-installation-directory&gt;/indivo_client_java-1.x/indivo_client_java-1.x.jar</code>
+to the classpath of your client application.</li>
+<li>Add the .jar files in </code>&lt;binary-installation-directory&gt;/indivo_client_java-1.x/lib</code>
+to the classpath of your client application.</li>
+</ul>
+<p>
+indivo_client_java-1.x.jar contains the classes a Java Indivo client application might use directly.
 Writing http code to access the Indivo REST interface directly is an alternative.  We think using
-the classes in indivo_client_java-1.x.jar is more convenient.
+the classes in indivo_client_java-1.x.jar will be easier.
 </p>
 
 <p>
-point your browser to <code>file:///&lt;indivo_client_java-installation_directory&gt;/javadoc/index.html</code>.
+point your browser to <code>file:///&lt;binary-installation-directory&gt;/javadoc/index.html</code>.
 The gateway to this API is the class <code>org.indivo.client.Rest</code> or, identical except for method names,
 <code>org.indivo.client.Rest_py_client_style</code>.
-Methods that stand in for Indivo API REST calls are. in <code>Rest</code>, named with the REST URL modified for Java
+Methods that stand in for Indivo API REST calls are, in <code>Rest</code>, named with the REST URL modified for Java
  compatability.
 In <code>Rest_py_client_style</code> the same methods are named as in the Indivo Python client.
 </p>

@@ -16,6 +16,7 @@ javac -source 6 -target 6 -Xlint:unchecked -d ../classes -classpath \
 ../../lib/gson-1.6.jar:\
 ../../lib/commons-logging-1.1.1.jar \
    ../../src/main/java/org/indivo/client/Rest.java \
+   ../../src/main/java/org/indivo/client/Rest_py_client_style.java \
    ../../src/main/java/org/indivo/client/Utils.java \
    ../../src/main/java/org/indivo/client/IndivoClientException.java \
    ../../src/main/java/org/indivo/client/IndivoClientExceptionHttp404.java \

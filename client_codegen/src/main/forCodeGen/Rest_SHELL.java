@@ -26,11 +26,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
-/*_JAVA_STYLE_ONLY*/
-/*_SHELL_DROP*/ /**
 * Convenience methods that wrap the Indivo REST api calls
 * that are documented at <code>http://wiki.chip.org/indivo</code>
-* plus a few utilites and a few higher-level methods<br/><br/>
+* plus a few utilites and a few higher-level methods.<br/><br/>
+/*_JAVA_STYLE_ONLY*/
+/*_SHELL_DROP*/ /**
+* This class uses REST style method names.  For an equivalent class using python style method names, see org.indivo.client.Rest_py_client_style
 *
 * HERE ARE THE RULES FOR TRANSLATING A REST URL TO A JAVA API METHOD NAME IN org.indivo.client.Rest.
 * <ul>
@@ -41,6 +42,11 @@ import org.w3c.dom.NodeList;
 * <li>use request method (GET|PUT|POST|DELETE) as last part of method name.</li>
 * </ul>
 /*_END_JAVA_STYLE_ONLY*/
+/*_SHELL_DROP*/ /**
+/*_PYTHON_STYLE_ONLY*/
+/*_SHELL_DROP*/ /**
+* This class uses python style method names.  For an equivalent class using Rest style method names, see org.indivo.client.Rest
+/*_END_PYTHON_STYLE_ONLY*/
 /*_SHELL_DROP*/ /**
 * HERE ARE THE RULES FOR PLACING QUERY PARAMETERS IN METHOD CALL PARAMETERS, org.indivo.client.Rest and org.indivo.client.Rest_py_client_style.
 * <ul>
