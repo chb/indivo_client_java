@@ -1,15 +1,20 @@
 package examples;
 
 import org.indivo.client.Rest;
+import org.indivo.client.IndivoClientException;
 import org.indivo.client.DefaultResponseTypeConversion;
+
+import java.util.Map;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Document;
 
 
-Rest(java.lang.String oauthConsumerKey, java.lang.String oauthConsumerSecret, java.lang.String baseURL, ResponseTypeConversion responseTypeConversion)
-
 public class StandAloneExample {
-	private sampleContact =
+	private String sampleContact =
 "<Contact xmlns=\"http://indivo.org/vocab/xml/documents#\">"
 + "\n    <name>"
 + "\n        <fullName>Sebastian Rockwell Cotour</fullName>"
@@ -52,12 +57,19 @@ public class StandAloneExample {
 + "\n</Allergy>";
 
 
-    private StandAloneExample instance = null;
-	private DefaultResponseTypeConversion rsc = new DefaultResponseTypeConversion();
+    private static StandAloneExample instance = null;
+
+	private DefaultResponseTypeConversion rsc = null;
+	private XPath xpath = null;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IndivoClientException, XPathExpressionException {
 		instance = new StandAloneExample();
         instance.runExample();
+    }
+
+    private StandAloneExample() throws IndivoClientException {
+        xpath = XPathFactory.newInstance().newXPath();
+        rsc = new DefaultResponseTypeConversion();
     }
 
     private void runExample() throws IndivoClientException, XPathExpressionException {
@@ -65,24 +77,24 @@ public class StandAloneExample {
         Rest adminRest = new Rest("sampleadmin_key", "sampleadmin_secret", "http://localhost:8080", rsc);
     	Rest phaRest = new Rest("hospital-connector", "hospital-connector-secret", "http://localhost:8000", null);	
 
-        Document recinfo = (Document) rest.records_POST(sampleContact, null);
-	    String recordId = xpath.evaluate("/Record/@id", retdoc);
+        Document recinfo = (Document) adminRest.records_POST(sampleContact, null);
+	    String recordId = xpath.evaluate("/Record/@id", recinfo);
 
-        Map<String,String> setupResult = rest.records_X_apps_X_setupPOST(recordId,
+        Map<String,String> setupResult = (Map<String,String>) adminRest.records_X_apps_X_setupPOST(recordId,
                 "indivoconnector@apps.indivo.org",
                 null,   // http request body not required by setup
                 null,   // no body format
                 null    /*not options in this example*/);  
 
-	    if (! recordId.equals(setupres.get("xoauth_indivo_record_id"))) {
-            throw new RuntimeException("expected record id from setup of: " + recordId + ", got: " + setupres.get("xoauth_indivo_record_id")));
+	    if (! recordId.equals(setupResult.get("xoauth_indivo_record_id"))) {
+            throw new RuntimeException("expected record id from setup of: " + recordId + ", got: " + setupResult.get("xoauth_indivo_record_id"));
         }
-	    String token = setupres.get("oauth_token");
-	    String secret = setupres.get("oauth_token_secret");
+	    String token = setupResult.get("oauth_token");
+	    String secret = setupResult.get("oauth_token_secret");
 
 
 
-        phaRest.records_X_documents_POST(
+        Document retdoc = (Document) phaRest.records_X_documents_POST(
 	                recordId, token, secret, allergyDoc, "application/xml", null);
 	    String newDocId = xpath.evaluate("/Document/@id", retdoc);
 	    System.out.println("new doc id: " + newDocId);
