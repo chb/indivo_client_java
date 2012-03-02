@@ -257,20 +257,6 @@ public class Rest_py_client_style_SHELL {
     /***END AUTO GENERATED FROM WIKI*/
 
 
-
-    /*
-    /++ conveninece method for where no request body is sent +/
-    public Object clientRequest(
-            String reqMeth,
-            String reletivePath,
-            Object queryString,
-            String phaToken,
-            String phaTokenSecret,
-            Object responseContentType,
-            Map<String,Object> options) throws IndivoClientException {
-        return clientRequest(reqMeth, reletivePath, queryString, phaToken, phaTokenSecret, null, null, responseContentType, options);
-    }
-*/
     public Object oauth_request_tokenPOST(
             String oauth_callback, String indivo_record_id, Map<String,Object> options)
             throws IndivoClientException {
@@ -312,13 +298,23 @@ public class Rest_py_client_style_SHELL {
         options0.put("responseTypeConversion", internalResponseTypeConversion);
 
         List<Object> retVal = new ArrayList<Object>();
+/*_JAVA_STYLE_ONLY*/
         Document xmlList = (Document) apps_X_documents_GET(pagingOrderingQuery, appId, options0);
+/*_END_JAVA_STYLE_ONLY*/
+/*_PYTHON_STYLE_ONLY*/
+        Document xmlList = (Document) read_app_documents(pagingOrderingQuery, appId, options0);
+/*_END_PYTHON_STYLE_ONLY*/
         Element docRoot = xmlList.getDocumentElement();
         NodeList docMetas = docRoot.getElementsByTagName("Document");
         for (int ii = 0; ii < docMetas.getLength(); ii++) {
             Element aMeta = (Element) docMetas.item(ii);
             String tsId = aMeta.getAttribute("id");
+/*_JAVA_STYLE_ONLY*/
             Object tsDoc = apps_X_documents_XGET(appId, tsId, null, options);
+/*_END_JAVA_STYLE_ONLY*/
+/*_PYTHON_STYLE_ONLY*/
+            Object tsDoc = read_app_document(appId, tsId, null, options);
+/*_END_PYTHON_STYLE_ONLY*/
             retVal.add(tsDoc);
         }
         return retVal;
@@ -351,7 +347,12 @@ public class Rest_py_client_style_SHELL {
             // make sure DOM object returned
             options.put("responseTypeConversion", internalResponseTypeConversion);
         }
+/*_JAVA_STYLE_ONLY*/
         Document hasMetas = (Document) records_X_documents_X_rels_X_GET(
+/*_END_JAVA_STYLE_ONLY*/
+/*_PYTHON_STYLE_ONLY*/
+        Document hasMetas = (Document) get_document_relate(
+/*_END_PYTHON_STYLE_ONLY*/
             queryString,
             recordId,
             docId,
@@ -398,7 +399,12 @@ public class Rest_py_client_style_SHELL {
         }
         options.put("responseTypeConversion", internalResponseTypeConversion);
         try {
+/*_JAVA_STYLE_ONLY*/
             xMeta = apps_X_documents_external_X_metaGET(
+/*_END_JAVA_STYLE_ONLY*/
+/*_PYTHON_STYLE_ONLY*/
+            xMeta = read_app_document_ext_meta(
+/*_END_PYTHON_STYLE_ONLY*/
                 appId, xId, options);
         } catch (org.indivo.client.IndivoClientExceptionHttp404 notfoundex) {
             logger.info("turning not found exception into null", notfoundex);
@@ -413,7 +419,12 @@ public class Rest_py_client_style_SHELL {
             }
                 String docId = docEl.getAttribute("id");
                 options.remove("responseTypeConversion");
+/*_JAVA_STYLE_ONLY*/
                 ofId = apps_X_documents_XGET(
+/*_END_JAVA_STYLE_ONLY*/
+/*_PYTHON_STYLE_ONLY*/
+                ofId = read_app_document(
+/*_END_PYTHON_STYLE_ONLY*/
                         appId, docId, responseContentType, options);
         }
 
@@ -455,7 +466,12 @@ public class Rest_py_client_style_SHELL {
         }
         options.put("responseTypeConversion", internalResponseTypeConversion);
         try {
+/*_JAVA_STYLE_ONLY*/
             xMeta = records_X_apps_X_documents_external_X_metaGET(
+/*_END_JAVA_STYLE_ONLY*/
+/*_PYTHON_STYLE_ONLY*/
+            xMeta = read_recapp_document_ext_meta(
+/*_END_PYTHON_STYLE_ONLY*/
                 recordId, appId, xId, accessToken, accessTokenSecret, options);
         } catch (org.indivo.client.IndivoClientExceptionHttp404 notfoundex) {
             logger.info("turning not found exception into null", notfoundex);
@@ -470,7 +486,12 @@ public class Rest_py_client_style_SHELL {
             }
                 String docId = docEl.getAttribute("id");
                 options.remove("responseTypeConversion");
+/*_JAVA_STYLE_ONLY*/
                 ofId = records_X_apps_X_documents_XGET(
+/*_END_JAVA_STYLE_ONLY*/
+/*_PYTHON_STYLE_ONLY*/
+                ofId = get_recapp_document(
+/*_END_PYTHON_STYLE_ONLY*/
                         recordId, appId, docId, accessToken, accessTokenSecret, responseContentType, options);
         }
 

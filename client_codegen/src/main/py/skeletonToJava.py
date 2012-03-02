@@ -958,52 +958,48 @@ def write_both(file1, file2, content):
     file1.write(content)
     file2.write(content)
 
-def writeprefix(prefixLines, rest, pynames):
+def write_prefix_suffix(isPre, prefixLines, rest, pynames):
+    dowrite = True
+    if not isPre:
+        dowrite = False
+
     java_style_only = False;
     python_style_only = False;
     for pline in prefixLines:
         plinestr = str(pline)
-        if plinestr.strip().startswith("/***START AUTO GENERATED FROM WIKI*/"):
+        if isPre and plinestr.strip().startswith("/***START AUTO GENERATED FROM WIKI*/"):
             break
-        shix = plinestr.find("_SHELL")
-        if shix != -1:
-            plinestr = plinestr[:shix] + plinestr[shix +6:]
-        drix = plinestr.find("/*_DROP*/")
-        if plinestr.find("/*_PYTHON_STYLE_ONLY*/") != -1:
-            python_style_only = True;
-            continue;
-        elif plinestr.find("/*_END_PYTHON_STYLE_ONLY*/") != -1:
-            python_style_only = False;
-            continue;
-        elif plinestr.find("/*_JAVA_STYLE_ONLY*/") != -1:
-            java_style_only = True;
-            continue;
-        elif plinestr.find("/*_END_JAVA_STYLE_ONLY*/") != -1:
-            java_style_only = False;
-            continue;
-            
-        if drix == -1:
-            if java_style_only:
-                rest.write(plinestr)
-            elif python_style_only:
-                pynames.write(plinestr)
-            else:
-                write_both(rest, pynames, plinestr)
 
-    
-def writesuffix(rest, pynames, prefixLines):
-    dowrite = False
-    for pline in prefixLines:
-        plinestr = str(pline)
-        if plinestr.strip().startswith("/***END AUTO GENERATED FROM WIKI*/"):
-            dowrite = True        
-        elif dowrite:
-            shix = plinestr.find("_SHELL")
-            if shix != -1:
-                plinestr = plinestr[:shix] + plinestr[shix +6:]
-            drix = plinestr.find("/*_DROP*/")
-            if drix == -1:
-                write_both(rest, pynames, plinestr)
+        if not isPre and plinestr.strip().startswith("/***END AUTO GENERATED FROM WIKI*/"):
+            dowrite = True
+            continue
+
+        if dowrite:
+		    shix = plinestr.find("_SHELL")
+		    if shix != -1:
+		        plinestr = plinestr[:shix] + plinestr[shix +6:]
+		    if plinestr.find("/*_PYTHON_STYLE_ONLY*/") != -1:
+		        python_style_only = True;
+		        continue;
+		    elif plinestr.find("/*_END_PYTHON_STYLE_ONLY*/") != -1:
+		        python_style_only = False;
+		        continue;
+		    elif plinestr.find("/*_JAVA_STYLE_ONLY*/") != -1:
+		        java_style_only = True;
+		        continue;
+		    elif plinestr.find("/*_END_JAVA_STYLE_ONLY*/") != -1:
+		        java_style_only = False;
+		        continue;
+            
+		    drix = plinestr.find("/*_DROP*/")
+		    if drix == -1:
+		        if java_style_only:
+		            rest.write(plinestr)
+		        elif python_style_only:
+		            pynames.write(plinestr)
+		        else:
+		            write_both(rest, pynames, plinestr)
+
 
 def process_query_opts(query_opts0, qopts_field, report_minimal, audit_query):
     query_opts = list(query_opts0)
@@ -1075,7 +1071,7 @@ pynames =   open(restpath + "org/indivo/client/Rest_py_client_style.java", "w")
 prefix = open(shellpath + "Rest_SHELL.java","r")
 
 prefixSuffix = prefix.readlines()
-writeprefix(prefixSuffix, rest0, pynames)
+write_prefix_suffix(True, prefixSuffix, rest0, pynames)
 repflv, resturls, javadoc_map = pre_process_skeleton()  # resturls and javadoc_map use xml style urls as items/keys
 
 apidom = xml.dom.minidom.parse("../src/main/py/detailed_api.xml")
@@ -1086,7 +1082,7 @@ write_common_opts(rest0, pynames) #, repqflds
 write_report_query_options(rest0, pynames, apidom)
 call_count, method_count = process_calls(rest0, pynames, repflv, resturls, rest_to_apinode, javadoc_map)
 apidom.unlink()
-writesuffix(rest0, pynames, prefixSuffix)
+write_prefix_suffix(False, prefixSuffix, rest0, pynames)
 rest0.close()
 pynames.close()
 print("done. " + str(call_count) + " skeleton calls processed.  " + str(method_count) + " Java methods generated.")
