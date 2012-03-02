@@ -14,7 +14,7 @@ import org.w3c.dom.Document;
 
 
 public class StandAloneExample {
-	private String sampleContact =
+    private String sampleContact =
 "<Contact xmlns=\"http://indivo.org/vocab/xml/documents#\">"
 + "\n    <name>"
 + "\n        <fullName>Sebastian Rockwell Cotour</fullName>"
@@ -44,7 +44,7 @@ public class StandAloneExample {
 + "\n    <instantMessengerName protocol=\"aim\">scotour</instantMessengerName>"
 + "\n</Contact>";
 
-	private static String allergyDoc = 
+    private static String allergyDoc = 
 "<Allergy xmlns=\"http://indivo.org/vocab/xml/documents#\">"
 + "\n  <dateDiagnosed>2009-05-16</dateDiagnosed>"
 + "\n  <diagnosedBy>Children's Hospital Boston</diagnosedBy>"
@@ -74,7 +74,7 @@ public class StandAloneExample {
 
     private void runExample() throws IndivoClientException, XPathExpressionException {
         DefaultResponseTypeConversion rsc = new DefaultResponseTypeConversion();
-        Rest adminRest = new Rest("sampleadmin_key", "sampleadmin_secret", "http://localhost:8080", rsc);
+        Rest adminRest = new Rest("sampleadmin_key", "sampleadmin_secret", "http://localhost:8000", rsc);
     	Rest phaRest = new Rest("hospital-connector", "hospital-connector-secret", "http://localhost:8000", null);	
 
         Document recinfo = (Document) adminRest.records_POST(sampleContact, null);
@@ -86,11 +86,11 @@ public class StandAloneExample {
                 null,   // no body format
                 null    /*not options in this example*/);  
 
-	    if (! recordId.equals(setupResult.get("xoauth_indivo_record_id"))) {
+        if (! recordId.equals(setupResult.get("xoauth_indivo_record_id"))) {
             throw new RuntimeException("expected record id from setup of: " + recordId + ", got: " + setupResult.get("xoauth_indivo_record_id"));
         }
-	    String token = setupResult.get("oauth_token");
-	    String secret = setupResult.get("oauth_token_secret");
+        String token = setupResult.get("oauth_token");
+        String secret = setupResult.get("oauth_token_secret");
 
 
 
@@ -102,9 +102,9 @@ public class StandAloneExample {
 
 
         /* We know there is less than 7, but just for example this is how to read metadata of the first 7 */
-        Document docs = (Document) phaRest.records_X_documents_GET(
+        Document docslist = (Document) phaRest.records_X_documents_GET(
                 "limit=7&offset=0", recordId, token, secret, null);
-	    System.out.println(phaRest.getUtils().domToString(retdoc) + "\n\n\n");
+        System.out.println(phaRest.getUtils().domToString(docslist) + "\n\n\n");
 
     }
 

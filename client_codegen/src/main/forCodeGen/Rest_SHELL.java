@@ -85,8 +85,8 @@ import org.w3c.dom.NodeList;
 * <li>each REST call of the form: <code>GET /records/{record_id}/reports/minimal/&lt;type_eg_medications&gt;/</code>
 *   or of the form: <code>GET /carenets/{carenet_id}/reports/minimal/&lt;type_eg_medications&gt;/</code>
 *   is combined into one of two methods as if the REST calls were documented as:
-*   <code>GET /records/{record_id}/reports/minimal/{type_of_minimal_eg_medications}/ OR
-*   <code>GET /carenets/{carenet_id}/reports/minimal/{type_of_minimal_eg_medications}/</li>
+*   <code>GET /records/{record_id}/reports/minimal/{type_of_minimal_eg_medications}/</code> OR
+*   <code>GET /carenets/{carenet_id}/reports/minimal/{type_of_minimal_eg_medications}/</code></li>
 * <li>Higher level methods that are named as if they map to a REST call,
 *   but that do more than map directly to a single
 *   REST call, are named according to the fictional REST URL that would seem to do their function,
