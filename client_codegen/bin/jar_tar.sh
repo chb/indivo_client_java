@@ -14,6 +14,6 @@ cp -r ../../javadoc indivo_client_java-1.$DOT_VERSION
 cp -r ../../lib indivo_client_java-1.$DOT_VERSION
 cp ../src/README.html indivo_client_java-1.$DOT_VERSION
 cp ../../NOTICE.txt indivo_client_java-1.$DOT_VERSION
-cp -r ../../src/main/java/examples indivo_client_java-1.$DOT_VERSION
+cp -r ../../examples indivo_client_java-1.$DOT_VERSION
 
 tar -cf ../../indivo_client_java-1.$DOT_VERSION.tar indivo_client_java-1.$DOT_VERSION

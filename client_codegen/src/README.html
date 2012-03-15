@@ -8,6 +8,14 @@ the classes in indivo_client_java-1.x.jar will be easier.
 </p>
 
 <p>
+For most purposes, it is recommended to use this binary distribution.  If you have a need for the source from
+from which this binary distribution is built:<br/>
+<code>git clone git://github.com/chb/indivo_client_java.git</code><br/>
+[you must have git installed]
+</p>
+
+
+<p>
 <strong>Install</strong>
 <ul>
 <li><code>cp indivo_client_java-1.x.tar &lt;binary-installation-directory&gt;</code></li>
@@ -34,106 +42,7 @@ Methods that stand in for Indivo API REST calls are, in <code>Rest</code>, named
  compatability.
 In <code>Rest_py_client_style</code> the same methods are named as in the Indivo Python client.
 </p>
-<p>
-<strong>Source</strong><br/>
-For the source distribution from which this binary distribution is built:<br/>
-<code>git clone git://github.com/chb/indivo_client_java.git</code><br/>
-[you must have git installed]
-</p>
 
-<strong>simple PHA example, without oauth dance</strong>
-<code>cd &lt;binary-installation-directory&gt;/indivo_client_java-1.x</code>
-<pre>
-<strong>shell script to compile example:</strong>
-<code>javac -Xlint:unchecked  -source 1.6 -target 1.6  \
- -cp \
-indivo_client_java-1.RC1.jar:\
-lib/commons-codec-1.3.jar:\
-lib/commons-lang-2.5.jar:\
-lib/commons-logging-1.1.1.jar:\
-lib/gson-1.6.jar:\
-lib/httpclient-4.0.1.jar:\
-lib/httpcore-4.0.1.jar:\
-lib/javaee-web-api-6.0.jar:\
-lib/junit-3.8.1.jar:\
-lib/log4j-1.2.16.jar:\
-lib/signpost-commonshttp4-1.2.jar:\
-lib/signpost-core-1.2.jar \
-   examples/StandAloneExample.java
-</code></pre>
-
-<pre>
-<strong>shell script to run example, assuming indivo_server is running on localhost</strong>
-<code>java  -cp \
-.:\
-indivo_client_java-1.RC1.jar:\
-lib/commons-codec-1.3.jar:\
-lib/commons-lang-2.5.jar:\
-lib/commons-logging-1.1.1.jar:\
-lib/gson-1.6.jar:\
-lib/httpclient-4.0.1.jar:\
-lib/httpcore-4.0.1.jar:\
-lib/javaee-web-api-6.0.jar:\
-lib/junit-3.8.1.jar:\
-lib/log4j-1.2.16.jar:\
-lib/signpost-commonshttp4-1.2.jar:\
-lib/signpost-core-1.2.jar \
-   examples/StandAloneExample
-</code></pre>
-
-<strong>oauth dance example, requires Tomcat or similar Java app server</strong>
-<pre>
-<strong>shell script to compile and build example:</strong>
-<code>javac -Xlint:unchecked  -source 1.6 -target 1.6  \
- -cp \
-indivo_client_java-1.RC1.jar:\
-lib/commons-codec-1.3.jar:\
-lib/commons-lang-2.5.jar:\
-lib/commons-logging-1.1.1.jar:\
-lib/gson-1.6.jar:\
-lib/httpclient-4.0.1.jar:\
-lib/httpcore-4.0.1.jar:\
-lib/javaee-web-api-6.0.jar:\
-lib/junit-3.8.1.jar:\
-lib/log4j-1.2.16.jar:\
-lib/signpost-commonshttp4-1.2.jar:\
-lib/signpost-core-1.2.jar \
-   examples/TestClientServlet.java
-
-if
-  [ -e "WEB-INF" ]
-then
-  rm -r WEB-INF
-fi
-mkdir WEB-INF
-mkdir WEB-INF/classes
-mkdir WEB-INF/lib
-cp -r examples WEB-INF/classes
-cp classes/log4j.xml WEB-INF/classes
-cp lib/*.jar WEB-INF/lib
-cp web.xml WEB-INF
-jar -cf TestClientServlet.war \
-WEB-INF
-#WEB-INF/lib/ \
-#WEB-INF/classes/ \
-#WEB-INF/classes/org/
-#WEB-INF/classes/org/indivo/
-#WEB-INF/classes/org/indivo/client/
-#WEB-INF/lib/signpost-commonshttp4-1.2.jar
-#WEB-INF/lib/commons-logging-1.1.1.jar
-#WEB-INF/lib/signpost-core-1.2.jar
-#WEB-INF/lib/commons-codec-1.3.jar
-#WEB-INF/lib/gson-1.6.jar
-#WEB-INF/lib/commons-lang-2.5.jar
-#WEB-INF/lib/httpclient-4.0.1.jar
-#WEB-INF/lib/httpcore-4.0.1.jar
-#WEB-INF/lib/indivo_client_java-0.4.jar
-#WEB-INF/web.xml
-#WEB-INF/classes/org/indivo/client/TestClientServlet.class
-
-</code></pre>
-
-
-</body>
-
-</html>
+<strong>Examples</strong><br/>
+point your browser to <code>file:///&lt;binary-installation-directory&gt;/indivo_client_java-1.x/examples/README_EXAMPLES.html</code>.
+</body></html>
