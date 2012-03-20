@@ -23,9 +23,9 @@ mkdir WEB-INF
 mkdir WEB-INF/classes
 mkdir WEB-INF/lib
 cp -r src/examples WEB-INF/classes
-cp classes/log4j.xml WEB-INF/classes
-cp lib/*.jar WEB-INF/lib
-cp examples/web.xml WEB-INF
+cp ../classes/log4j.xml WEB-INF/classes
+cp ../lib/*.jar WEB-INF/lib
+cp src/web.xml WEB-INF
 jar -cf TestClientServlet.war \
 WEB-INF
 
