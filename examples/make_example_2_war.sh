@@ -24,6 +24,7 @@ mkdir WEB-INF/classes
 mkdir WEB-INF/lib
 cp -r src/examples WEB-INF/classes
 cp ../classes/log4j.xml WEB-INF/classes
+cp ../indivo_client_java-1.RC1.jar WEB-INF/lib
 cp ../lib/*.jar WEB-INF/lib
 cp src/web.xml WEB-INF
 jar -cf TestClientServlet.war \
