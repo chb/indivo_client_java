@@ -1,4 +1,4 @@
-DOT_VERSION=RC1
+DOT_VERSION=0
 jar -cf ../../indivo_client_java-1.$DOT_VERSION.jar -C ../classes org
 
 if 
