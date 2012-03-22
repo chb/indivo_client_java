@@ -71,7 +71,7 @@ public class TestClientServlet extends HttpServlet {
         Map<String,String[]> paramMap = req.getParameterMap();
 
         if (pathInfo == null) {
-            logger.info("getLocalName(): " + req.getLocalName() + "    " +
+            logger.info("getLocalAddr(): " + req.getLocalAddr() + "    " +
                     "getContextPath(): " + req.getContextPath() + "    " +
                     "getServletPath(): " + req.getServletPath() + "   pathInfo: " + pathInfo);
             String response = "<html><head><title></title></head><body>"
@@ -88,7 +88,7 @@ public class TestClientServlet extends HttpServlet {
 + "Navigate this browser to Indivo UI, logout,"
 + " then navigate back here to this servlet (.../IndivoClientJavaOAuthTester).</p>"
 + "<strong>Start the oauth dance ...</strong>"
-+ "<form action=\"http://" + req.getLocalName() + ":" + req.getLocalPort()
++ "<form action=\"http://" + req.getLocalAddr() + ":" + req.getLocalPort()
     + req.getContextPath() + req.getServletPath() + "/" + authStartPath + "\">"
 + "recordId: <input type=\"text\" name=\"indivo_record_id\"></input><br/>"
 + "<input type=\"submit\"></input>"
@@ -105,7 +105,7 @@ public class TestClientServlet extends HttpServlet {
 
             String indivoRecordId = getStringFromPmap(paramMap, "indivo_record_id");
             String callbackURL = "http://" +
-                    req.getLocalName() + ":" + req.getLocalPort() + req.getContextPath() +
+                    req.getLocalAddr() + ":" + req.getLocalPort() + req.getContextPath() +
                     req.getServletPath() + "/" + authAfterPath;
             Map<String,String> requestTokenSecret = getRequestToken(indivoRecordId, callbackURL);
 
